@@ -8,7 +8,10 @@ Yet another try to get away from eprime.
 task description
 ===========
 
-30 cards, no pairs, 2 categories: faces and activity (reduces number of different classes of images which may harmonize connectivity patterns; the particular categories may also induce more connectivity, see paper XXXX).
+30 cards, no pairs
+
+not sure yet: 2 categories - faces and activity (reduces number of different classes of images which may harmonize connectivity patterns; the particular categories may also induce more connectivity, see paper XXXX).
+
 Subjects come to the lab twice, once for learning with, once for learning without odor.
 
 Control-Task			mit Geruch / eingermaßen ähnlich wie Task?
