@@ -30,4 +30,3 @@ PTB_cards(cfg_window);
 
 % Type "sca" and hit enter if the window freezes
 commandwindow
-sca
