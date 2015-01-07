@@ -27,6 +27,9 @@ Screen('TextSize', window, 50);
 % Format output
 cfg.screen = [screens, screenNumber];
 cfg.window = [window, windowRect];
+% assure 4:3 format
+cfg.window43 = cfg.window;
+cfg.window43(end-1:end) = [1024, 768];
 cfg.center = [xCenter, yCenter];
 
 end
