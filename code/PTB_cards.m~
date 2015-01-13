@@ -1,0 +1,49 @@
+function cfg = PTB_cards(cfg)
+%%
+win = cfg.window(1);
+% draw the cards
+ncards_x = 6;
+ncards_y = 5;
+% Calculate coordinates for the rectangles
+
+screenSize = cfg.window(end-1:end);
+topOffset = 200;
+
+% Create top card
+
+Screen('FillRect', win, cardColors, [screenSize(1)/2 topOffset]);
+Screen('Flip', win);
+
+
+% Coordinates for the 5x6 card array
+cardCoordsX = linspace(1,screenSize(1),ncards_x+1);
+cardCoordsX = round(cardCoordsX(1:end-1) + (cardCoordsX(2)-cardCoordsX(1))/2);
+cardCoordsY = linspace(topOffset,screenSize(2),ncards_y+1);
+cardCoordsY = round(cardCoordsY(1:end-1) + (cardCoordsY(2)-cardCoordsY(1))/2);
+
+% Set the colors to Red, Green and Blue
+cardColors = [0.5; 0.5; 0.5];
+
+% Make our rectangle coordinates
+margin = 5;
+cardSize = [0 0 round(screenSize(1)/ncards_x)-margin round((screenSize(2)-topOffset)/ncards_y)-margin];
+
+cardsAll = zeros(ncards_y, 4, ncards_x);
+for r = 1: length(cardCoordsY)
+    for c = 1: length(cardCoordsX)
+        cardsAll(r,:,c) = CenterRectOnPointd(cardSize, cardCoordsX(c), cardCoordsY(r));
+    end
+end
+
+% Draw the rect to the screen
+Priority(MaxPriority(win));
+Screen('Flip', win);
+for r = 1: length(cardCoordsY)
+    cards = reshape(cardsAll(r,:,:),4,ncards_x);
+    Screen('FillRect', win, cardColors, cards);
+end
+Screen('Flip', win);
+Priority(0);
+
+
+end
