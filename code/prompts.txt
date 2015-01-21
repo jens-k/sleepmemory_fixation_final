@@ -1,0 +1,5 @@
+Enter subject number:
+Enter night number:
+Enter memory version:
+Is this session for learning, retrieval, or interference?
+Enter in which lab you are: old (MEG), new (CIN)

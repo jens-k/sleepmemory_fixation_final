@@ -1,8 +1,7 @@
 %% Workspace
-% Clear the workspace and the screen
-close all;
-clear all;
-sca; 	% clear all features related to PTB
+close all;          % Close all figures
+clear all;          % Clear all variables in the workspace
+sca;                % Clear all features related to PTB
 
 % Perform standard setup for PTB: 
 % 0 - check mex file for Screen()
@@ -10,8 +9,8 @@ sca; 	% clear all features related to PTB
 % 2 - additionally normalize color range from [0 255] to [0 1]
 PsychDefaultSetup(2);
 
-% Get screens connected
-screens 		= Screen('Screens');
+% Get screens which are connected
+screens             = Screen('Screens');
 
 % Perform on external screen if available
 screenNumber 		= max(screens);
@@ -34,16 +33,16 @@ Screen('TextSize', window, 50);
 %% Timing
 
 % Measure the vertical refresh rate of the monitor
-ifi 			= Screen('GetFlipInterval', window);
-waitframes 		= 1;
+ifi                 = Screen('GetFlipInterval', window);
+waitframes          = 1;
 topPriorityLevel 	= MaxPriority(window);
 Priority(topPriorityLevel);
-vbl 			= Screen('Flip', window);
+vbl                 = Screen('Flip', window);
 
-% the code
-% FIXME: 'the code'? :)
-% flip
-vbl 			= Screen('Flip', window, vbl + (waitframes - 0.5) * ifi);
+
+% Flip follows code that buffers text or textures
+% and is mandatory to update the screen content
+vbl                 = Screen('Flip', window, vbl + (waitframes - 0.5) * ifi);
 Priority(0);
 
 %% Text
