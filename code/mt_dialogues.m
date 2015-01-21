@@ -1,7 +1,9 @@
-function cfg_dlgs = mt_dialogues()
+function mt_dialogues
 %% TODO: Documentation
 % copy newid.m to folder given by "which -all inputdlg" 
 % http://www.mathworks.com/matlabcentral/answers/uploaded_files/1727/newid.m
+
+load('mt_params.mat')   % load workspace information and properties
 
 % read in dialogue questions
 fid                 = fopen('prompts.txt');
@@ -32,36 +34,38 @@ cfg_dlgs.lab        = char(answers{5, 1}); %
 % memory version
 switch cfg_dlgs.memvers
     case 'A' 
-        disp('A ok')
+        cfg_dlgs.memvers = 1; % Learning
     case 'B'
-        disp('B ok')
+        cfg_dlgs.memvers = 2; % Interference
     otherwise
         error('Invalid Memory Version')
 end
 % session type
 switch cfg_dlgs.sesstype
     case 'L' 
-        disp('L ok')
-        % Learning session equals immediate recall session
+        cfg_dlgs.sesstype = 1; % Learning
     case 'R'
-        disp('R ok')
+        cfg_dlgs.sesstype = 2; % Recall
     case 'I'
-        disp('I ok')
+        cfg_dlgs.sesstype = 3; % Interference
     otherwise
         error('Invalid Session Type')
 end
 % lab
 switch cfg_dlgs.lab
     case 'M' 
-        disp('MEG ok')
+        cfg_dlgs.lab = 1;
         % TODO: set triggers for MEG
         % In the MEG will be the old olfactometer
     case 'S'
-        disp('SL ok')
+        cfg_dlgs.lab = 2;
         % TODO: set triggers for sleep lab
         % In the sleep lab will be the new olfactometer
     otherwise
         error('Invalid Lab')
 end
+
+cd(workdir)
+save('mt_params.mat', '-append', 'cfg_dlgs')
 
 end

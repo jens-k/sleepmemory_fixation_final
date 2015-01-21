@@ -1,4 +1,7 @@
-function cfg = PTB_window()
+function cfg = mt_window
+%%
+
+load('mt_params.mat')   % load workspace information and properties
 
 %% Perform standard setup for PTB: 
 % 0 - check mex file for Screen()
@@ -23,17 +26,25 @@ screenNumber = max(screens);
 % get the window center coordinates
 [xCenter, yCenter] = RectCenter(windowRect);
 
-% Text properties
-Screen('TextFont', window, 'Arial');
-Screen('TextSize', window, 50);
-
 % Format output
 cfg.screen = [screens, screenNumber];
 cfg.window = [window, windowRect];
 
 % assure 4:3 format
 cfg.window43 = cfg.window;
-cfg.window43(end-1:end) = [1024, 768];
+cfg.window43(end-1:end) = windowSize;
 cfg.center = [xCenter, yCenter];
+
+% 2. Timing
+
+ifi                 = Screen('GetFlipInterval', window);
+waitframes          = 1;
+topPriorityLevel 	= MaxPriority(window);
+Priority(topPriorityLevel);
+vbl                 = Screen('Flip', window);
+Priority(0);
+flipTime            = vbl + (waitframes - 0.5) * ifi;
+
+save('mt_params.mat', '-append', 'flipTime')
 
 end
