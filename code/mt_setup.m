@@ -54,7 +54,7 @@ margin              = 5;
 % Size of cards
 cardHeigth          = round((windowSize(2)-topCardHeigth)/ncards_y);
 cardWidth           = round(windowSize(1)/ncards_x);
-cardSize            = [0 10 cardWidth cardHeigth]; % size to fill screen
+cardSize            = [0 0 cardWidth cardHeigth]; % size to fill screen
 cardSize(3:4)       = cardSize(end-1:end)-margin;
 % Color of cards
 cardColors          = [0.5; 0.5; 0.5];
@@ -70,6 +70,8 @@ cardSequence   = {...
     % Sequence for Learning
     [1,10,20], ...
     % Sequence for Immediate Recall & Retrieval
+    [13,21,11], ...
+	% Sequence Interference
     [13,21,11] ...
     }; 
 

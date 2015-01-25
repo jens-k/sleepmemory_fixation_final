@@ -79,9 +79,9 @@ end
 %% Start the game
 % In the learning session all pictures are shown in a sequence
 % In the recall sessions mouse interaction is activated
-for c = 1: length(cardSequence{cfg_dlgs.memvers})
+for c = 1: length(cardSequence{cfg_dlgs.sesstype})
 
-    imageTop = images(cardSequence{cfg_dlgs.memvers}(c));
+    imageTop = images(cardSequence{cfg_dlgs.sesstype}(c));
     
     % Draw the rects to the screen
     Priority(MaxPriority(win));
@@ -106,7 +106,7 @@ for c = 1: length(cardSequence{cfg_dlgs.memvers})
     switch cfg_dlgs.sesstype
         case 1 % Learning
             % the corresponding & correct card will be flipped
-            cardFlip        = cardSequence{cfg_dlgs.memvers}(c);
+            cardFlip        = cardSequence{cfg_dlgs.sesstype}(c);
         otherwise % Recall/Interfence
             % OnMouseClick: flip the card
             cardFlip        = mt_cardFlip(screenOff, ncards_x, cardSize, topCardHeigth);

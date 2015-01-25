@@ -55,7 +55,7 @@ switch cfg_dlgs.memvers
         error('Invalid Memory Version')
 end
 
-% Session type
+% Session type: defines cardSequence
 switch cfg_dlgs.sesstype
     case 'L' 
         cfg_dlgs.sesstype = 1; % Learning
