@@ -18,7 +18,9 @@ function [mouseCard, mouseData] = mt_cardFlip(screenOff, ncards_x, cardSize, top
 % NAME                TYPE      DESCRIPTION
 % mouseCard         1X1 double  Scalar; the card which was clicked counted
 %                               from left to right, top to bottom
-% mouseData         
+% mouseData         1X3 double  [x, y, clickTime] mouse x/y coordinates 
+%                               and reaction time
+%
 %
 % AUTHOR: Marco Rüth, contact@marcorueth.com
 

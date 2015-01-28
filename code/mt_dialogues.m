@@ -1,5 +1,5 @@
 function mt_dialogues(rootdir)
-% ** function mt_dialogues
+% ** function mt_dialogues(rootdir)
 % This script creates dialogue windows to configure the experiment. The
 % questions and defaults can be found and adjustet in "prompts.txt" and
 % "defaults.txt", respectively. Note that each line corresponds to one
@@ -8,24 +8,28 @@ function mt_dialogues(rootdir)
 % IMPORTANT: For this script to work you have to copy the function "newid.m"
 % to folder displayed if you execute "which -all inputdlg" 
 % Source: http://www.mathworks.com/matlabcentral/answers/uploaded_files/1727/newid.m
-%
+% 
 % USAGE:
 %     mt_dialogues;
+%
+% >>> INPUT VARIABLES >>>
+% NAME              TYPE        DESCRIPTION
+% rootdir           char        path to root working directory
 %
 %
 % AUTHOR: Marco Rüth, contact@marcorueth.com
 
 %% Load parameters specified in mt_setup.m
-load(fullfile(rootdir,'code','mt_params.mat'))   % load workspace information and properties
+load(fullfile(rootdir,'setup','mt_params.mat'))   % load workspace information and properties
 
 %% Read in questions/default answers shown in the dialogue windows
 % Read in dialogue questions
-fid                 = fopen('prompts.txt');
+fid                 = fopen(fullfile(rootdir,'code','prompts.txt'));
 prompts             = textscan(fid,'%s','Delimiter','\n');
 prompts             = prompts{1};
 fclose(fid);
 % Read in dialogue default answers
-fid                 = fopen('defaults.txt');
+fid                 = fopen(fullfile(rootdir,'code','defaults.txt'));
 defaults            = textscan(fid,'%s','Delimiter','\n');
 defaults            = defaults{1};
 fclose(fid);
@@ -36,7 +40,7 @@ answers             = cell(length(prompts),1);
 for p = 1 : length(prompts)
     answers{p,:} 	= newid(prompts(p), '', [1 70], defaults(p));
     if strcmp(char(answers{1,:}), 'debug')     
-        load('mt_debug.mat')
+        load(fullfile(setupdir, 'mt_debug.mat'))
         break;
     end
 end
@@ -51,8 +55,21 @@ if ~exist('cfg_dlgs', 'var')
     cfg_dlgs.lab        = char(answers{5, 1}); % Lab
 end
 
-% save('mt_debug.mat', 'cfg_dlgs') % decomment for new debug mat-file
+% save(fullfile(setupdir, 'mt_debug.mat'), 'cfg_dlgs') % decomment for new debug mat-file
+
 %% Evaluate the answers to set memory version, session type, and lab
+% Create a new folder for the subject data
+subdir = fullfile('DATA',strcat('Subject_', cfg_dlgs.subject),strcat('Night_', cfg_dlgs.night));
+checkdir = exist(fullfile(rootdir, subdir), 'dir');
+if ~checkdir
+    mkdir(fullfile(rootdir,'DATA',strcat('Subject_', cfg_dlgs.subject)), ...
+        strcat('Night_', cfg_dlgs.night))
+elseif checkdir && strcmp(char(answers{1,:}), 'debug') 
+    fprintf('debug mode');
+else
+    error ('Subject number already exists. Abort.')
+end
+
 % Memory version
 switch cfg_dlgs.memvers
     case 'A' 
@@ -66,10 +83,12 @@ end
 % Session type: defines cardSequence
 switch cfg_dlgs.sesstype
     case 'C'
+        cfg_dlgs.sesstype = 4;
+    case 'G' % gray background and no images are shown
         screenBgColor   = 0.5;
         topCardColor    = 0.5;
         frameWidth      = 0;
-        save(fullfile(rootdir,'code','mt_params.mat'), '-append', ...
+        save(fullfile(rootdir,'setup','mt_params.mat'), '-append', ...
             'screenBgColor', 'topCardColor', 'frameWidth')
         cfg_dlgs.sesstype = 2; 
     case 'L' 
@@ -102,6 +121,6 @@ switch cfg_dlgs.lab
 end
 
 %% Save configuration in rootdir
-save(fullfile(rootdir,'code','mt_params.mat'), '-append', 'cfg_dlgs')
+save(fullfile(setupdir,'mt_params.mat'), '-append', 'cfg_dlgs', 'subdir')
 
 end

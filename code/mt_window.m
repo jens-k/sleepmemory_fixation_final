@@ -5,7 +5,11 @@ function cfg_window = mt_window(rootdir)
 % stored in mt_params.mat
 %
 % USAGE:
-%     mt_window;
+%     cfg_window = mt_window(rootdir);
+%
+% >>> INPUT VARIABLES >>>
+% NAME              TYPE        DESCRIPTION
+% rootdir           char        path to root working directory
 %
 % <<< OUTPUT VARIABLES <<<
 % NAME              TYPE        DESCRIPTION
@@ -19,7 +23,7 @@ function cfg_window = mt_window(rootdir)
 % AUTHOR: Marco Rüth, contact@marcorueth.com
 
 %% Load parameters specified in mt_setup.m
-load(fullfile(rootdir,'code','mt_params.mat'))   % load workspace information and properties
+load(fullfile(rootdir,'setup','mt_params.mat'))   % load workspace information and properties
 
 %% Perform standard setups for PTB: 
 % 0 - Check mex file for Screen()
@@ -56,7 +60,7 @@ cfg_window.center = [xCenter, yCenter];
 Screen('BlendFunction', window, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 % Set Text Font
-Screen('TextFont', window, textFont);
+Screen('TextFont', window, defTextFont);
 
 % Set Cursor
 ShowCursor(CursorType, window);
@@ -72,6 +76,6 @@ Priority(0);
 flipTime            = vbl + (waitframes - 0.5) * ifi;
 
 %% Save information about display timing in rootdir
-save(fullfile(rootdir,'code','mt_params.mat'), '-append', 'flipTime')
+save(fullfile(rootdir,'setup','mt_params.mat'), '-append', 'flipTime')
 
 end

@@ -1,5 +1,5 @@
 
 
 "A" or "B"
-"L" or "R" or "I"
+"C" or "L" or "R" or "I"
 "M" or "S"
