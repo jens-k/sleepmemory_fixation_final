@@ -44,7 +44,7 @@ function mt_run(user)
 %% Prepare workspace
 close all;              % Close all figures
 clearvars -except user; % Clear all variables in the workspace
-iRecall     = 0;        % counts the number of recall sessions needed
+iRecall     = 1;        % counts the number of recall sessions needed
 p_correct   = 0;        % initial value for percent correct clicked cards
 
 if ~nargin
@@ -106,15 +106,24 @@ if cfg_dlgs.sesstype == 4
     % Start Control Task
     mt_controlTask(rootdir, cfg_window);
 else
-    while p_correct < 60
-        iRecall = iRecall + 1;
+    while 100*p_correct < 60
         % Start Experimental Task
         p_correct = mt_cardGame(rootdir, cfg_window, iRecall);
+        iRecall = iRecall + 1;
     end
+    % if at least 60% are correct start one last recall session
+    % this time no feedback is shown
+    p_correct = mt_cardGame(rootdir, cfg_window, iRecall, 0);
 end
 
 % Show final screen
 mt_showText(rootdir, outroText, window);
 pause
 sca
+
+% Create backup
+if ~exist(fullfile(rootdir, 'BACKUP', subdir), 'dir') && cfg_dlgs.sesstype ~= 1
+    mkdir(fullfile(rootdir, 'BACKUP', subdir))
+    copyfile(fullfile(rootdir, subdir, 'mtp_sub_*'), fullfile(rootdir, 'BACKUP', subdir), 'f');
+end 
 end
