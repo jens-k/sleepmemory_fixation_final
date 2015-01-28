@@ -1,4 +1,4 @@
-function p_correct = mt_cardGame(rootdir, cfg_window, iRecall)
+function p_correct = mt_cardGame(rootdir, cfg_window, iRecall, varargs)
 % ** function mt_cardGame(rootdir, cfg_window, iRecall)
 % This function starts the memory task.
 %
@@ -21,6 +21,12 @@ function p_correct = mt_cardGame(rootdir, cfg_window, iRecall)
 %
 %
 % AUTHOR: Marco Rüth, contact@marcorueth.com
+
+if nargin == 4 && varargs == 0
+    feedbackOn              = 0; % if set to 0 a blue dot is shown instead of feedback 
+else
+    feedbackOn              = 1; 
+end
 
 %% Load parameters specified in mt_setup.m
 load(fullfile(rootdir,'setup','mt_params.mat'))   % load workspace information and properties
@@ -104,11 +110,15 @@ if cfg_dlgs.sesstype ~= 1 % if not learning session
     correct             = (cardShown - cardClicked) + 1;
     correct(correct~=1) = 0; % set others incorrect
     imageNames          = imageConfiguration{cfg_dlgs.memvers}';
+    imageShown          = imageNames(cardShown);
+    imageClicked        = imageNames(cardClicked);
     % save cards shown, cards clicked, mouse click x/y coordinates, reaction time
-    performance         = table(correct, imageNames(cardShown), imageNames(cardClicked),  mouseData, cardShown, cardClicked);
-    p_correct           = 100*sum(performance.correct)/length(performance.cardShown);
+    performance         = table(correct, imageShown, imageClicked,  mouseData, cardShown, cardClicked);
+    p_correct           = sum(performance.correct)/length(performance.cardShown);
 
     % save performance of subject for each run with recall 
-    save(fullfile(rootdir, subdir, ['mtp_sub_' cfg_dlgs.subject '_recall_' num2str(iRecall) '.mat']), 'performance', 'p_correct')
+    save(fullfile(rootdir, subdir, ['mtp_sub_' cfg_dlgs.subject '_night_' cfg_dlgs.night '_recall_' num2str(iRecall) '.mat']), 'cfg_dlgs', 'performance', 'p_correct')
+else
+    p_correct           = 1; % in percent
 end
 end

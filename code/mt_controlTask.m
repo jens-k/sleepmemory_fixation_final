@@ -63,6 +63,7 @@ for iCard = 1: length(cardShown)
     WaitSecs(cardDisplay);
     
     % Ask how many cards changed their color up to now
+    % How? They only have a mouse...
 end
 
 end

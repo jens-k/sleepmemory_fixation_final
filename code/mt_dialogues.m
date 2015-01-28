@@ -37,13 +37,17 @@ fclose(fid);
 answers             = cell(length(prompts),1);
 
 %% Show dialogue windows and save the answers
+dlgBackground = figure('name', 'dlgBackground', 'units', 'normalized', 'outerposition', [0 0 1 1] , 'Color', [1 1 1], ...
+    'NumberTitle','off', 'menubar', 'none', 'toolbar', 'none', 'Color', 'white');
+options.WindowStyle='modal';
 for p = 1 : length(prompts)
-    answers{p,:} 	= newid(prompts(p), '', [1 70], defaults(p));
+    answers{p,:} 	= newid(prompts(p), '', [1 70], defaults(p), options);
     if strcmp(char(answers{1,:}), 'debug')     
         load(fullfile(setupdir, 'mt_debug.mat'))
         break;
     end
 end
+close('dlgBackground')
 
 % Store answers in struct fields
 % Questions can be found in prompts.txt, defaults in defaults.txt
@@ -60,15 +64,9 @@ end
 %% Evaluate the answers to set memory version, session type, and lab
 % Create a new folder for the subject data
 subdir = fullfile('DATA',strcat('Subject_', cfg_dlgs.subject),strcat('Night_', cfg_dlgs.night));
-checkdir = exist(fullfile(rootdir, subdir), 'dir');
-if ~checkdir
-    mkdir(fullfile(rootdir,'DATA',strcat('Subject_', cfg_dlgs.subject)), ...
+mkdir(fullfile(rootdir,'DATA',strcat('Subject_', cfg_dlgs.subject)), ...
         strcat('Night_', cfg_dlgs.night))
-elseif checkdir && strcmp(char(answers{1,:}), 'debug') 
-    fprintf('debug mode');
-else
-    error ('Subject number already exists. Abort.')
-end
+
 
 % Memory version
 switch cfg_dlgs.memvers

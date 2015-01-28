@@ -94,7 +94,6 @@ imgCorrect(:,:,4)       = alpha;
 imgIncorrect(:,:,4)     = alpha;
 [imgNoFeedback, ~, alpha] = imread(fullfile(imgfolderFeedback, 'nofeedback.png'));
 imgNoFeedback(:,:,4)      = alpha;
-feedbackOn              = 1; % if set to 0 a blue dot is shown instead of feedback 
 feedbackMargin          = 10; % in pixels
 feedbackDisplay         = 1; % in seconds
 
