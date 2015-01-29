@@ -122,7 +122,8 @@ pause
 sca
 
 % Create backup
-if ~exist(fullfile(rootdir, 'BACKUP', subdir), 'dir') && cfg_dlgs.sesstype ~= 1
+if exist(fullfile(rootdir, subdir, 'mtp_sub_*'), 'file') && ...
+        ~exist(fullfile(rootdir, 'BACKUP', subdir), 'dir') && cfg_dlgs.sesstype ~= 1
     mkdir(fullfile(rootdir, 'BACKUP', subdir))
     copyfile(fullfile(rootdir, subdir, 'mtp_sub_*'), fullfile(rootdir, 'BACKUP', subdir), 'f');
 end 

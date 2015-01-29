@@ -37,6 +37,11 @@ end
 % Optional: define which display window is used (put a number)
 % By default external screens are automatically used if connected 
 % win               = ;
+cfg_cases.subjects  = 0:1000; % 0 is debug
+cfg_cases.nights    = {'1', '2'};
+cfg_cases.memvers   = {'A', 'B'};
+cfg_cases.sesstype  = {'C', 'G', 'I', 'L', 'R'};
+cfg_cases.lab       = {'M', 'SL3', 'SL4'};
 
 %% Set Folders: provide the full paths
 

@@ -1,5 +1,5 @@
-Enter subject number:
+Enter subject number: 
 Enter night number:
 Enter memory version:
-Is this session for learning, retrieval, or interference?
-Enter in which lab you are: old (MEG), new (CIN)
+Session Type: control (C), learning (L) , retrieval (R), interference (I), or gray mode (G)
+Enter in which lab you are:

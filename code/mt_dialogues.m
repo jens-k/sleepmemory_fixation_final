@@ -34,15 +34,25 @@ defaults            = textscan(fid,'%s','Delimiter','\n');
 defaults            = defaults{1};
 fclose(fid);
 % Pre-allocation of cell array for answer strings
-answers             = cell(length(prompts),1);
+[answers{1:length(prompts)}] = deal(cell(1));
+for r=1:size(answers,2)
+    answers{1,r}{:} = '';
+end
 
 %% Show dialogue windows and save the answers
 dlgBackground = figure('name', 'dlgBackground', 'units', 'normalized', 'outerposition', [0 0 1 1] , 'Color', [1 1 1], ...
     'NumberTitle','off', 'menubar', 'none', 'toolbar', 'none', 'Color', 'white');
 options.WindowStyle='modal';
 for p = 1 : length(prompts)
-    answers{p,:} 	= newid(prompts(p), '', [1 70], defaults(p), options);
-    if strcmp(char(answers{1,:}), 'debug')     
+    % allow only values as specified in cfg_cases (mt_setup.m)
+    while (p == 1 && ~ismember(str2double(answers{p}), cfg_cases.subjects)) || ...
+        (p == 2 && ~ismember(answers{2}(:), cfg_cases.nights)) || ...
+        (p == 3 && ~ismember(answers{3}(:), cfg_cases.memvers)) || ...
+        (p == 4 && ~ismember(answers{4}(:), cfg_cases.sesstype)) || ...
+        (p == 5 && ~ismember(answers{5}(:), cfg_cases.lab))   
+            answers{p} 	= upper(newid(prompts(p), '', [1 70], defaults(p), options));
+    end   
+    if str2double(answers{1}{:}) == 0
         load(fullfile(setupdir, 'mt_debug.mat'))
         break;
     end
@@ -52,11 +62,11 @@ close('dlgBackground')
 % Store answers in struct fields
 % Questions can be found in prompts.txt, defaults in defaults.txt
 if ~exist('cfg_dlgs', 'var')
-    cfg_dlgs.subject 	= char(answers{1, 1}); % Subject ID
-    cfg_dlgs.night      = char(answers{2, 1}); % Night number
-    cfg_dlgs.memvers    = char(answers{3, 1}); % Memory version
-    cfg_dlgs.sesstype 	= char(answers{4, 1}); % Session type
-    cfg_dlgs.lab        = char(answers{5, 1}); % Lab
+    cfg_dlgs.subject 	= char(answers{1}); % Subject ID
+    cfg_dlgs.night      = char(answers{2}); % Night number
+    cfg_dlgs.memvers    = char(answers{3}); % Memory version
+    cfg_dlgs.sesstype 	= char(answers{4}); % Session type
+    cfg_dlgs.lab        = char(answers{5}); % Lab
 end
 
 % save(fullfile(setupdir, 'mt_debug.mat'), 'cfg_dlgs') % decomment for new debug mat-file
@@ -67,12 +77,11 @@ subdir = fullfile('DATA',strcat('Subject_', cfg_dlgs.subject),strcat('Night_', c
 mkdir(fullfile(rootdir,'DATA',strcat('Subject_', cfg_dlgs.subject)), ...
         strcat('Night_', cfg_dlgs.night))
 
-
 % Memory version
 switch cfg_dlgs.memvers
-    case 'A' 
+    case cfg_cases.memvers{1} 
         cfg_dlgs.memvers = 1; % Version A of memory
-    case 'B'
+    case cfg_cases.memvers{2}
         cfg_dlgs.memvers = 2; % Version B of memory
     otherwise
         error('Invalid Memory Version')
@@ -80,37 +89,37 @@ end
 
 % Session type: defines cardSequence
 switch cfg_dlgs.sesstype
-    case 'C'
+    case cfg_cases.sesstype{1}
         cfg_dlgs.sesstype = 4;
-    case 'G' % gray background and no images are shown
+    case cfg_cases.sesstype{2} % gray background and no images are shown
         screenBgColor   = 0.5;
         topCardColor    = 0.5;
         frameWidth      = 0;
         save(fullfile(rootdir,'setup','mt_params.mat'), '-append', ...
             'screenBgColor', 'topCardColor', 'frameWidth')
         cfg_dlgs.sesstype = 2; 
-    case 'L' 
-        cfg_dlgs.sesstype = 1; % Learning
-    case 'R'
-        cfg_dlgs.sesstype = 2; % Recall
-    case 'I'
+    case cfg_cases.sesstype{3}
         cfg_dlgs.sesstype = 3; % Interference
+    case cfg_cases.sesstype{4} 
+        cfg_dlgs.sesstype = 1; % Learning
+    case cfg_cases.sesstype{5}
+        cfg_dlgs.sesstype = 2; % Recall
     otherwise
         error('Invalid Session Type')
 end
 
 % Lab
 switch cfg_dlgs.lab
-    case 'M' 
+    case cfg_cases.lab{1} 
         cfg_dlgs.lab = 1;
         % TODO: set triggers for MEG
         % Parallel port trigger in PTB
         % In the MEG will be the old olfactometer
-    case 'SL 3'
+    case cfg_cases.lab{2}
         cfg_dlgs.lab = 2;
         % TODO: set triggers for sleep lab (left)
         % In the sleep lab will be the new olfactometer
-    case 'SL 4'
+    case cfg_cases.lab{3}
         % TODO: set triggers for sleep lab (right)
         % In the sleep lab will be the new olfactometer
         % Only in this lab one can learn and stimulate with odors
