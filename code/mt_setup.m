@@ -1,13 +1,7 @@
 function rootdir = mt_setup(user)
 % ** function mt_setup(user)
 % This script allows to adjust the parameters for the memory task. 
-% Define the variables here before you run mt_run.m :
-%
-%   Folders
-%       workdir:    contains the code (mt_XX.m) and the images (imgfolderX)
-%       PTBdir:     Psychtoolbox installation path
-%       imgfolderA: images shown in learning and recall sessions
-%       imgfolderB: images shown in interference session
+% Define the variables here before you run mt_run.m
 % 
 % IMPORTANT:    Do not change the order in which the variables are defined.
 %               Some variables rely on each other
@@ -23,162 +17,214 @@ function rootdir = mt_setup(user)
 % 
 % AUTHOR: Marco Rüth, contact@marcorueth.com
 
-%% Pre-defined users
-if user
-    % add your user profile in mt_loadUser
-    [rootdir, PTBdir]   = mt_loadUser(user);
-else
-    % Root folder
-    rootdir             = '';
-    % Psychtoolbox installation folder
-    PTBdir              = '';
-end
-%% Set general variables
-% Optional: define which display window is used (put a number)
-% By default external screens are automatically used if connected 
-% win               = ;
-cfg_cases.subjects  = 0:1000; % 0 is debug
-cfg_cases.nights    = {'1', '2'};
-cfg_cases.memvers   = {'A', 'B'};
-cfg_cases.sesstype  = {'C', 'G', 'I', 'L', 'R'};
-cfg_cases.lab       = {'M', 'SL3', 'SL4'};
+%% IMPORTANT: add your user profile in mt_loadUser
+[rootdir, PTBdir]   = mt_profile(user);
 
-%% Set Folders: provide the full paths
 
-% Folder for configurations
-setupdir            = fullfile(rootdir, 'setup');
-if ~exist(setupdir, 'dir')
-    mkdir(setupdir) % create folder in first run
-end
-% Picture folder: A = Learning, B = Interference
-imgfolderA        	= fullfile(rootdir, 'picturesA');
-imgfolderB      	= fullfile(rootdir, 'picturesB');
-
-%% Set Display properties
-% Define which window size is used as reference to display the cards
-windowSize          = [1024 768];
-screenBgColor       = [1 1 1]; % white background
-textBgColor         = [1 1 1]; % white background
-CursorType          = 'Arrow';
-
-%% Set Card properties
-% Specify number of cards
-ncards_x            = 6;
-ncards_y            = 5;
-ncards              = ncards_x * ncards_y;
-
-% Card properties
-% Size of the top Card
-topCardHeigth       = 200;
-topCardWidth        = topCardHeigth * (4/3);
-topCardColor        = [1; 1; 1];
-% Display duration of the top Card
-topCardDisplay      = 2.5; % in seconds
-
-% Cards
-% Margin between cards
-margin              = 5;
-% Frame/border around cards
-frameWidth          = 2;
-frameColor          = 0; % black
-% Size of cards
-cardHeigth          = round((windowSize(2)-topCardHeigth)/ncards_y);
-cardWidth           = round(windowSize(1)/ncards_x);
-cardSize            = [0 0 cardWidth cardHeigth]; % size to fill screen
-cardSize(3:4)       = cardSize(end-1:end)-margin;
-% Color of cards
-cardColors          = [0.5; 0.5; 0.5];
-% Duration the cards are displayed
-cardDisplay         = 2.5; % in seconds
-
-%% Feedback images: tick and cross
-imgfolderFeedback       = fullfile(rootdir, 'picturesFeedback');
-[imgCorrect, ~, alpha]  = imread(fullfile(imgfolderFeedback, 'correct.png'));
-imgCorrect(:,:,4)       = alpha;
-[imgIncorrect, ~, alpha]= imread(fullfile(imgfolderFeedback, 'incorrect.png'));
-imgIncorrect(:,:,4)     = alpha;
-[imgNoFeedback, ~, alpha] = imread(fullfile(imgfolderFeedback, 'nofeedback.png'));
-imgNoFeedback(:,:,4)      = alpha;
-feedbackMargin          = 10; % in pixels
-feedbackDisplay         = 1; % in seconds
-
-%% Size of images hidden under the cards
-imagesSize          = [0 0 cardHeigth*(4/3) cardHeigth]; % assure 4:3
-imagesSize(3:4)     = imagesSize(3:4)-margin;
-
-%% Define image configuration
+%% ======================== IMAGE CONFIGURATION ========================= %
+% 1. Image configuration: put file names without file extension
 imageConfiguration = {
-  % imagesA
-  {
+  {{ % imagesA 	LEARNING
   'ant',        'whale',    'ray',              'hippopotamus', 'fly'           'crocodile';
   'wasp',       'toucan',   'raven',            'lobster',      'giraffe',      'cow';
   'starfish',   'rooster',  'praying_mantis',   'lioness',      'grasshopper',  'cat';
   'sparrow',    'pigeon',   'penguin',          'hummingbird',  'goose',        'armadillo';
   'scorpion',   'oyster',   'ostrich',          'horse',        'dromedary',    'dragonfly'
   }
-  % imagesB
-  {
-  'barn_owl',   'tiger',    'seagull',          'owl',          'dolphin',      'cheetah';
-  'zebra',      'pelican',  'shark',            'mussel',       'kiwi'          'butterfly';
+  { % imagesA 	INTERFERENCE
+  'goose',       	'dromedary', 	'cat',    	'starfish',			'hen', 			'pigeon';
+  'sparrow',      	'dragonfly',   	'armadillo','ostrich',      	'horse',    	'penguin';
+  'grasshopper',	'whale',  		'scorpion', 'ray',      		'ant',  		'oyster';
+  'hippopotamus', 	'wasp',   		'cow',      'praying_mantis',	'crocodile',	'raven';
+  'lioness',		'fly',   		'lobster',  'giraffe',        	'hummingbird',  'toucan'
+  }}
+  {{ % imagesB 	LEARNING
+  'barn_owl',   'tiger',    'seagull',          'owl',          'partridge',    'cheetah';
+  'zebra',      'pelican',  'dolphin',          'mussel',       'kiwi'          'butterfly';
   'turtle',     'ladybird', 'rhino',            'mosquito',     'tapir',        'beetle';
   'elephant',   'platypus', 'pomfret',          'manatee',      'crab',         'bee';
   'termite',   	'hen',      'kangaroo',         'killer_whale', 'duck',         'bat'
   }
+  { % imagesB 	INTERFERENCE
+  'rhino',		'killer_whale',	'goose',	'kangaroo',	'tiger',		'seagull';
+  'beetle',		'crab',			'pomfret',  'platypus', 'bat	'       'zebra';
+  'kiwi',		'tapir',		'barn_owl', 'bee',     	'partridge',    'termite';
+  'dolphin',	'mussel', 		'elephant', 'hen',      'pelican',      'mosquito';
+  'butterfly',	'manatee',      'ladybird', 'owl', 		'cheetah',      'turtle'
+  }}
 };
 
-fileExt = '.jpg';
-% the matrices are transposed due iteration through cell arrays, which goes
-% vertically while the pictures are printed from left to right
-imageFilesA = cellfun(@(x) strcat(x,fileExt), imageConfiguration{1}, 'UniformOutput', false)';
-imageFilesB = cellfun(@(x) strcat(x,fileExt), imageConfiguration{2}, 'UniformOutput', false)';
+% TODO:
+% imageConfiguration for interference
 
 
-%% Define in which order cards are flipped
-% cardSequence = linspace(1, ncards_x*ncards_y, ncards_x*ncards_y);
-cardSequence   = {...
+%% ========================== IMAGE SEQUENCE =========================== %
+
+% Define in which order cards are flipped
+% 2D Table-view: Look at imagesATable or imagesBTable tables for 2D coordinates
+[imagesATable, imagesBTable] = mt_imageTable(imageConfiguration);
+
+% 2D coordinates for cards to be flipped
+imageSequence2D 	= {...
+    % Sequence for Control
+    {'E5', 'F3' , 'D4', 'F1'} ...
     % Sequence for Learning
-    [1,10,20] ...
+    {'A1', 'B3' , 'C1'} ...
+	% Sequence for Interference
+    {'A1', 'B3' , 'C1'} ...
     % Sequence for Immediate Recall & Retrieval
-    [13,21,11] ...
-	% Sequence Interference
-    [13,21,11] ...
-    % Sequence Control
-    [13,21,11] ...
+    {'A1', 'B3' , 'C1', 'D4'} ...
+    % Sequence for Gray Mode
+    {'A1', 'B3' , 'C1', 'D4'} ...
     }; 
 
-%% Performance variables
-% cardShown | cardClicked | mousex | mousey | time
+% TODO read in list for practice set
 
-%% Text strings used during the program
-defTextSize = 50;
-defTextFont = 'Arial';
-sx          = 'center';
-sy          = 10;
-vspacing    = 1.5;
 
-sessionText = {
-    'Lernen';  % Learning
-    'Abfrage'; % Recall
-    'Abfrage'; % Interference
-    'Konzentration'; % Control
-    };
-introText = {  ...
+%% ================================ TEXT ================================ %
+% Text strings used during the program
+textIntro = {  ...
     'Willkommen!';
     'Im Folgenden ....';
     'Viel Spaß!';
     'Beliebige Taste drücken...'
     };
-outroText = {  ...
+textOutro = {  ...
     'Danke für die Teilnahme';
     '....';
     'Auf Wiedersehen!';
     'Beliebige Taste drücken...'
     };
- 
+textSession = {
+    'Konzentration';    % Control    
+    'Lernen';           % Learning
+    'Abfrage';          % Interference
+    'Abfrage';          % Recall
+    'Konzentration';    % Gray Mode
+    };
 
-%% Save configuration in workdir
-addpath(genpath(rootdir))
-addpath(PTBdir)
+% Text Properties
+textDefSize     = 50;           % default Text Size
+textDefFont     = 'Arial';      % default Text Font
+textDefColor    = [0 0 0];      % default Text Color
+textSx          = 'center';     % default Text x-position
+textSy          = 10;           % default Text y-position
+textVSpacing    = 1.5;          % default Text vertical line spacing
+
+
+%% ========================== IMAGE FOLDERS ============================ %
+% Card images
+imageFolder       = {'imagesA', 'imagesB'};
+imageFileExt      = '.jpg';		% image file types
+
+% Feedback images
+feedbackFolder    = 'imagesFeedback';
+imagesFeedback    = {'correct.png', 'incorrect.png', 'nofeedback.png'};
+feedbackMargin    = 10;       	% #pixels the images are smaller than the cards
+
+
+%% ========================== CARD PROPERTIES =========================== %
+% Number of cards
+ncards_x            = 6;
+ncards_y            = 5;
+
+% Top Card Properties
+topCardHeigth       = 200;          % Size of the top Card
+topCardColor        = [1; 1; 1];    % Color of the top Card
+
+% Memory Cards
+cardColors          = [.5; .5; .5]; % Color of cards
+margin              = 5;            % Margin between cards
+frameWidth          = 2;            % Frame/border around cards
+frameColor          = 0;            % Frame color
+
+% Control Task Card Properties
+cardColorControl        = 0.3;          % color of highlighted card
+textColorCorrect        = [0.2 1 0.2];  % text color for correct response
+textColorIncorrect      = [1 0.2 0.2];  % text color for incorrect response
+controlTextMargin       = 200;          % distance in x from text to card
+controlFeedbackDisplay  = 3;            % feedback display duration
+
+
+%% ============================== OPTIONAL ============================== %
+% Change Cursor Type
+CursorType          = 'Arrow';
+
+% Set Display properties
+% Define which window size is used as reference to display the cards
+windowSize          = [1024 768];
+screenBgColor       = [1 1 1]; % white background
+textBgColor         = [1 1 1]; % white background
+
+% Define which display window is used (put a number)
+% Note: by default external screens are automatically used if connected 
+% window              = ;
+
+% Set Timing
+topCardDisplay      = 2.5;    	% Duartion top Card is shown (seconds)
+cardDisplay         = 2.5;     	% Duration memory cards are shown (seconds)
+feedbackDisplay     = 1;        % Duration feedback is shown (seconds)
+
+
+%% ======================= DO NOT CHANGE FROM HERE ====================== %
+% Unless you know what you are doing...
+% !!!! Changes need further adjustments in other files and scripts !!!! %
+
+% Changing the accepted cases also requires to change mt_dialogues.m
+cfg_cases.subjects  = 0:1000;                       % 0 is debug
+cfg_cases.nights    = {'1', '2'};                   % Night 1 or 2
+cfg_cases.memvers   = {'A', 'B'};                   % Memory version
+cfg_cases.sesstype  = {'C', 'L', 'I', 'R', 'G'};    % Session Type
+cfg_cases.lab       = {'MEG', 'SL3', 'SL4'};        % Lab/Location
+
+% image folder
+imgfolderA        	= fullfile(rootdir, imageFolder{1});
+imgfolderB      	= fullfile(rootdir, imageFolder{2});
+
+% Read in feedback images
+imgfolderFeedback           = fullfile(rootdir, feedbackFolder);
+[imgCorrect, ~, alpha]      = imread(fullfile(imgfolderFeedback, imagesFeedback{1}));
+imgCorrect(:,:,4)           = alpha;
+[imgIncorrect, ~, alpha]    = imread(fullfile(imgfolderFeedback, imagesFeedback{2}));
+imgIncorrect(:,:,4)         = alpha;
+[imgNoFeedback, ~, alpha]   = imread(fullfile(imgfolderFeedback, imagesFeedback{3}));
+imgNoFeedback(:,:,4)        = alpha;
+
+% Size of Memory Cards
+topCardWidth        = topCardHeigth * (4/3);
+cardHeigth          = round((windowSize(2)-topCardHeigth)/ncards_y);
+cardWidth           = round(windowSize(1)/ncards_x);
+cardSize            = [0 0 cardWidth cardHeigth]; % size to fill screen
+cardSize(3:4)       = cardSize(end-1:end)-margin;
+ncards              = ncards_x * ncards_y;
+
+% Size of images hidden under the cards
+imagesSize          = [0 0 cardHeigth*(4/3) cardHeigth]; % assure 4:3
+imagesSize(3:4)     = imagesSize(3:4)-margin;
+
+% Generate file names of images
+imageFilesA         = {
+    cellfun(@(x) strcat(x,imageFileExt), imageConfiguration{1}{1}, 'UniformOutput', false)
+    cellfun(@(x) strcat(x,imageFileExt), imageConfiguration{1}{2}, 'UniformOutput', false)
+    };
+imageFilesB         = {
+    cellfun(@(x) strcat(x,imageFileExt), imageConfiguration{2}{1}, 'UniformOutput', false)
+    cellfun(@(x) strcat(x,imageFileExt), imageConfiguration{2}{2}, 'UniformOutput', false)
+    };
+
+% Transform intuitive 2D coordinates into 1D coordinates used for iteration
+cardSequence        = cell(size(imageSequence2D));
+for r = 1: size(cardSequence,1)
+    cardSequence{r} = cellfun(@(x) mt_cards2Dto1D(x, ncards_x, ncards_y), imageSequence2D{r});
+end
+
+% Folder for configurations
+setupdir            = fullfile(rootdir, 'setup');
+if ~exist(setupdir, 'dir')
+    mkdir(setupdir) % create folder in first run
+end
+
+% Save configuration in workdir
 cd(rootdir)
 save(fullfile(setupdir, 'mt_params.mat'))
 end

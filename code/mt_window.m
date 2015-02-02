@@ -60,7 +60,7 @@ cfg_window.center = [xCenter, yCenter];
 Screen('BlendFunction', window, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 % Set Text Font
-Screen('TextFont', window, defTextFont);
+Screen('TextFont', window, textDefFont);
 
 % Set Cursor
 ShowCursor(CursorType, window);

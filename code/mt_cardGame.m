@@ -1,4 +1,4 @@
-function p_correct = mt_cardGame(rootdir, cfg_window, iRecall, varargs)
+function perc_correct = mt_cardGame(rootdir, cfg_window, iRecall, varargs)
 % ** function mt_cardGame(rootdir, cfg_window, iRecall)
 % This function starts the memory task.
 %
@@ -17,7 +17,7 @@ function p_correct = mt_cardGame(rootdir, cfg_window, iRecall, varargs)
 %
 % <<< OUTPUT VARIABLES <<<
 % NAME              TYPE        DESCRIPTION
-% p_correct         double      Correctly clicked cards in percent
+% perc_correct      double      Correctly clicked cards in percent
 %
 %
 % AUTHOR: Marco Rüth, contact@marcorueth.com
@@ -41,19 +41,11 @@ cardClicked  	= zeros(length(cardShown), 1);
 mouseData    	= zeros(length(cardShown), 3);
 
 %% Start the game
+ShowCursor;
 % In the learning session all pictures are shown in a sequence
 % In the recall sessions mouse interaction is activated
 for iCard = 1: length(cardShown)
-    
-    % Draw the rects to the screen
-    Priority(MaxPriority(window));
-    Screen('FillRect', window, topCardColor, topCard);
-    Screen('FillRect', window, cardColors, rects);
-    Screen('FrameRect', window, frameColor, rects, frameWidth);
-    Screen('Flip', window, flipTime);
-    Priority(0);
-
-    ShowCursor;
+    % Get current picture
     imageCurrent = cardShown(iCard);
     imageTop = images(imageCurrent);
     
@@ -106,19 +98,29 @@ end
 
 %% performance
 
-if cfg_dlgs.sesstype ~= 1 % if not learning session
+if cfg_dlgs.sesstype ~= 2 % if not learning session
+    isinterf = (cfg_dlgs.sesstype==3)+1;    % check if interference
+    
     correct             = (cardShown - cardClicked) + 1;
     correct(correct~=1) = 0; % set others incorrect
-    imageNames          = imageConfiguration{cfg_dlgs.memvers}';
+    imageNames          = imageConfiguration{cfg_dlgs.memvers}{isinterf}';
     imageShown          = imageNames(cardShown);
     imageClicked        = imageNames(cardClicked);
+    coordsShown         = cell(length(cardShown), 1);
+    coordsClicked       = cell(length(cardShown), 1);
+    for iCard = 1: length(cardShown)
+        coordsShown{iCard}      = mt_cards1Dto2D(cardShown(iCard), ncards_x, ncards_y);
+        coordsClicked{iCard}    = mt_cards1Dto2D(cardClicked(iCard), ncards_x, ncards_y);
+    end
     % save cards shown, cards clicked, mouse click x/y coordinates, reaction time
-    performance         = table(correct, imageShown, imageClicked,  mouseData, cardShown, cardClicked);
-    p_correct           = sum(performance.correct)/length(performance.cardShown);
+    performance         = table(correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
 
-    % save performance of subject for each run with recall 
-    save(fullfile(rootdir, subdir, ['mtp_sub_' cfg_dlgs.subject '_night_' cfg_dlgs.night '_recall_' num2str(iRecall) '.mat']), 'cfg_dlgs', 'performance', 'p_correct')
+    % save session data
+    mt_saveTable(rootdir, performance)
+    
+    % return performance
+    perc_correct        = sum(correct)/length(correct);
 else
-    p_correct           = 1; % in percent
+    perc_correct           = 1; % in percent
 end
 end

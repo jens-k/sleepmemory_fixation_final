@@ -42,89 +42,63 @@ function mt_run(user)
 % AUTHOR: Marco Rüth, contact@marcorueth.com
 
 %% Prepare workspace
-close all;              % Close all figures
-clearvars -except user; % Clear all variables in the workspace
-iRecall     = 1;        % counts the number of recall sessions needed
-p_correct   = 0;        % initial value for percent correct clicked cards
+close all;                  % Close all figures
+clearvars -except user;     % Clear all variables in the workspace
+iRecall         = 1;        % counts the number of recall sessions needed
+perc_correct    = 0;        % initial value for percent correct clicked cards
 
-if ~nargin
-    user = [];
-end
-
-% Generate workspace variables defined in mt_setup.m
-try
-    rootdir = mt_setup(user);
-catch ME
-    fprintf(['Running mt_setup.m was unsuccessful.\n', ...
-    'Check workspace variables and parameter settings.\n'])
-    error(ME.message)
-end
-
-% Prompt to collect information about experiment
-try
-    mt_dialogues(rootdir);
-catch ME
-    fprintf(['Calling mt_dialogues was unsuccessful.\n', ...
-        'Type "help mt_dialogues" and follow the instructions for configuration.\n'])
-    error(ME.message)
-end
-
-% Include Psychtoolbox to the path and open a fullscreen window
-% TODO: Window management: do we want two screens to show different information (experimenter vs. subject)?
-try
-    sca;                % Clear all features related to PTB
-    cfg_window          = mt_window(rootdir);
-    window              = cfg_window.window(1);
-catch ME
-    fprintf(['Opening a fullscreen window using Psychtoolbox was unsuccessful.\n', ...
-        'Check variable PTBdir in mt_setup and check configuration of graphics card/driver.\n'])
-    error(ME.message)
-end
+% workspace initialization
+rootdir         = mt_prepare(user); 
 
 % Load workspace information and properties
 try
     load(fullfile(rootdir, 'setup', 'mt_params.mat'))
+    window      = cfg_window.window(1);
 catch ME
     fprintf(['mt_params.mat could not be loaded.\n', ...
         'Check the save destination folder in mt_setup.m and parameter settings.\n'])
     error(ME.message)
 end
 
-% Show introduction screen
-mt_showText(rootdir, introText, window);
+%% Show introduction screen
+mt_showText(rootdir, textIntro, window);
 pause
 
 %% Show which session is upcoming
-mt_showText(rootdir, sessionText{cfg_dlgs.sesstype}, window);
+mt_showText(rootdir, textSession{cfg_dlgs.sesstype}, window);
 pause
 
 %% Prepare Card Matrix
 mt_setupCards(rootdir, cfg_window);
 
 %% Start the game
-if cfg_dlgs.sesstype == 4
+if cfg_dlgs.sesstype == 1
     % Start Control Task
-    mt_controlTask(rootdir, cfg_window);
+    nControlCards = 4; % FOR TESTING
+    mt_controlTask(rootdir, cfg_window, nControlCards); 
+elseif cfg_dlgs.sesstype == 2
+    % TODO: 2xlearning
+    mt_cardGame(rootdir, cfg_window, iRecall);
 else
-    while 100*p_correct < 60
+    while 100*perc_correct < 60
         % Start Experimental Task
-        p_correct = mt_cardGame(rootdir, cfg_window, iRecall);
+        perc_correct = mt_cardGame(rootdir, cfg_window, iRecall);
         iRecall = iRecall + 1;
     end
     % if at least 60% are correct start one last recall session
     % this time no feedback is shown
-    p_correct = mt_cardGame(rootdir, cfg_window, iRecall, 0);
+    perc_correct = mt_cardGame(rootdir, cfg_window, iRecall, 0);
 end
 
-% Show final screen
-mt_showText(rootdir, outroText, window);
+%% Show final screen
+mt_showText(rootdir, textOutro, window);
 pause
 sca
 
-% Create backup
-if exist(fullfile(rootdir, subdir, 'mtp_sub_*'), 'file') && ...
-        ~exist(fullfile(rootdir, 'BACKUP', subdir), 'dir') && cfg_dlgs.sesstype ~= 1
+%% Create backup
+if exist(fullfile(rootdir, subdir), 'dir') && ...
+        ~exist(fullfile(rootdir, 'BACKUP', subdir), 'dir') && cfg_dlgs.sesstype ~= 2
     mkdir(fullfile(rootdir, 'BACKUP', subdir))
     copyfile(fullfile(rootdir, subdir, 'mtp_sub_*'), fullfile(rootdir, 'BACKUP', subdir), 'f');
-end 
+end
 end

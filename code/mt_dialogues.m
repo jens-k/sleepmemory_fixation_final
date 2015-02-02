@@ -90,20 +90,26 @@ end
 % Session type: defines cardSequence
 switch cfg_dlgs.sesstype
     case cfg_cases.sesstype{1}
-        cfg_dlgs.sesstype = 4;
-    case cfg_cases.sesstype{2} % gray background and no images are shown
+        cfg_dlgs.experimentName = 'Experiment Control';
+        cfg_dlgs.sesstype = 1;
+    case cfg_cases.sesstype{2} 
+        cfg_dlgs.experimentName = 'Experiment Learning';
+        cfg_dlgs.sesstype = 2; % Learning
+    case cfg_cases.sesstype{3}
+        cfg_dlgs.experimentName = 'Experiment Interference';
+        cfg_dlgs.sesstype = 3; % Interference
+    case cfg_cases.sesstype{4} 
+        cfg_dlgs.experimentName = 'Experiment Recall';
+        cfg_dlgs.sesstype = 4; % Recall
+    case cfg_cases.sesstype{5}       
+        % gray background and no images are shown
+        cfg_dlgs.experimentName = 'Experiment GrayMode';
         screenBgColor   = 0.5;
         topCardColor    = 0.5;
         frameWidth      = 0;
         save(fullfile(rootdir,'setup','mt_params.mat'), '-append', ...
             'screenBgColor', 'topCardColor', 'frameWidth')
-        cfg_dlgs.sesstype = 2; 
-    case cfg_cases.sesstype{3}
-        cfg_dlgs.sesstype = 3; % Interference
-    case cfg_cases.sesstype{4} 
-        cfg_dlgs.sesstype = 1; % Learning
-    case cfg_cases.sesstype{5}
-        cfg_dlgs.sesstype = 2; % Recall
+        cfg_dlgs.sesstype = 5; 
     otherwise
         error('Invalid Session Type')
 end
