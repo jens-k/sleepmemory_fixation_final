@@ -28,19 +28,18 @@ function mt_run(user)
 %  First you need to adjust the variables in "mt_setup.m"
 %
 % USAGE:
-%       mt_run;         % works if directories in mt_setup are specified
-%       mt_run('user'); % works if user in mt_loadUser is specified
+%       mt_run('user'); % works if user in mt_profile is specified
 %
 % Notes: 
-%   debug mode: type "debug" in input dialogue for subject number
+%   debug mode: enter 0 (zero) in input dialogue for subject number
 %
 % >>> INPUT VARIABLES >>>
 % NAME              TYPE        DESCRIPTION
-% user              char       	pre-defined user name (see mt_loadUser.m)
+% user              char       	pre-defined user name (see mt_profile.m)
 %
 % 
 % AUTHOR: Marco Rüth, contact@marcorueth.com
-
+Screen('Preference', 'SkipSyncTests', 1);
 %% Prepare workspace
 close all;                  % Close all figures
 clearvars -except user;     % Clear all variables in the workspace
@@ -48,11 +47,11 @@ iRecall         = 1;        % counts the number of recall sessions needed
 perc_correct    = 0;        % initial value for percent correct clicked cards
 
 % workspace initialization
-rootdir         = mt_prepare(user); 
+dirRoot         = mt_prepare(user); 
 
 % Load workspace information and properties
 try
-    load(fullfile(rootdir, 'setup', 'mt_params.mat'))
+    load(fullfile(dirRoot, 'setup', 'mt_params.mat'))
     window      = cfg_window.window(1);
 catch ME
     fprintf(['mt_params.mat could not be loaded.\n', ...
@@ -61,44 +60,44 @@ catch ME
 end
 
 %% Show introduction screen
-mt_showText(rootdir, textIntro, window);
+mt_showText(dirRoot, textIntro, window);
 pause
 
 %% Show which session is upcoming
-mt_showText(rootdir, textSession{cfg_dlgs.sesstype}, window);
+mt_showText(dirRoot, textSession{cfg_dlgs.sesstype}, window);
 pause
 
 %% Prepare Card Matrix
-mt_setupCards(rootdir, cfg_window);
+mt_setupCards(dirRoot, cfg_window);
 
 %% Start the game
 if cfg_dlgs.sesstype == 1
     % Start Control Task
     nControlCards = 4; % FOR TESTING
-    mt_controlTask(rootdir, cfg_window, nControlCards); 
+    mt_controlTask(dirRoot, cfg_window, nControlCards); 
 elseif cfg_dlgs.sesstype == 2
     % TODO: 2xlearning
-    mt_cardGame(rootdir, cfg_window, iRecall);
+    mt_cardGame(dirRoot, cfg_window, iRecall);
 else
     while 100*perc_correct < 60
         % Start Experimental Task
-        perc_correct = mt_cardGame(rootdir, cfg_window, iRecall);
+        perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall);
         iRecall = iRecall + 1;
     end
     % if at least 60% are correct start one last recall session
     % this time no feedback is shown
-    perc_correct = mt_cardGame(rootdir, cfg_window, iRecall, 0);
+    perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 0);
 end
 
 %% Show final screen
-mt_showText(rootdir, textOutro, window);
+mt_showText(dirRoot, textOutro, window);
 pause
 sca
 
 %% Create backup
-if exist(fullfile(rootdir, subdir), 'dir') && ...
-        ~exist(fullfile(rootdir, 'BACKUP', subdir), 'dir') && cfg_dlgs.sesstype ~= 2
-    mkdir(fullfile(rootdir, 'BACKUP', subdir))
-    copyfile(fullfile(rootdir, subdir, 'mtp_sub_*'), fullfile(rootdir, 'BACKUP', subdir), 'f');
+if exist(fullfile(dirRoot, subdir), 'dir') && ...
+        ~exist(fullfile(dirRoot, 'BACKUP', subdir), 'dir') && cfg_dlgs.sesstype ~= 2
+    mkdir(fullfile(dirRoot, 'BACKUP', subdir))
+    copyfile(fullfile(dirRoot, subdir, 'mtp_sub_*'), fullfile(dirRoot, 'BACKUP', subdir), 'f');
 end
 end

@@ -1,5 +1,5 @@
-function rootdir = mt_prepare(user)
-% ** function rootdir = mt_prepare(user)
+function dirRoot = mt_prepare(user)
+% ** function dirRoot = mt_prepare(user)
 % Initialization procedure for configuration. 
 %
 % 
@@ -11,7 +11,7 @@ end
 
 % Generate workspace variables defined in mt_setup.m
 try
-    rootdir = mt_setup(user);
+    dirRoot = mt_setup(user);
 catch ME
     fprintf(['Running mt_setup.m was unsuccessful.\n', ...
     'Check workspace variables and parameter settings.\n'])
@@ -20,7 +20,7 @@ end
 
 % Prompt to collect information about experiment
 try
-    mt_dialogues(rootdir);
+    mt_dialogues(dirRoot);
 catch ME
     fprintf(['Calling mt_dialogues was unsuccessful.\n', ...
         'Type "help mt_dialogues" and follow the instructions for configuration.\n'])
@@ -31,10 +31,10 @@ end
 % TODO: Window management: do we want two screens to show different information (experimenter vs. subject)?
 try
     sca;                % Clear all features related to PTB
-    mt_window(rootdir);
+    mt_window(dirRoot);
 catch ME
     fprintf(['Opening a fullscreen window using Psychtoolbox was unsuccessful.\n', ...
-        'Check variable PTBdir in mt_setup and check configuration of graphics card/driver.\n'])
+        'Check variable dirPTB in mt_setup and check configuration of graphics card/driver.\n'])
     error(ME.message)
 end
 end

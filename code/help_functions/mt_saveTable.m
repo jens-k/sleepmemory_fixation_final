@@ -1,11 +1,11 @@
-function mt_saveTable(rootdir, performance)
+function mt_saveTable(dirRoot, performance)
 % ** function mt_saveTable(performance)
 %
 %
 % AUTHOR: Marco Rüth, contact@marcorueth.com
 
 %% Load parameters specified in mt_setup.m
-load(fullfile(rootdir,'setup','mt_params.mat'))   % load workspace information and properties
+load(fullfile(dirRoot,'setup','mt_params.mat'))   % load workspace information and properties
 
 % Contruct output table
 nRuns = length(performance.correct);
@@ -47,7 +47,7 @@ tableSave   = [tableLeft tableRight];
 % cfg_dlgs.lab
 
 
-fName = fullfile(rootdir, subdir, ['mtp_sub_' cfg_dlgs.subject '_night_' cfg_dlgs.night '.mat']);
+fName = fullfile(dirRoot, subdir, ['mtp_sub_' cfg_dlgs.subject '_night_' cfg_dlgs.night '.mat']);
 % save performance of subject for each run with recall 
 if exist(fName, 'file')
     tableOld = load(fName);

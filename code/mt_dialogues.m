@@ -1,5 +1,5 @@
-function mt_dialogues(rootdir)
-% ** function mt_dialogues(rootdir)
+function mt_dialogues(dirRoot)
+% ** function mt_dialogues(dirRoot)
 % This script creates dialogue windows to configure the experiment. The
 % questions and defaults can be found and adjustet in "prompts.txt" and
 % "defaults.txt", respectively. Note that each line corresponds to one
@@ -14,22 +14,22 @@ function mt_dialogues(rootdir)
 %
 % >>> INPUT VARIABLES >>>
 % NAME              TYPE        DESCRIPTION
-% rootdir           char        path to root working directory
+% dirRoot           char        path to root working directory
 %
 %
 % AUTHOR: Marco Rüth, contact@marcorueth.com
 
 %% Load parameters specified in mt_setup.m
-load(fullfile(rootdir,'setup','mt_params.mat'))   % load workspace information and properties
+load(fullfile(dirRoot,'setup','mt_params.mat'))   % load workspace information and properties
 
 %% Read in questions/default answers shown in the dialogue windows
 % Read in dialogue questions
-fid                 = fopen(fullfile(rootdir,'code','prompts.txt'));
+fid                 = fopen(fullfile(dirRoot,'code','prompts.txt'));
 prompts             = textscan(fid,'%s','Delimiter','\n');
 prompts             = prompts{1};
 fclose(fid);
 % Read in dialogue default answers
-fid                 = fopen(fullfile(rootdir,'code','defaults.txt'));
+fid                 = fopen(fullfile(dirRoot,'code','defaults.txt'));
 defaults            = textscan(fid,'%s','Delimiter','\n');
 defaults            = defaults{1};
 fclose(fid);
@@ -74,7 +74,7 @@ end
 %% Evaluate the answers to set memory version, session type, and lab
 % Create a new folder for the subject data
 subdir = fullfile('DATA',strcat('Subject_', cfg_dlgs.subject),strcat('Night_', cfg_dlgs.night));
-mkdir(fullfile(rootdir,'DATA',strcat('Subject_', cfg_dlgs.subject)), ...
+mkdir(fullfile(dirRoot,'DATA',strcat('Subject_', cfg_dlgs.subject)), ...
         strcat('Night_', cfg_dlgs.night))
 
 % Memory version
@@ -107,7 +107,7 @@ switch cfg_dlgs.sesstype
         screenBgColor   = 0.5;
         topCardColor    = 0.5;
         frameWidth      = 0;
-        save(fullfile(rootdir,'setup','mt_params.mat'), '-append', ...
+        save(fullfile(dirRoot,'setup','mt_params.mat'), '-append', ...
             'screenBgColor', 'topCardColor', 'frameWidth')
         cfg_dlgs.sesstype = 5; 
     otherwise
@@ -133,7 +133,7 @@ switch cfg_dlgs.lab
         error('Invalid Lab')
 end
 
-%% Save configuration in rootdir
+%% Save configuration in dirRoot
 save(fullfile(setupdir,'mt_params.mat'), '-append', 'cfg_dlgs', 'subdir')
 
 end

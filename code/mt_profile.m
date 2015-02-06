@@ -1,9 +1,9 @@
-function [rootdir, PTBdir] = mt_profile(user)
+function [dirRoot, dirPTB] = mt_profile(user)
 % ** function mt_profile(user)
 % Loads user-specific root directory and Psychtoolbox installation folder
 %
 % USAGE:
-%       [rootdir, PTBdir]   = mt_loadUser(user);
+%       [dirRoot, dirPTB]   = mt_profile(user);
 %
 % >>> INPUT VARIABLES >>>
 % NAME              TYPE        DESCRIPTION
@@ -11,28 +11,28 @@ function [rootdir, PTBdir] = mt_profile(user)
 %
 % <<< OUTPUT VARIABLES <<<
 % NAME              TYPE        DESCRIPTION
-% rootdir           char        path to root working directory
-% PTBdir            char        path to Psychtoolbox installation folder
+% dirRoot           char        path to root working directory
+% dirPTB            char        path to Psychtoolbox installation folder
 %
 % 
 % AUTHOR: Marco Rüth, contact@marcorueth.com
 
 switch user
     case 'marco'
-        rootdir             = 'D:\Master Thesis\00 - Program\';
-        PTBdir              = 'D:\AnalysisSoftware\PTB\Psychtoolbox\';
+        dirRoot             = 'D:\Master Thesis\00 - Program\';
+        dirPTB              = 'D:\AnalysisSoftware\PTB\Psychtoolbox\';
     case 'jens'
-        % rootdir 			= ''
-        % PTBdir 			= ''
+        % dirRoot 			= ''
+        % dirPTB 			= ''
     case 'SL'
-        % rootdir 			= ''
-        % PTBdir 			= ''
+        % dirRoot 			= ''
+        % dirPTB 			= ''
     case 'MEG'
-        % rootdir 			= ''
-        % PTBdir 			= ''
+        % dirRoot 			= ''
+        % dirPTB 			= ''
     otherwise
         error('Invalid User Name. Define workspace in mt_profile.m')
 end
-addpath(genpath(rootdir))
-addpath(PTBdir)
+addpath(genpath(dirRoot))
+addpath(dirPTB)
 end

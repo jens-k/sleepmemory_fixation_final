@@ -1,13 +1,13 @@
-function perc_correct = mt_cardGame(rootdir, cfg_window, iRecall, varargs)
-% ** function mt_cardGame(rootdir, cfg_window, iRecall)
+function perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, varargs)
+% ** function mt_cardGame(dirRoot, cfg_window, iRecall)
 % This function starts the memory task.
 %
 % USAGE:
-%     mt_cardGame(rootdir, cfg_window, iRecall)
+%     mt_cardGame(dirRoot, cfg_window, iRecall)
 %
 % >>> INPUT VARIABLES >>>
 % NAME              TYPE        DESCRIPTION
-% rootdir           char        path to root working directory
+% dirRoot           char        path to root working directory
 % cfg_window        struct      contains window information
 %   .screen         1X2 double  [screens ScreenNumber]
 %   .window         1X5 double  [window windowRect], actual resolution
@@ -29,7 +29,7 @@ else
 end
 
 %% Load parameters specified in mt_setup.m
-load(fullfile(rootdir,'setup','mt_params.mat'))   % load workspace information and properties
+load(fullfile(dirRoot,'setup','mt_params.mat'))   % load workspace information and properties
 
 %% Set window parameters
 % Specify the display window 
@@ -69,11 +69,11 @@ for iCard = 1: length(cardShown)
             cardFlip        = imageCurrent;
         otherwise % Recall/Interference
             % OnMouseClick: flip the card
-            [cardFlip, mouseData(iCard,:)] 	= mt_cardFlip(screenOff, ncards_x, cardSize, topCardHeigth);
+            [cardFlip, mouseData(iCard, :)]	= mt_cardFlip(screenOff, ncards_x, cardSize, topCardHeigth, responseTime);
             % Save which card was clicked
             cardClicked(iCard)           	= cardFlip;
             % Show Feedback
-            cardFlip                        = mt_showFeedback(rootdir, window, cardFlip, feedbackOn, imageCurrent);
+            cardFlip                        = mt_showFeedback(dirRoot, window, cardFlip, feedbackOn, imageCurrent);
     end
 
     % Flip the card
@@ -94,6 +94,8 @@ for iCard = 1: length(cardShown)
 
     % Display the card for a time defined by cardDisplay
     WaitSecs(cardDisplay);
+%     % Set fixed duration of trials 
+%     WaitSecs(responseTime);
 end
 
 %% performance
@@ -116,7 +118,7 @@ if cfg_dlgs.sesstype ~= 2 % if not learning session
     performance         = table(correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
 
     % save session data
-    mt_saveTable(rootdir, performance)
+    mt_saveTable(dirRoot, performance)
     
     % return performance
     perc_correct        = sum(correct)/length(correct);

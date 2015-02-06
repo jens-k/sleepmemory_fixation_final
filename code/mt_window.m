@@ -1,15 +1,15 @@
-function cfg_window = mt_window(rootdir)
+function cfg_window = mt_window(dirRoot)
 % ** function mt_window
 % This function opens a fullscreen window and performs a test to estimate
 % the timing of the Psychtoolbox command Screen('Flip'). The variables are
 % stored in mt_params.mat
 %
 % USAGE:
-%     cfg_window = mt_window(rootdir);
+%     cfg_window = mt_window(dirRoot);
 %
 % >>> INPUT VARIABLES >>>
 % NAME              TYPE        DESCRIPTION
-% rootdir           char        path to root working directory
+% dirRoot           char        path to root working directory
 %
 % <<< OUTPUT VARIABLES <<<
 % NAME              TYPE        DESCRIPTION
@@ -23,7 +23,7 @@ function cfg_window = mt_window(rootdir)
 % AUTHOR: Marco Rüth, contact@marcorueth.com
 
 %% Load parameters specified in mt_setup.m
-load(fullfile(rootdir,'setup','mt_params.mat'))   % load workspace information and properties
+load(fullfile(dirRoot,'setup','mt_params.mat'))   % load workspace information and properties
 
 %% Perform standard setups for PTB: 
 % 0 - Check mex file for Screen()
@@ -75,7 +75,7 @@ vbl                 = Screen('Flip', window);
 Priority(0);
 flipTime            = vbl + (waitframes - 0.5) * ifi;
 
-%% Save information about display timing in rootdir
-save(fullfile(rootdir,'setup','mt_params.mat'), '-append', 'flipTime', 'cfg_window')
+%% Save information about display timing in dirRoot
+save(fullfile(dirRoot,'setup','mt_params.mat'), '-append', 'flipTime', 'cfg_window')
 
 end

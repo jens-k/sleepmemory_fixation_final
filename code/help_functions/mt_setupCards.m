@@ -1,15 +1,15 @@
-function mt_setupCards(rootdir, cfg_window)
-% ** function mt_setupCards(rootdir, cfg_window)
+function mt_setupCards(dirRoot, cfg_window)
+% ** function mt_setupCards(dirRoot, cfg_window)
 % This function computes the coordinates for the rectangles and images
 % displayed on the screen. Further it loads the image files and creates
 % textures which then can be displayed using Psychtoolbox (DrawTexture)
 %
 % USAGE:
-%       mt_setupCards(rootdir, cfg_window);
+%       mt_setupCards(dirRoot, cfg_window);
 %
 % >>> INPUT VARIABLES >>>
 % NAME              TYPE        DESCRIPTION
-% rootdir           char        path to root working directory
+% dirRoot           char        path to root working directory
 % cfg_window        struct      contains window information
 %   .screen         1X2 double  [screens ScreenNumber]
 %   .window         1X5 double  [window windowRect], actual resolution
@@ -20,7 +20,7 @@ function mt_setupCards(rootdir, cfg_window)
 % AUTHOR: Marco Rüth, contact@marcorueth.com
 
 %% Load parameters specified in mt_setup.m
-load(fullfile(rootdir,'setup','mt_params.mat'))   % load workspace information and properties
+load(fullfile(dirRoot,'setup','mt_params.mat'))   % load workspace information and properties
 
 %% Set window parameters
 % Specify the display window 

@@ -1,13 +1,13 @@
-function mt_controlTask(rootdir, cfg_window, nCardsControl)
-% ** function mt_controlTask(rootdir, cfg_window, nCardsControl)
+function mt_controlTask(dirRoot, cfg_window, nCardsControl)
+% ** function mt_controlTask(dirRoot, cfg_window, nCardsControl)
 % This function initiates the control task.
 %
 % USAGE:
-%     mt_controlTask(rootdir, cfg_window)
+%     mt_controlTask(dirRoot, cfg_window)
 %
 % >>> INPUT VARIABLES >>>
 % NAME              TYPE        DESCRIPTION
-% rootdir           char        path to root working directory
+% dirRoot           char        path to root working directory
 % cfg_window        struct      contains window information
 %   .screen         1X2 double  [screens ScreenNumber]
 %   .window         1X5 double  [window windowRect], actual resolution
@@ -18,7 +18,7 @@ function mt_controlTask(rootdir, cfg_window, nCardsControl)
 % AUTHOR: Marco Rüth, contact@marcorueth.com
 
 %% Load parameters specified in mt_setup.m
-load(fullfile(rootdir,'setup','mt_params.mat'))   % load workspace information and properties
+load(fullfile(dirRoot,'setup','mt_params.mat'))   % load workspace information and properties
 
 %% Set window parameters
 % Specify the display window 

@@ -1,4 +1,4 @@
-function rootdir = mt_setup(user)
+function dirRoot = mt_setup(user)
 % ** function mt_setup(user)
 % This script allows to adjust the parameters for the memory task. 
 % Define the variables here before you run mt_run.m
@@ -12,53 +12,50 @@ function rootdir = mt_setup(user)
 %
 % <<< OUTPUT VARIABLES <<<
 % NAME              TYPE        DESCRIPTION
-% rootdir           char        path to root working directory
+% dirRoot           char        path to root working directory
 %
 % 
 % AUTHOR: Marco Rüth, contact@marcorueth.com
 
 %% IMPORTANT: add your user profile in mt_loadUser
-[rootdir, PTBdir]   = mt_profile(user);
+[dirRoot, dirPTB]   = mt_profile(user);
 
 
 %% ======================== IMAGE CONFIGURATION ========================= %
 % 1. Image configuration: put file names without file extension
 imageConfiguration = {
   {{ % imagesA 	LEARNING
-  'ant',        'whale',    'ray',              'hippopotamus', 'fly'           'crocodile';
-  'wasp',       'toucan',   'raven',            'lobster',      'giraffe',      'cow';
-  'starfish',   'rooster',  'praying_mantis',   'lioness',      'grasshopper',  'cat';
-  'sparrow',    'pigeon',   'penguin',          'hummingbird',  'goose',        'armadillo';
-  'scorpion',   'oyster',   'ostrich',          'horse',        'dromedary',    'dragonfly'
+  'ant',            'whale',        'ray',          	'hippopotamus',     'fly'           'crocodile';
+  'wasp',           'toucan',       'raven',            'lobster',          'giraffe',      'cow';
+  'starfish',       'rooster',      'praying_mantis',   'lioness',          'grasshopper',  'cat';
+  'sparrow',        'pigeon',       'penguin',          'hummingbird',      'goose',        'armadillo';
+  'scorpion',       'oyster',       'ostrich',          'horse',            'dromedary',    'dragonfly'
   }
   { % imagesA 	INTERFERENCE
-  'goose',       	'dromedary', 	'cat',    	'starfish',			'hen', 			'pigeon';
-  'sparrow',      	'dragonfly',   	'armadillo','ostrich',      	'horse',    	'penguin';
-  'grasshopper',	'whale',  		'scorpion', 'ray',      		'ant',  		'oyster';
-  'hippopotamus', 	'wasp',   		'cow',      'praying_mantis',	'crocodile',	'raven';
-  'lioness',		'fly',   		'lobster',  'giraffe',        	'hummingbird',  'toucan'
+  'goose',       	'dromedary', 	'cat',              'starfish',			'hen', 			'pigeon';
+  'sparrow',      	'dragonfly',   	'armadillo',        'ostrich',      	'horse',    	'penguin';
+  'grasshopper',	'whale',  		'scorpion',         'ray',      		'ant',  		'oyster';
+  'hippopotamus', 	'wasp',   		'cow',              'praying_mantis',	'crocodile',	'raven';
+  'lioness',		'fly',   		'lobster',          'giraffe',        	'hummingbird',  'toucan'
   }}
   {{ % imagesB 	LEARNING
-  'barn_owl',   'tiger',    'seagull',          'owl',          'partridge',    'cheetah';
-  'zebra',      'pelican',  'dolphin',          'mussel',       'kiwi'          'butterfly';
-  'turtle',     'ladybird', 'rhino',            'mosquito',     'tapir',        'beetle';
-  'elephant',   'platypus', 'pomfret',          'manatee',      'crab',         'bee';
-  'termite',   	'hen',      'kangaroo',         'killer_whale', 'duck',         'bat'
+  'barn_owl',   'tiger',        'seagull',	'owl',          'partridge',    'cheetah';
+  'zebra',      'pelican',      'dolphin',	'mussel',       'kiwi'          'butterfly';
+  'turtle',     'ladybird',     'rhino',	'mosquito',     'tapir',        'beetle';
+  'elephant',   'platypus',     'pomfret',	'manatee',      'crab',         'bee';
+  'termite',   	'hen',          'kangaroo',	'killer_whale', 'duck',         'bat'
   }
   { % imagesB 	INTERFERENCE
-  'rhino',		'killer_whale',	'goose',	'kangaroo',	'tiger',		'seagull';
-  'beetle',		'crab',			'pomfret',  'platypus', 'bat	'       'zebra';
-  'kiwi',		'tapir',		'barn_owl', 'bee',     	'partridge',    'termite';
-  'dolphin',	'mussel', 		'elephant', 'hen',      'pelican',      'mosquito';
-  'butterfly',	'manatee',      'ladybird', 'owl', 		'cheetah',      'turtle'
+  'rhino',		'killer_whale',	'goose',	'kangaroo',     'tiger',		'seagull';
+  'beetle',		'crab',			'pomfret',  'platypus',     'bat	'       'zebra';
+  'kiwi',		'tapir',		'barn_owl', 'bee',          'partridge',    'termite';
+  'dolphin',	'mussel', 		'elephant', 'hen',          'pelican',      'mosquito';
+  'butterfly',	'manatee',      'ladybird', 'owl',          'cheetah',      'turtle'
   }}
 };
 
-% TODO:
-% imageConfiguration for interference
 
-
-%% ========================== IMAGE SEQUENCE =========================== %
+%% =========================== IMAGE SEQUENCE =========================== %
 
 % Define in which order cards are flipped
 % 2D Table-view: Look at imagesATable or imagesBTable tables for 2D coordinates
@@ -112,7 +109,7 @@ textSy          = 10;           % default Text y-position
 textVSpacing    = 1.5;          % default Text vertical line spacing
 
 
-%% ========================== IMAGE FOLDERS ============================ %
+%% =========================== IMAGE FOLDERS ============================ %
 % Card images
 imageFolder       = {'imagesA', 'imagesB'};
 imageFileExt      = '.jpg';		% image file types
@@ -164,11 +161,12 @@ textBgColor         = [1 1 1]; % white background
 topCardDisplay      = 2.5;    	% Duartion top Card is shown (seconds)
 cardDisplay         = 2.5;     	% Duration memory cards are shown (seconds)
 feedbackDisplay     = 1;        % Duration feedback is shown (seconds)
+responseTime        = 5;
 
 
 %% ======================= DO NOT CHANGE FROM HERE ====================== %
 % Unless you know what you are doing...
-% !!!! Changes need further adjustments in other files and scripts !!!! %
+% !!!!! Changes need further adjustments in other files and scripts !!!!! %
 
 % Changing the accepted cases also requires to change mt_dialogues.m
 cfg_cases.subjects  = 0:1000;                       % 0 is debug
@@ -178,11 +176,11 @@ cfg_cases.sesstype  = {'C', 'L', 'I', 'R', 'G'};    % Session Type
 cfg_cases.lab       = {'MEG', 'SL3', 'SL4'};        % Lab/Location
 
 % image folder
-imgfolderA        	= fullfile(rootdir, imageFolder{1});
-imgfolderB      	= fullfile(rootdir, imageFolder{2});
+imgfolderA        	= fullfile(dirRoot, imageFolder{1});
+imgfolderB      	= fullfile(dirRoot, imageFolder{2});
 
 % Read in feedback images
-imgfolderFeedback           = fullfile(rootdir, feedbackFolder);
+imgfolderFeedback           = fullfile(dirRoot, feedbackFolder);
 [imgCorrect, ~, alpha]      = imread(fullfile(imgfolderFeedback, imagesFeedback{1}));
 imgCorrect(:,:,4)           = alpha;
 [imgIncorrect, ~, alpha]    = imread(fullfile(imgfolderFeedback, imagesFeedback{2}));
@@ -219,12 +217,12 @@ for r = 1: size(cardSequence,1)
 end
 
 % Folder for configurations
-setupdir            = fullfile(rootdir, 'setup');
+setupdir            = fullfile(dirRoot, 'setup');
 if ~exist(setupdir, 'dir')
     mkdir(setupdir) % create folder in first run
 end
 
 % Save configuration in workdir
-cd(rootdir)
+cd(dirRoot)
 save(fullfile(setupdir, 'mt_params.mat'))
 end
