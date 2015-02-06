@@ -3,3 +3,4 @@
 "A" or "B"
 "C" or "L" or "R" or "I" or "G"
 "MEG" or "SL3" or "SL4"
+1 or 0

@@ -22,26 +22,31 @@ function perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, varargs)
 %
 % AUTHOR: Marco Rüth, contact@marcorueth.com
 
-if nargin == 4 && varargs == 0
-    feedbackOn              = 0; % if set to 0 a blue dot is shown instead of feedback 
-else
-    feedbackOn              = 1; 
-end
-
 %% Load parameters specified in mt_setup.m
-load(fullfile(dirRoot,'setup','mt_params.mat'))   % load workspace information and properties
+load(fullfile(dirRoot, 'setup', 'mt_params.mat'))   % load workspace information and properties
 
 %% Set window parameters
 % Specify the display window 
 window      	= cfg_window.window(1);
+ShowCursor;
+
+%% Enable/Disable practice and feedback
+if nargin == 4 && varargs == 0
+    feedbackOn	= 0; % if set to 0 a blue dot is shown instead of feedback 
+else
+    feedbackOn	= 1;
+end
 
 %% Initialize variables for measured parameters
 cardShown     	= cardSequence{cfg_dlgs.sesstype}';
 cardClicked  	= zeros(length(cardShown), 1);
 mouseData    	= zeros(length(cardShown), 3);
 
+%% Show which session is upcoming
+mt_showText(dirRoot, textSession{cfg_dlgs.sesstype}, window);
+pause
+
 %% Start the game
-ShowCursor;
 % In the learning session all pictures are shown in a sequence
 % In the recall sessions mouse interaction is activated
 for iCard = 1: length(cardShown)
@@ -58,13 +63,13 @@ for iCard = 1: length(cardShown)
     Priority(0);
 
     % Delay flipping in case of learning for cardDelay
-    if cfg_dlgs.sesstype == 1
+    if cfg_dlgs.sesstype == 2
         WaitSecs(topCardDisplay);
     end
     
     % Define which card will be flipped
     switch cfg_dlgs.sesstype
-        case 1 % Learning
+        case 2 % Learning
             % The card with the same image shown on top will be flipped
             cardFlip        = imageCurrent;
         otherwise % Recall/Interference

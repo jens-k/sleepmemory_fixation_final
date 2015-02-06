@@ -20,7 +20,7 @@ function mt_setupCards(dirRoot, cfg_window)
 % AUTHOR: Marco Rüth, contact@marcorueth.com
 
 %% Load parameters specified in mt_setup.m
-load(fullfile(dirRoot,'setup','mt_params.mat'))   % load workspace information and properties
+load(fullfile(dirRoot, 'setup', 'mt_params.mat'))   % load workspace information and properties
 
 %% Set window parameters
 % Specify the display window 
@@ -69,7 +69,9 @@ for r = 1: length(cardCoordsY)
 end
 
 %% Read in the pictures for the cards
-for r = 1: length(rects)
+% Experiment
+images            = zeros(4,ncards);
+for r = 1: ncards
     isinterf = (cfg_dlgs.sesstype==3)+1;    % check if interference
     if cfg_dlgs.memvers == 1
         pic_file 	= fullfile(imgfolderA, imageFilesA{isinterf}{r});

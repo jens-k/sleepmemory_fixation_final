@@ -29,7 +29,7 @@ clickTime = 0;
 tic;
 % Runs until a mouse button is pressed
 MousePress      = 0; % initializes flag to indicate no response
-while    clickTime < responseTime
+while   (MousePress == 0 && clickTime < responseTime)
     [x,y,buttons]   = GetMouse();   % wait for a key-press
     % stop loop if the first mouse button is pressed
     if buttons(1)

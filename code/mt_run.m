@@ -63,10 +63,6 @@ end
 mt_showText(dirRoot, textIntro, window);
 pause
 
-%% Show which session is upcoming
-mt_showText(dirRoot, textSession{cfg_dlgs.sesstype}, window);
-pause
-
 %% Prepare Card Matrix
 mt_setupCards(dirRoot, cfg_window);
 
@@ -76,7 +72,10 @@ if cfg_dlgs.sesstype == 1
     nControlCards = 4; % FOR TESTING
     mt_controlTask(dirRoot, cfg_window, nControlCards); 
 elseif cfg_dlgs.sesstype == 2
-    % TODO: 2xlearning
+    % Start practice session
+    mt_cardGamePractice(dirRoot, cfg_window);
+    % Start two learning sessions
+    mt_cardGame(dirRoot, cfg_window, iRecall);
     mt_cardGame(dirRoot, cfg_window, iRecall);
 else
     while 100*perc_correct < 60

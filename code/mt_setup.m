@@ -20,6 +20,9 @@ function dirRoot = mt_setup(user)
 %% IMPORTANT: add your user profile in mt_loadUser
 [dirRoot, dirPTB]   = mt_profile(user);
 
+% Expermimental Details
+MRI             = 0;
+experimentName  = 'Sleep Connectivity';
 
 %% ======================== IMAGE CONFIGURATION ========================= %
 % 1. Image configuration: put file names without file extension
@@ -62,33 +65,53 @@ imageConfiguration = {
 [imagesATable, imagesBTable] = mt_imageTable(imageConfiguration);
 
 % 2D coordinates for cards to be flipped
-imageSequence2D 	= {...
-    % Sequence for Control
-    {'E5', 'F3' , 'D4', 'F1'} ...
-    % Sequence for Learning
-    {'A1', 'B3' , 'C1'} ...
-	% Sequence for Interference
-    {'A1', 'B3' , 'C1'} ...
-    % Sequence for Immediate Recall & Retrieval
-    {'A1', 'B3' , 'C1', 'D4'} ...
-    % Sequence for Gray Mode
-    {'A1', 'B3' , 'C1', 'D4'} ...
-    }; 
+% imageSequence2D 	= {...
+%     % Sequence for Control
+%     {'E5', 'F3' , 'D4', 'F1'} ...
+%     % Sequence for Learning
+%     {'A1', 'B3' , 'C1'} ...
+% 	% Sequence for Interference
+%     {'A1', 'B3' , 'C1'} ...
+%     % Sequence for Immediate Recall & Retrieval
+%     {'A1', 'B3' , 'C1', 'D4'} ...
+%     % Sequence for Gray Mode
+%     {'A1', 'B3' , 'C1', 'D4'} ...
+%     }; 
 
-% TODO read in list for practice set
-
+imageSequence2D = {{'A1'}, {'A1'}, {'A1'}, {'A1'}, {'A1'}, {'A1'}};
 
 %% ================================ TEXT ================================ %
 % Text strings used during the program
 textIntro = {  ...
-    'Willkommen!';
-    'Im Folgenden ....';
-    'Viel Spaß!';
+    'Willkommen!'
+    ''
+    'Im Folgenden sehen Sie mehrere Karten.'
+    'Unter jeder Karte befindet sich ein Bild.'
+    'Merken Sie sich die Positionen der Bilder.'
+    ''
+    'Viel Spaß!'
+    'Beliebige Taste drücken...'
+    };
+textPracticeLearn = { ...
+    'Demonstration:'
+    ''
+    'Lernen:'
+    '  Zwei Karten werden aufgedeckt.'
+    '  Merken Sie sich die Position der Bilder'
+    'Beliebige Taste drücken...'
+    };
+textPracticeRecall = { ...
+    'Demonstration:'
+    ''
+    'Abfrage:'
+    '  Klicken Sie auf die Karte'
+    '  unter der sich das Bild befindet'
     'Beliebige Taste drücken...'
     };
 textOutro = {  ...
-    'Danke für die Teilnahme';
-    '....';
+    'Ende';
+    '';
+    'Danke für die Teilnahme!';
     'Auf Wiedersehen!';
     'Beliebige Taste drücken...'
     };
@@ -101,17 +124,17 @@ textSession = {
     };
 
 % Text Properties
-textDefSize     = 50;           % default Text Size
-textDefFont     = 'Arial';      % default Text Font
+textDefSize     = 35;           % default Text Size
+textDefFont     = 'Georgia';    % default Text Font
 textDefColor    = [0 0 0];      % default Text Color
 textSx          = 'center';     % default Text x-position
-textSy          = 10;           % default Text y-position
-textVSpacing    = 1.5;          % default Text vertical line spacing
+textSy          = 5;            % default Text y-position
+textVSpacing    = 2;            % default Text vertical line spacing
 
 
 %% =========================== IMAGE FOLDERS ============================ %
 % Card images
-imageFolder       = {'imagesA', 'imagesB'};
+imageFolder       = {'imagesA', 'imagesB', 'imagesPractice'};
 imageFileExt      = '.jpg';		% image file types
 
 % Feedback images
@@ -161,7 +184,11 @@ textBgColor         = [1 1 1]; % white background
 topCardDisplay      = 2.5;    	% Duartion top Card is shown (seconds)
 cardDisplay         = 2.5;     	% Duration memory cards are shown (seconds)
 feedbackDisplay     = 1;        % Duration feedback is shown (seconds)
-responseTime        = 5;
+if MRI
+    responseTime     = 5;
+else
+    responseTime     = 10;
+end
 
 
 %% ======================= DO NOT CHANGE FROM HERE ====================== %
@@ -174,6 +201,7 @@ cfg_cases.nights    = {'1', '2'};                   % Night 1 or 2
 cfg_cases.memvers   = {'A', 'B'};                   % Memory version
 cfg_cases.sesstype  = {'C', 'L', 'I', 'R', 'G'};    % Session Type
 cfg_cases.lab       = {'MEG', 'SL3', 'SL4'};        % Lab/Location
+cfg_cases.odor      = {'0', '1'}; 
 
 % image folder
 imgfolderA        	= fullfile(dirRoot, imageFolder{1});
@@ -210,9 +238,15 @@ imageFilesB         = {
     cellfun(@(x) strcat(x,imageFileExt), imageConfiguration{2}{2}, 'UniformOutput', false)
     };
 
+% Practice set settings
+imageFilesP             = {'butterfly.jpg', 'elephant.jpg'};
+imageSequencePractice   = [10, 28];
+imgfolderP              = fullfile(dirRoot, imageFolder{3});
+
+
 % Transform intuitive 2D coordinates into 1D coordinates used for iteration
 cardSequence        = cell(size(imageSequence2D));
-for r = 1: size(cardSequence,1)
+for r = 1: size(cardSequence, 2)
     cardSequence{r} = cellfun(@(x) mt_cards2Dto1D(x, ncards_x, ncards_y), imageSequence2D{r});
 end
 

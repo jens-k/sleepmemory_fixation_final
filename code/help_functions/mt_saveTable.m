@@ -12,16 +12,17 @@ nRuns = length(performance.correct);
 
 % Constant variables
 sessionTime         = {datestr(now, 'HH:MM:SS')};
-sessionDate         = {datestr(now, 'yy/mm/dd')};
-Lab                 = {cfg_cases.lab{cfg_dlgs.lab}};
-ExperimentName      = {cfg_dlgs.experimentName};
+sessionDate         = {datestr(now, 'yyyy/mm/dd')};
+Lab                 = cfg_cases.lab(cfg_dlgs.lab);
+ExperimentName      = {experimentName};
 Subject             = {cfg_dlgs.subject};
-Session             = {cfg_cases.sesstype{cfg_dlgs.sesstype}};
+Session             = {cfg_dlgs.sessName};
 MemoryVersion       = {cfg_cases.memvers{cfg_dlgs.memvers}};
-Accuracy            = {sum(performance.correct) / nRuns};
+Odor                = {cfg_dlgs.odor};
+Accuracy            = {100 * sum(performance.correct) / nRuns};
 
 tableLeft   = table(sessionTime, sessionDate, Lab, ExperimentName, Subject, Session, ...
-    MemoryVersion, Accuracy);
+    MemoryVersion, Odor, Accuracy);
 tableLeft   = repmat(tableLeft, nRuns, 1);
 
 % Changing variables
@@ -38,7 +39,8 @@ tableRight  = table(Correct, Stimulus, Response, ReactionTime, MouseX, ...
     MouseY, CardShownCoords, CardClickedCoords);
 
 tableSave   = [tableLeft tableRight];
-% ODOR ON?
+
+
 
 % Learning list
 % cardSequenceLearning = imageNames(cardSequence{cfg_dlgs.sesstype});

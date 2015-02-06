@@ -35,8 +35,8 @@ defaults            = defaults{1};
 fclose(fid);
 % Pre-allocation of cell array for answer strings
 [answers{1:length(prompts)}] = deal(cell(1));
-for r=1:size(answers,2)
-    answers{1,r}{:} = '';
+for r = 1:size(answers,2)
+    answers{1, r}{:} = '';
 end
 
 %% Show dialogue windows and save the answers
@@ -46,10 +46,11 @@ options.WindowStyle='modal';
 for p = 1 : length(prompts)
     % allow only values as specified in cfg_cases (mt_setup.m)
     while (p == 1 && ~ismember(str2double(answers{p}), cfg_cases.subjects)) || ...
-        (p == 2 && ~ismember(answers{2}(:), cfg_cases.nights)) || ...
+        (p == 2 && ~ismember(answers{2}(:), cfg_cases.nights))  || ...
         (p == 3 && ~ismember(answers{3}(:), cfg_cases.memvers)) || ...
-        (p == 4 && ~ismember(answers{4}(:), cfg_cases.sesstype)) || ...
-        (p == 5 && ~ismember(answers{5}(:), cfg_cases.lab))   
+        (p == 4 && ~ismember(answers{4}(:), cfg_cases.sesstype))|| ...
+        (p == 5 && ~ismember(answers{5}(:), cfg_cases.lab))     || ...
+        (p == 6 && ~ismember(answers{6}(:), cfg_cases.odor))  
             answers{p} 	= upper(newid(prompts(p), '', [1 70], defaults(p), options));
     end   
     if str2double(answers{1}{:}) == 0
@@ -67,6 +68,7 @@ if ~exist('cfg_dlgs', 'var')
     cfg_dlgs.memvers    = char(answers{3}); % Memory version
     cfg_dlgs.sesstype 	= char(answers{4}); % Session type
     cfg_dlgs.lab        = char(answers{5}); % Lab
+    cfg_dlgs.odor       = char(answers{6}); % Lab
 end
 
 % save(fullfile(setupdir, 'mt_debug.mat'), 'cfg_dlgs') % decomment for new debug mat-file
@@ -90,20 +92,20 @@ end
 % Session type: defines cardSequence
 switch cfg_dlgs.sesstype
     case cfg_cases.sesstype{1}
-        cfg_dlgs.experimentName = 'Experiment Control';
+        cfg_dlgs.sessName = 'Control';
         cfg_dlgs.sesstype = 1;
     case cfg_cases.sesstype{2} 
-        cfg_dlgs.experimentName = 'Experiment Learning';
+        cfg_dlgs.sessName = 'Learning';
         cfg_dlgs.sesstype = 2; % Learning
     case cfg_cases.sesstype{3}
-        cfg_dlgs.experimentName = 'Experiment Interference';
+        cfg_dlgs.sessName = 'Interference';
         cfg_dlgs.sesstype = 3; % Interference
     case cfg_cases.sesstype{4} 
-        cfg_dlgs.experimentName = 'Experiment Recall';
+        cfg_dlgs.sessName = 'Recall';
         cfg_dlgs.sesstype = 4; % Recall
     case cfg_cases.sesstype{5}       
         % gray background and no images are shown
-        cfg_dlgs.experimentName = 'Experiment GrayMode';
+        cfg_dlgs.sessName = 'GrayMode';
         screenBgColor   = 0.5;
         topCardColor    = 0.5;
         frameWidth      = 0;
