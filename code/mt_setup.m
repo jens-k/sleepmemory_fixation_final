@@ -78,7 +78,7 @@ imageConfiguration = {
 %     {'A1', 'B3' , 'C1', 'D4'} ...
 %     }; 
 
-imageSequence2D = {{'A1'}, {'A1'}, {'A1'}, {'A1'}, {'A1'}, {'A1'}};
+imageSequence2D = {{'A2','A3','A4','A1'}, {'A1'}, {'A1'}, {'A1'}, {'A1'}, {'A1'}};
 
 %% ================================ TEXT ================================ %
 % Text strings used during the program
@@ -165,6 +165,12 @@ textColorIncorrect      = [1 0.2 0.2];  % text color for incorrect response
 controlTextMargin       = 200;          % distance in x from text to card
 controlFeedbackDisplay  = 3;            % feedback display duration
 
+try
+    controlList             = load(fullfile(dirRoot, 'controlList.mat'));
+catch
+    fprintf('Control Lists missing: run mt_controlList.m')
+    error(ME.message)
+end
 
 %% ============================== OPTIONAL ============================== %
 % Change Cursor Type
@@ -239,8 +245,8 @@ imageFilesB         = {
     };
 
 % Practice set settings
-imageFilesP             = {'butterfly.jpg', 'elephant.jpg'};
-imageSequencePractice   = [10, 28];
+imageFilesP             = {'teapot.jpg', 'guitar.jpg'};
+imageSequencePractice   = [10, 26];
 imgfolderP              = fullfile(dirRoot, imageFolder{3});
 
 

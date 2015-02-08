@@ -26,15 +26,15 @@ function [mouseCard, mouseData] = mt_cardFlip(screenOff, ncards_x, cardSize, top
 
 %% Wait for mouse button press
 clickTime = 0;
-tic;
 % Runs until a mouse button is pressed
 MousePress      = 0; % initializes flag to indicate no response
+tic;
 while   (MousePress == 0 && clickTime < responseTime)
     [x,y,buttons]   = GetMouse();   % wait for a key-press
     % stop loop if the first mouse button is pressed
     if buttons(1)
-        MousePress      = buttons(1); % sets to 1 if a button was pressed
         clickTime       = toc;
+        MousePress      = buttons(1); % sets to 1 if a button was presse
         break;
     end
     WaitSecs(.01);                % put in small interval to allow other system events

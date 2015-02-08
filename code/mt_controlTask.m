@@ -3,7 +3,7 @@ function mt_controlTask(dirRoot, cfg_window, nCardsControl)
 % This function initiates the control task.
 %
 % USAGE:
-%     mt_controlTask(dirRoot, cfg_window)
+%     mt_controlTask(dirRoot, cfg_window, nCardsControl)
 %
 % >>> INPUT VARIABLES >>>
 % NAME              TYPE        DESCRIPTION
@@ -15,6 +15,7 @@ function mt_controlTask(dirRoot, cfg_window, nCardsControl)
 %   .center         1X2 double  [Xcenter Ycenter]
 % nCardsControl     double      number of cards flipped in the control task
 %
+%
 % AUTHOR: Marco Rüth, contact@marcorueth.com
 
 %% Load parameters specified in mt_setup.m
@@ -25,9 +26,9 @@ load(fullfile(dirRoot,'setup','mt_params.mat'))   % load workspace information a
 window             = cfg_window.window(1);
 
 %% Initialize variables for measured parameters
-cardShown      = cardSequence{cfg_dlgs.sesstype}';
-cardClicked    = zeros(length(cardShown), 1);
-mouseData       = zeros(length(cardShown), 3);
+cardShown    	= cardSequence{cfg_dlgs.sesstype}';
+cardClicked 	= zeros(length(cardShown), 1);
+mouseData    	= zeros(length(cardShown), 3);
 
 %% Start the game
 HideCursor;
@@ -141,12 +142,30 @@ else
     DrawFormattedText(window, num2str(controlAnswers(mouseOnCard)), 'center', ...
         (controlRects(4, mouseOnCard)-(controlCardHeigth/2)-(controlCardTextSize*0.75)), textColorIncorrect);
     DrawFormattedText(window, 'Richtig', controlRects(1,1)+controlTextMargin, (controlRects(4, controlCardCorrect)-(controlCardHeigth/2)-(controlCardTextSize*0.75)), textColorCorrect);
-    DrawFormattedText(window, 'Falsch', controlRects(1,1)+controlTextMargin, (controlRects(4, mouseOnCard)-(controlCardHeigth/2)-(controlCardTextSize*0.75)), textColorIncorrect);
+%     DrawFormattedText(window, 'Falsch', controlRects(1,1)+controlTextMargin, (controlRects(4, mouseOnCard)-(controlCardHeigth/2)-(controlCardTextSize*0.75)), textColorIncorrect);
 end
 Screen('Flip', window, flipTime);
 Priority(0);
 WaitSecs(controlFeedbackDisplay);
 
 Screen('TextStyle', window, 0);
+
+%% save session data
+isinterf = (cfg_dlgs.sesstype==3)+1;    % check if interference
+
+correct             = (cardShown - cardClicked) + 1;
+correct(correct~=1) = 0; % set others incorrect
+imageShown          = cell(length(cardShown),1);
+imageShown(:)       = {'Control'};
+imageClicked        = imageShown;
+coordsShown         = cell(length(cardShown), 1);
+for iCard = 1: length(cardShown)
+    coordsShown{iCard}      = mt_cards1Dto2D(cardShown(iCard), ncards_x, ncards_y);
+end
+coordsClicked       = coordsShown;
+% save cards shown, cards clicked, mouse click x/y coordinates, reaction time
+performance         = table(correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
+
+mt_saveTable(dirRoot, performance)
 
 end

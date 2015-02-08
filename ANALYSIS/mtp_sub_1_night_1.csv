@@ -1,0 +1,5 @@
+SessionTime,SessionDate,Lab,ExperimentName,Subject,Session,MemoryVersion,Odor,Accuracy,ControlList,Correct,Stimulus,Response,ReactionTime,MouseX,MouseY,CardShownCoords,CardClickedCoords
+17:34:19,2015/02/08,MEG,Sleep Connectivity,1,Control,A,1,0,2,0,Control,Control,0,0,0,A2,A2
+17:34:19,2015/02/08,MEG,Sleep Connectivity,1,Control,A,1,0,2,0,Control,Control,0,0,0,A3,A3
+17:34:19,2015/02/08,MEG,Sleep Connectivity,1,Control,A,1,0,2,0,Control,Control,0,0,0,A4,A4
+17:34:19,2015/02/08,MEG,Sleep Connectivity,1,Control,A,1,0,2,0,Control,Control,0,0,0,A1,A1

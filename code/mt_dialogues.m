@@ -68,7 +68,7 @@ if ~exist('cfg_dlgs', 'var')
     cfg_dlgs.memvers    = char(answers{3}); % Memory version
     cfg_dlgs.sesstype 	= char(answers{4}); % Session type
     cfg_dlgs.lab        = char(answers{5}); % Lab
-    cfg_dlgs.odor       = char(answers{6}); % Lab
+    cfg_dlgs.odor       = char(answers{6}); % Odor on or off
 end
 
 % save(fullfile(setupdir, 'mt_debug.mat'), 'cfg_dlgs') % decomment for new debug mat-file
@@ -128,6 +128,7 @@ switch cfg_dlgs.lab
         % TODO: set triggers for sleep lab (left)
         % In the sleep lab will be the new olfactometer
     case cfg_cases.lab{3}
+        cfg_dlgs.lab = 3;
         % TODO: set triggers for sleep lab (right)
         % In the sleep lab will be the new olfactometer
         % Only in this lab one can learn and stimulate with odors
@@ -135,7 +136,11 @@ switch cfg_dlgs.lab
         error('Invalid Lab')
 end
 
+% Choose a control list based on the subject id
+nControlList            = mod(str2double(cfg_dlgs.subject), length(controlList.controlList))+1;
+controlList             = controlList.controlList(nControlList, :);
+
 %% Save configuration in dirRoot
-save(fullfile(setupdir,'mt_params.mat'), '-append', 'cfg_dlgs', 'subdir')
+save(fullfile(setupdir,'mt_params.mat'), '-append', 'cfg_dlgs', 'subdir', 'nControlList', 'controlList')
 
 end

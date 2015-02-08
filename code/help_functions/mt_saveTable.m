@@ -1,28 +1,36 @@
-function mt_saveTable(dirRoot, performance)
+function mt_saveTable(dirRoot, performance, varargs)
 % ** function mt_saveTable(performance)
 %
 %
 % AUTHOR: Marco Rüth, contact@marcorueth.com
 
 %% Load parameters specified in mt_setup.m
-load(fullfile(dirRoot,'setup','mt_params.mat'))   % load workspace information and properties
+load(fullfile(dirRoot, 'setup', 'mt_params.mat'))   % load workspace information and properties
 
-% Contruct output table
+%% Contruct output table
 nRuns = length(performance.correct);
+if nargin == 3 && varargs == 1
+    feedbackOn	= 1;
+else
+    feedbackOn	= 0;
+end
+
 
 % Constant variables
-sessionTime         = {datestr(now, 'HH:MM:SS')};
-sessionDate         = {datestr(now, 'yyyy/mm/dd')};
+SessionTime         = {datestr(now, 'HH:MM:SS')};
+SessionDate         = {datestr(now, 'yyyy/mm/dd')};
 Lab                 = cfg_cases.lab(cfg_dlgs.lab);
 ExperimentName      = {experimentName};
 Subject             = {cfg_dlgs.subject};
 Session             = {cfg_dlgs.sessName};
-MemoryVersion       = {cfg_cases.memvers{cfg_dlgs.memvers}};
+Feedback            = {feedbackOn};
+MemoryVersion       = cfg_cases.memvers(cfg_dlgs.memvers);
 Odor                = {cfg_dlgs.odor};
 Accuracy            = {100 * sum(performance.correct) / nRuns};
+ControlList         = {nControlList};
 
-tableLeft   = table(sessionTime, sessionDate, Lab, ExperimentName, Subject, Session, ...
-    MemoryVersion, Odor, Accuracy);
+tableLeft   = table(SessionTime, SessionDate, Lab, ExperimentName, Subject, Session, ...
+    Feedback, MemoryVersion, Odor, Accuracy, ControlList);
 tableLeft   = repmat(tableLeft, nRuns, 1);
 
 % Changing variables
@@ -40,18 +48,10 @@ tableRight  = table(Correct, Stimulus, Response, ReactionTime, MouseX, ...
 
 tableSave   = [tableLeft tableRight];
 
-
-
-% Learning list
-% cardSequenceLearning = imageNames(cardSequence{cfg_dlgs.sesstype});
-
-% ODOR TRIGGER
-% cfg_dlgs.lab
-
-
-fName = fullfile(dirRoot, subdir, ['mtp_sub_' cfg_dlgs.subject '_night_' cfg_dlgs.night '.mat']);
+%% Update & Save the table that contains subject data
+fName = fullfile(dirRoot, subdir, ['mtp_sub_' cfg_dlgs.subject '_night_' cfg_dlgs.night]);
 % save performance of subject for each run with recall 
-if exist(fName, 'file')
+if exist(strcat(fName, '.mat'), 'file')
     tableOld = load(fName);
     tableOld = tableOld.subjectData;
 else
@@ -59,7 +59,9 @@ else
 end
 subjectData = [tableOld; tableSave];
 
-% save performance of subject for each run with recall 
-save(fName, 'subjectData')
+% Save updated table 
+save(strcat(fName, '.mat'), 'subjectData')
+% Save in .csv for python analysis
+writetable(subjectData, strcat(fName, '.csv'))
 
 end

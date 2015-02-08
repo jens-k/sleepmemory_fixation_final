@@ -71,7 +71,8 @@ for iCard = 1: length(cardShown)
     switch cfg_dlgs.sesstype
         case 2 % Learning
             % The card with the same image shown on top will be flipped
-            cardFlip        = imageCurrent;
+            cardFlip            = imageCurrent;
+            cardClicked(iCard)  = cardFlip; % dummy
         otherwise % Recall/Interference
             % OnMouseClick: flip the card
             [cardFlip, mouseData(iCard, :)]	= mt_cardFlip(screenOff, ncards_x, cardSize, topCardHeigth, responseTime);
@@ -105,29 +106,30 @@ end
 
 %% performance
 
-if cfg_dlgs.sesstype ~= 2 % if not learning session
-    isinterf = (cfg_dlgs.sesstype==3)+1;    % check if interference
-    
-    correct             = (cardShown - cardClicked) + 1;
-    correct(correct~=1) = 0; % set others incorrect
-    imageNames          = imageConfiguration{cfg_dlgs.memvers}{isinterf}';
-    imageShown          = imageNames(cardShown);
-    imageClicked        = imageNames(cardClicked);
-    coordsShown         = cell(length(cardShown), 1);
-    coordsClicked       = cell(length(cardShown), 1);
-    for iCard = 1: length(cardShown)
-        coordsShown{iCard}      = mt_cards1Dto2D(cardShown(iCard), ncards_x, ncards_y);
-        coordsClicked{iCard}    = mt_cards1Dto2D(cardClicked(iCard), ncards_x, ncards_y);
-    end
-    % save cards shown, cards clicked, mouse click x/y coordinates, reaction time
-    performance         = table(correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
+isinterf = (cfg_dlgs.sesstype==3)+1;    % check if interference
 
-    % save session data
-    mt_saveTable(dirRoot, performance)
-    
-    % return performance
+correct             = (cardShown - cardClicked) + 1;
+correct(correct~=1) = 0; % set others incorrect
+imageNames          = imageConfiguration{cfg_dlgs.memvers}{isinterf}';
+imageShown          = imageNames(cardShown);
+imageClicked        = imageNames(cardClicked);
+coordsShown         = cell(length(cardShown), 1);
+coordsClicked       = cell(length(cardShown), 1);
+for iCard = 1: length(cardShown)
+    coordsShown{iCard}      = mt_cards1Dto2D(cardShown(iCard), ncards_x, ncards_y);
+    coordsClicked{iCard}    = mt_cards1Dto2D(cardClicked(iCard), ncards_x, ncards_y);
+end
+% save cards shown, cards clicked, mouse click x/y coordinates, reaction time
+performance         = table(correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
+
+% save session data
+mt_saveTable(dirRoot, performance, feedbackOn)
+
+% return performance
+if cfg_dlgs.sesstype ~= 2 % if not learning session
     perc_correct        = sum(correct)/length(correct);
 else
     perc_correct           = 1; % in percent
 end
+
 end

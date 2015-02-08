@@ -98,7 +98,6 @@ for iCard = 1: length(cardShown)
         % Correct: Show the green tick image
         Screen('DrawTexture', window, Screen('MakeTexture', window, imgCorrect), ...
             [], [imgs(1:2, cardFlip)+feedbackMargin; imgs(3:4, cardFlip)-feedbackMargin]);
-    % Feedback for wrong choice
     else
         % Incorrect: Show the red cross image
         Screen('DrawTexture', window, Screen('MakeTexture', window, imgIncorrect), ...

@@ -39,7 +39,10 @@ function mt_run(user)
 %
 % 
 % AUTHOR: Marco Rüth, contact@marcorueth.com
+
+% FIXME
 Screen('Preference', 'SkipSyncTests', 1);
+
 %% Prepare workspace
 close all;                  % Close all figures
 clearvars -except user;     % Clear all variables in the workspace
@@ -59,24 +62,28 @@ catch ME
     error(ME.message)
 end
 
+% Prepare Card Matrix
+mt_setupCards(dirRoot, cfg_window);
+
 %% Show introduction screen
 mt_showText(dirRoot, textIntro, window);
 pause
 
-%% Prepare Card Matrix
-mt_setupCards(dirRoot, cfg_window);
-
 %% Start the game
-if cfg_dlgs.sesstype == 1
-    % Start Control Task
-    nControlCards = 4; % FOR TESTING
-    mt_controlTask(dirRoot, cfg_window, nControlCards); 
-elseif cfg_dlgs.sesstype == 2
+if strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'c')
+    % FOR TESTING
+    nControlCards = 4; 
+    mt_controlTask(dirRoot, cfg_window, nControlCards);
+%     % Start Control Task
+%     for cRun = 1: length(controlList)
+%         mt_controlTask(dirRoot, cfg_window, controlList(cRun));
+%     end
+elseif strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'l')
     % Start practice session
     mt_cardGamePractice(dirRoot, cfg_window);
     % Start two learning sessions
-    mt_cardGame(dirRoot, cfg_window, iRecall);
-    mt_cardGame(dirRoot, cfg_window, iRecall);
+%     mt_cardGame(dirRoot, cfg_window, iRecall);
+%     mt_cardGame(dirRoot, cfg_window, iRecall);
 else
     while 100*perc_correct < 60
         % Start Experimental Task
@@ -95,8 +102,8 @@ sca
 
 %% Create backup
 if exist(fullfile(dirRoot, subdir), 'dir') && ...
-        ~exist(fullfile(dirRoot, 'BACKUP', subdir), 'dir') && cfg_dlgs.sesstype ~= 2
+        ~exist(fullfile(dirRoot, 'BACKUP', subdir), 'dir')
     mkdir(fullfile(dirRoot, 'BACKUP', subdir))
-    copyfile(fullfile(dirRoot, subdir, 'mtp_sub_*'), fullfile(dirRoot, 'BACKUP', subdir), 'f');
 end
+    copyfile(fullfile(dirRoot, subdir, 'mtp_sub_*'), fullfile(dirRoot, 'BACKUP', subdir), 'f');
 end
