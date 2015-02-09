@@ -75,9 +75,9 @@ end
 
 %% Evaluate the answers to set memory version, session type, and lab
 % Create a new folder for the subject data
-subdir = fullfile('DATA',strcat('Subject_', cfg_dlgs.subject),strcat('Night_', cfg_dlgs.night));
-mkdir(fullfile(dirRoot,'DATA',strcat('Subject_', cfg_dlgs.subject)), ...
-        strcat('Night_', cfg_dlgs.night))
+% subdir = fullfile('DATA',strcat('Subject_', cfg_dlgs.subject),strcat('Night_', cfg_dlgs.night));
+% mkdir(fullfile(dirRoot,'DATA',strcat('Subject_', cfg_dlgs.subject)), ...
+%         strcat('Night_', cfg_dlgs.night))
 
 % Memory version
 switch cfg_dlgs.memvers
@@ -137,10 +137,10 @@ switch cfg_dlgs.lab
 end
 
 % Choose a control list based on the subject id
-nControlList            = mod(str2double(cfg_dlgs.subject), length(controlList.controlList))+1;
-controlList             = controlList.controlList(nControlList, :);
+% nControlList            = mod(str2double(cfg_dlgs.subject), length(controlList.controlList))+1;
+% controlList             = controlList.controlList(nControlList, :);
 
 %% Save configuration in dirRoot
-save(fullfile(setupdir,'mt_params.mat'), '-append', 'cfg_dlgs', 'subdir', 'nControlList', 'controlList')
+save(fullfile(setupdir,'mt_params.mat'), '-append', 'cfg_dlgs', 'subdir')
 
 end

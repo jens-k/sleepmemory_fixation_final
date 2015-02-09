@@ -67,8 +67,8 @@ imageConfiguration = {
 % 2D coordinates for cards to be flipped
 % imageSequence2D 	= {...
 %     % Sequence for Control
-%     {'E5', 'F3' , 'D4', 'F1'} ...
-%     % Sequence for Learning
+%     {'E5', 'F3' , 'D4', 'F1'} ... % identical across subjects
+%     % Sequence for Learning = 
 %     {'A1', 'B3' , 'C1'} ...
 % 	% Sequence for Interference
 %     {'A1', 'B3' , 'C1'} ...
@@ -150,7 +150,7 @@ ncards_y            = 5;
 
 % Top Card Properties
 topCardHeigth       = 200;          % Size of the top Card
-topCardColor        = [1; 1; 1];    % Color of the top Card
+topCardColor        = [.9; .9; .9];    % Color of the top Card
 
 % Memory Cards
 cardColors          = [.5; .5; .5]; % Color of cards
@@ -165,12 +165,14 @@ textColorIncorrect      = [1 0.2 0.2];  % text color for incorrect response
 controlTextMargin       = 200;          % distance in x from text to card
 controlFeedbackDisplay  = 3;            % feedback display duration
 
-try
-    controlList             = load(fullfile(dirRoot, 'controlList.mat'));
-catch
-    fprintf('Control Lists missing: run mt_controlList.m')
-    error(ME.message)
-end
+% try
+%     controlList             = load(fullfile(dirRoot, 'controlList.mat'));
+% catch
+%     fprintf('Control Lists missing: run mt_controlList.m')
+%     error(ME.message)
+% end
+
+controlList = [4, 6, 7, 3, 5, 6, 4, 6, 3, 4, 6, 4, 5, 7];
 
 %% ============================== OPTIONAL ============================== %
 % Change Cursor Type
@@ -187,13 +189,13 @@ textBgColor         = [1 1 1]; % white background
 % window              = ;
 
 % Set Timing
-topCardDisplay      = 2.5;    	% Duartion top Card is shown (seconds)
-cardDisplay         = 2.5;     	% Duration memory cards are shown (seconds)
+topCardDisplay      = 5;    	% Duartion top Card is shown (seconds)
+cardDisplay         = 5;     	% Duration memory cards are shown (seconds)
 feedbackDisplay     = 1;        % Duration feedback is shown (seconds)
 if MRI
     responseTime     = 5;
 else
-    responseTime     = 10;
+    responseTime     = 15;
 end
 
 

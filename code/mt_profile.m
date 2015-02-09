@@ -25,8 +25,8 @@ switch user
         % dirRoot 			= ''
         % dirPTB 			= ''
     case 'SL'
-        % dirRoot 			= ''
-        % dirPTB 			= ''
+        dirRoot 			= 'C:\Users\Olfactometer\Desktop\Studies\Code\sleepmemory\';
+        dirPTB              = 'C:\Users\Olfactometer\Documents\MATLAB\Psychtoolbox\Psychtoolbox\';
     case 'MEG'
         % dirRoot 			= ''
         % dirPTB 			= ''

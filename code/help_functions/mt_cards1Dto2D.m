@@ -26,7 +26,7 @@ function coords_2D = mt_cards1Dto2D(coords, ncards_x, ncards_y)
 alphabet        = 'A':'Z';
 
 % Compute 2D coordinates
-inds            = mod(coords,ncards_x);
+inds            = mod(coords, ncards_x);
 inds(inds==0)   = ncards_x;
 coords_str      = alphabet(inds);
 coords_num      = ceil(coords/ncards_x);

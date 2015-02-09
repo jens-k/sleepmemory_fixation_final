@@ -27,7 +27,7 @@ Feedback            = {feedbackOn};
 MemoryVersion       = cfg_cases.memvers(cfg_dlgs.memvers);
 Odor                = {cfg_dlgs.odor};
 Accuracy            = {100 * sum(performance.correct) / nRuns};
-ControlList         = {nControlList};
+ControlList         = {controlList};
 
 tableLeft   = table(SessionTime, SessionDate, Lab, ExperimentName, Subject, Session, ...
     Feedback, MemoryVersion, Odor, Accuracy, ControlList);

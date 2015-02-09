@@ -72,12 +72,11 @@ pause
 %% Start the game
 if strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'c')
     % FOR TESTING
-    nControlCards = 4; 
-    mt_controlTask(dirRoot, cfg_window, nControlCards);
-%     % Start Control Task
-%     for cRun = 1: length(controlList)
-%         mt_controlTask(dirRoot, cfg_window, controlList(cRun));
-%     end
+    controlList = 4; 
+    % Start Control Task
+    for cRun = 1: length(controlList)
+        mt_controlTask(dirRoot, cfg_window, controlList(cRun));
+    end
 elseif strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'l')
     % Start practice session
     mt_cardGamePractice(dirRoot, cfg_window);
@@ -85,7 +84,7 @@ elseif strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'l')
 %     mt_cardGame(dirRoot, cfg_window, iRecall);
 %     mt_cardGame(dirRoot, cfg_window, iRecall);
 else
-    while 100*perc_correct < 60
+    while 100*perc_correct < 60 % iRecall >min & <max x calls of recall
         % Start Experimental Task
         perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall);
         iRecall = iRecall + 1;
@@ -95,6 +94,9 @@ else
     perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 0);
 end
 
+% TODO: learning interference & recall interference
+% TODO: x times learning & immediate recall together
+% TODO: save all files in one folder
 %% Show final screen
 mt_showText(dirRoot, textOutro, window);
 pause
