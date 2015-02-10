@@ -141,6 +141,6 @@ end
 % controlList             = controlList.controlList(nControlList, :);
 
 %% Save configuration in dirRoot
-save(fullfile(setupdir,'mt_params.mat'), '-append', 'cfg_dlgs', 'subdir')
+save(fullfile(setupdir,'mt_params.mat'), '-append', 'cfg_dlgs')
 
 end

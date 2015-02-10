@@ -67,45 +67,47 @@ mt_setupCards(dirRoot, cfg_window);
 
 %% Show introduction screen
 mt_showText(dirRoot, textIntro, window);
-pause
 
 %% Start the game
+% CONTROL
 if strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'c')
-    % FOR TESTING
-    controlList = 4; 
     % Start Control Task
     for cRun = 1: length(controlList)
-        mt_controlTask(dirRoot, cfg_window, controlList(cRun));
+        mt_controlTask(dirRoot, cfg_window, cRun);
     end
-elseif strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'l')
-    % Start practice session
-    mt_cardGamePractice(dirRoot, cfg_window);
-    % Start two learning sessions
-%     mt_cardGame(dirRoot, cfg_window, iRecall);
-%     mt_cardGame(dirRoot, cfg_window, iRecall);
+% LEARNING & IMMEDIATE RECALL (learning & interference)
+elseif strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'l') ...
+        || strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'i')
+    if strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'l')
+        % Start practice session
+        mt_cardGamePractice(dirRoot, cfg_window);
+    end
+    % Start learning sessions
+    for lRun = 1: nLearningSess
+        mt_cardGame(dirRoot, cfg_window, iRecall);
+    end
+    % Start immediate recall
+    while (iRecall < nMaxRecall) && ((100*perc_correct < 60) || (iRecall < nMinRecall)) 
+        % Start Experimental Task
+        perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 1, 4);
+        iRecall = iRecall + 1;
+    end
+    if (iRecall < nMaxRecall) && (100*perc_correct > 60)
+        % start recall without feedback
+        perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 0, 4);
+    elseif (iRecall >= nMaxRecall)
+        sprintf('Maximum number of recall runs reached. Experiment cancelled.')
+        sca;
+    end
+% FINAL RECALL
 else
-    while 100*perc_correct < 60 % iRecall >min & <max x calls of recall
+    while (iRecall < nFinalRecall) 
         % Start Experimental Task
         perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall);
         iRecall = iRecall + 1;
     end
-    % if at least 60% are correct start one last recall session
-    % this time no feedback is shown
-    perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 0);
+    % Show final screen
+    mt_showText(dirRoot, textOutro, window);
 end
-
-% TODO: learning interference & recall interference
-% TODO: x times learning & immediate recall together
-% TODO: save all files in one folder
-%% Show final screen
-mt_showText(dirRoot, textOutro, window);
-pause
-sca
-
-%% Create backup
-if exist(fullfile(dirRoot, subdir), 'dir') && ...
-        ~exist(fullfile(dirRoot, 'BACKUP', subdir), 'dir')
-    mkdir(fullfile(dirRoot, 'BACKUP', subdir))
-end
-    copyfile(fullfile(dirRoot, subdir, 'mtp_sub_*'), fullfile(dirRoot, 'BACKUP', subdir), 'f');
+sca;
 end

@@ -37,7 +37,6 @@ images(imageSequencePractice(2))   = Screen('MakeTexture', window, imread(fullfi
 feedbackOn      = 1;
 
 mt_showText(dirRoot, textPracticeLearn, window);
-pause
 
 %% In the practice  learning session all pictures are shown in a sequence
 for iCard = 1: length(cardShown)
@@ -70,7 +69,6 @@ for iCard = 1: length(cardShown)
 end
 
 mt_showText(dirRoot, textPracticeRecall, window);
-pause
 
 % In the recall sessions mouse interaction is activated
 for iCard = 1: length(cardShown)

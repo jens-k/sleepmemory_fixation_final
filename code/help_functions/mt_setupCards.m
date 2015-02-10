@@ -69,7 +69,6 @@ for r = 1: length(cardCoordsY)
 end
 
 %% Read in the pictures for the cards
-% Experiment
 images            = zeros(4,ncards);
 for r = 1: ncards
     isinterf = (cfg_dlgs.sesstype==3)+1;    % check if interference
@@ -82,8 +81,21 @@ for r = 1: ncards
     images(r)   = Screen('MakeTexture', window, pic);
 end
 
+%% Read in the pictures for the topCard
+imagesTop            = zeros(4,ncards);
+for r = 1: ncards
+    isinterf = (cfg_dlgs.sesstype==3)+1;    % check if interference
+    if cfg_dlgs.memvers == 1
+        pic_file 	= fullfile(imgfolderA, 'top', imageFilesA{isinterf}{r});
+    elseif cfg_dlgs.memvers == 2
+        pic_file 	= fullfile(imgfolderB, 'top', imageFilesB{isinterf}{r});
+    end
+    pic             = imread(pic_file);
+    imagesTop(r)    = Screen('MakeTexture', window, pic);
+end
+
 %% Save configuration in setupdir
 save(fullfile(setupdir ,'mt_params.mat'), '-append', ...
-    'screenOff', 'topCard', 'rects', 'imgs', 'images')
+    'screenOff', 'topCard', 'rects', 'imgs', 'images', 'imagesTop')
 
 end

@@ -1,4 +1,4 @@
-function perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, varargs)
+function perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, varargin)
 % ** function mt_cardGame(dirRoot, cfg_window, iRecall)
 % This function starts the memory task.
 %
@@ -28,31 +28,34 @@ load(fullfile(dirRoot, 'setup', 'mt_params.mat'))   % load workspace information
 %% Set window parameters
 % Specify the display window 
 window      	= cfg_window.window(1);
-ShowCursor;
 
 %% Enable/Disable practice and feedback
-if nargin == 4 && varargs == 0
-    feedbackOn	= 0; % if set to 0 a blue dot is shown instead of feedback 
+feedbackOn	= 1;
+if length(varargin) == 1
+    feedbackOn	= varargin{1}; % if set to 0 a blue dot is shown instead of feedback 
+elseif length(varargin) == 2
+    feedbackOn	= varargin{1};
+    currSesstype = varargin{2};
 else
-    feedbackOn	= 1;
+    currSesstype = cfg_dlgs.sesstype;
 end
 
 %% Initialize variables for measured parameters
-cardShown     	= cardSequence{cfg_dlgs.sesstype}';
+cardShown     	= cardSequence{cfg_dlgs.memvers}{cfg_dlgs.sesstype}';
 cardClicked  	= zeros(length(cardShown), 1);
 mouseData    	= zeros(length(cardShown), 3);
 
 %% Show which session is upcoming
-mt_showText(dirRoot, textSession{cfg_dlgs.sesstype}, window);
-pause
+mt_showText(dirRoot, textSession{currSesstype}, window);
 
 %% Start the game
+ShowCursor;
 % In the learning session all pictures are shown in a sequence
 % In the recall sessions mouse interaction is activated
 for iCard = 1: length(cardShown)
     % Get current picture
     imageCurrent = cardShown(iCard);
-    imageTop = images(imageCurrent);
+    imageTop = imagesTop(imageCurrent);
     
     % Show a picture on top
     Priority(MaxPriority(window));
@@ -63,43 +66,69 @@ for iCard = 1: length(cardShown)
     Priority(0);
 
     % Delay flipping in case of learning for cardDelay
-    if cfg_dlgs.sesstype == 2
+    if currSesstype == 2 || currSesstype == 3
         WaitSecs(topCardDisplay);
+    elseif MRI
+        HideCursor;
+        imgCross = Screen('MakeTexture', window, imgMRICross);
+        Priority(MaxPriority(window));
+        Screen('DrawTexture', window, imageTop, [], topCard);
+        Screen('FillRect', window, cardColors, rects);
+        Screen('FrameRect', window, frameColor, rects, frameWidth);
+        for iImage = 1:size(imgs, 2)
+            Screen('DrawTexture', window, imgCross, ...
+                [], [imgs(1:2, iImage)+feedbackMargin; imgs(3:4, iImage)-feedbackMargin]);
+        end
+        Screen('Flip', window, flipTime);
+        Priority(0);
+        WaitSecs(responseTime);
+        Priority(MaxPriority(window));
+        Screen('DrawTexture', window, imageTop, [], topCard);
+        Screen('FillRect', window, cardColors, rects);
+        Screen('FrameRect', window, frameColor, rects, frameWidth);
+        Screen('Flip', window, flipTime);
+        Priority(0);
+        ShowCursor;
     end
     
     % Define which card will be flipped
-    switch cfg_dlgs.sesstype
-        case 2 % Learning
+    switch currSesstype
+        case {2, 3} % Learning (2) or Interference Learning (3)
             % The card with the same image shown on top will be flipped
             cardFlip            = imageCurrent;
             cardClicked(iCard)  = cardFlip; % dummy
-        otherwise % Recall/Interference
+        otherwise % Immediate Recall
             % OnMouseClick: flip the card
-            [cardFlip, mouseData(iCard, :)]	= mt_cardFlip(screenOff, ncards_x, cardSize, topCardHeigth, responseTime);
-            % Save which card was clicked
-            cardClicked(iCard)           	= cardFlip;
-            % Show Feedback
-            cardFlip                        = mt_showFeedback(dirRoot, window, cardFlip, feedbackOn, imageCurrent);
+            [cardFlip, mouseData(iCard, :)]	= mt_cardFlip(screenOff, ncards_x, cardSize+cardMargin, topCardHeigth, responseTime);
+            if cardFlip ~= 0
+                % Save which card was clicked
+                cardClicked(iCard)           	= cardFlip;
+                % Show Feedback
+                cardFlip                        = mt_showFeedback(dirRoot, window, cardFlip, feedbackOn, imageCurrent);
+            end
     end
+    
+    
+    if cardFlip ~= 0 && feedbackOn
+        % Flip the card
+        Priority(MaxPriority(window));
+        Screen('DrawTexture', window, imageTop, [], topCard);
 
-    % Flip the card
-    Priority(MaxPriority(window));
-    Screen('DrawTexture', window, imageTop, [], topCard);
+        % Fill all rects but the flipped one
+        if cardFlip
+            Screen('FillRect', window, cardColors, rects(:, (1:ncards ~= cardFlip)));
+            Screen('DrawTexture', window, images(cardFlip), [], imgs(:, cardFlip));
+        else
+            % no cardFlip in last recall session
+            Screen('FillRect', window, cardColors, rects);
+        end
+        Screen('FrameRect', window, frameColor, rects, frameWidth);
+        Screen('Flip', window, flipTime);
+        Priority(0);
 
-    % Fill all rects but the flipped one
-    if cardFlip
-        Screen('FillRect', window, cardColors, rects(:, (1:ncards ~= cardFlip)));
-        Screen('DrawTexture', window, images(cardFlip), [], imgs(:, cardFlip));
-    else
-        % no cardFlip in last recall session
-        Screen('FillRect', window, cardColors, rects);
+        % Display the card for a time defined by cardDisplay
+        WaitSecs(cardDisplay);
     end
-    Screen('FrameRect', window, frameColor, rects, frameWidth);
-    Screen('Flip', window, flipTime);
-    Priority(0);
-
-    % Display the card for a time defined by cardDisplay
-    WaitSecs(cardDisplay);
 %     % Set fixed duration of trials 
 %     WaitSecs(responseTime);
 end
@@ -112,7 +141,8 @@ correct             = (cardShown - cardClicked) + 1;
 correct(correct~=1) = 0; % set others incorrect
 imageNames          = imageConfiguration{cfg_dlgs.memvers}{isinterf}';
 imageShown          = imageNames(cardShown);
-imageClicked        = imageNames(cardClicked);
+imageClicked        = cell(length(cardShown), 1);
+imageClicked(cardClicked~=0, 1) = imageNames(cardClicked(cardClicked~=0));
 coordsShown         = cell(length(cardShown), 1);
 coordsClicked       = cell(length(cardShown), 1);
 for iCard = 1: length(cardShown)
@@ -126,7 +156,7 @@ performance         = table(correct, imageShown, imageClicked,  mouseData, coord
 mt_saveTable(dirRoot, performance, feedbackOn)
 
 % return performance
-if cfg_dlgs.sesstype ~= 2 % if not learning session
+if currSesstype == 4 % if recall session
     perc_correct        = sum(correct)/length(correct);
 else
     perc_correct           = 1; % in percent

@@ -15,7 +15,6 @@ else
     feedbackOn	= 0;
 end
 
-
 % Constant variables
 SessionTime         = {datestr(now, 'HH:MM:SS')};
 SessionDate         = {datestr(now, 'yyyy/mm/dd')};
@@ -27,10 +26,9 @@ Feedback            = {feedbackOn};
 MemoryVersion       = cfg_cases.memvers(cfg_dlgs.memvers);
 Odor                = {cfg_dlgs.odor};
 Accuracy            = {100 * sum(performance.correct) / nRuns};
-ControlList         = {controlList};
 
 tableLeft   = table(SessionTime, SessionDate, Lab, ExperimentName, Subject, Session, ...
-    Feedback, MemoryVersion, Odor, Accuracy, ControlList);
+    Feedback, MemoryVersion, Odor, Accuracy);
 tableLeft   = repmat(tableLeft, nRuns, 1);
 
 % Changing variables
@@ -49,10 +47,10 @@ tableRight  = table(Correct, Stimulus, Response, ReactionTime, MouseX, ...
 tableSave   = [tableLeft tableRight];
 
 %% Update & Save the table that contains subject data
-fName = fullfile(dirRoot, subdir, ['mtp_sub_' cfg_dlgs.subject '_night_' cfg_dlgs.night]);
+fName = ['mtp_sub_' cfg_dlgs.subject '_night_' cfg_dlgs.night];
 % save performance of subject for each run with recall 
-if exist(strcat(fName, '.mat'), 'file')
-    tableOld = load(fName);
+if exist(fullfile(dirRoot, 'DATA', strcat(fName, '.mat')), 'file')
+    tableOld = load(fullfile(dirRoot, 'DATA', strcat(fName, '.mat')));
     tableOld = tableOld.subjectData;
 else
     tableOld = table();
@@ -60,8 +58,14 @@ end
 subjectData = [tableOld; tableSave];
 
 % Save updated table 
-save(strcat(fName, '.mat'), 'subjectData')
+save(fullfile(dirRoot, 'DATA', strcat(fName, '.mat')), 'subjectData')
 % Save in .csv for python analysis
-writetable(subjectData, strcat(fName, '.csv'))
+writetable(subjectData, fullfile(dirRoot, 'DATA', strcat(fName, '.csv')))
+
+% Backup
+if exist(fullfile(dirRoot, 'DATA'), 'dir') && ...
+        ~exist(fullfile(dirRoot, 'BACKUP', strcat(fName, '.mat')), 'file')
+    copyfile(fullfile(dirRoot, 'DATA', [fName '.*']), fullfile(dirRoot, 'BACKUP'), 'f');
+end
 
 end

@@ -1,9 +1,9 @@
-function mt_controlTask(dirRoot, cfg_window, nCardsControl)
-% ** function mt_controlTask(dirRoot, cfg_window, nCardsControl)
+function mt_controlTask(dirRoot, cfg_window, iControlRun)
+% ** function mt_controlTask(dirRoot, cfg_window, controlRun)
 % This function initiates the control task.
 %
 % USAGE:
-%     mt_controlTask(dirRoot, cfg_window, nCardsControl)
+%     mt_controlTask(dirRoot, cfg_window, controlRun)
 %
 % >>> INPUT VARIABLES >>>
 % NAME              TYPE        DESCRIPTION
@@ -13,7 +13,7 @@ function mt_controlTask(dirRoot, cfg_window, nCardsControl)
 %   .window         1X5 double  [window windowRect], actual resolution
 %   .window43       1X5 double  [window windowRect], 4:3 resolution
 %   .center         1X2 double  [Xcenter Ycenter]
-% nCardsControl     double      number of cards flipped in the control task
+% iControlRun       double      number of control task run
 %
 %
 % AUTHOR: Marco Rüth, contact@marcorueth.com
@@ -26,9 +26,10 @@ load(fullfile(dirRoot,'setup','mt_params.mat'))   % load workspace information a
 window             = cfg_window.window(1);
 
 %% Initialize variables for measured parameters
-cardShown    	= cardSequence{cfg_dlgs.sesstype}';
+cardShown    	= cardSequence{cfg_dlgs.memvers}{cfg_dlgs.sesstype}{iControlRun}';
 cardClicked 	= zeros(length(cardShown), 1);
 mouseData    	= zeros(length(cardShown), 3);
+nCardsShown     = length(cardShown);
 
 %% Start the game
 HideCursor;
@@ -44,7 +45,7 @@ Screen('Flip', window, flipTime);
 Priority(0);
 WaitSecs(topCardDisplay);
 
-for iCard = 1: nCardsControl
+for iCard = 1: nCardsShown 
     cardCurrent = cardShown(iCard);
     
     % Flip the card
@@ -65,14 +66,14 @@ end
 %% Ask how many cards changed their color up to now
 ShowCursor;
 nControlAnswers     = 4;
-controlAnswers      = round(abs(nCardsControl-nControlAnswers):nCardsControl+nControlAnswers);
-controlAnswers      = controlAnswers(controlAnswers~=nControlAnswers);
-controlAnswers      = Shuffle([nCardsControl randsample(controlAnswers, 3, 0)]);
+controlAnswers      = round(abs(nCardsShown-nControlAnswers):nCardsShown+nControlAnswers);
+controlAnswers      = controlAnswers(controlAnswers~=nCardsShown & controlAnswers~=0);
+controlAnswers      = Shuffle([nCardsShown randsample(controlAnswers, 3, 0)]);
 
 controlCardTextSize = 40;
 controlCardHeigth   = 100;
 controlCardWidth    = controlCardHeigth * (4/3);
-controlRects        = zeros(4,nControlAnswers);
+controlRects        = zeros(4, nControlAnswers);
 
 for cc = 1 : nControlAnswers
     controlRects(:, cc) = CenterRectOnPointd([0 0 controlCardWidth controlCardHeigth], cfg_window.center(1), cc*(controlCardHeigth+20));
@@ -86,7 +87,7 @@ DrawFormattedText(window, 'Wie viele Karten wurden dunkler?', 'center', 10, text
 Screen('TextSize', window, controlCardTextSize);
 for cc = 1 : nControlAnswers
     DrawFormattedText(window, num2str(controlAnswers(cc)), 'center', ...
-        (controlRects(4, cc)-(controlCardHeigth/2)-(controlCardTextSize*0.75)), textDefColor);
+        (controlRects(4, cc)-(controlCardHeigth/2)-(controlCardTextSize*0.9)), textDefColor);
 end
 Screen('Flip', window, flipTime);
 Priority(0);
@@ -109,7 +110,7 @@ while ~(sum(mouseOnCard)==1)
     end
 end
 mouseOnCard        = find(mouseOnCard);
-controlCardCorrect = find(controlAnswers == nCardsControl);
+controlCardCorrect = find(controlAnswers == nCardsShown);
 
 Screen('TextSize', window, 20);               % set text size
 
@@ -120,29 +121,29 @@ DrawFormattedText(window, 'Wie viele Karten wurden dunkler?', 'center', 10, text
 Screen('TextSize', window, controlCardTextSize);
 if mouseOnCard == controlCardCorrect
     % Correct
-    controlCardInds = find(1:nCardsControl ~= controlCardCorrect);
+    controlCardInds = find(1:nControlAnswers ~= controlCardCorrect);
     for cc = 1 : nControlAnswers-1
     DrawFormattedText(window, num2str(controlAnswers(controlCardInds(cc))), 'center', ...
-        (controlRects(4, controlCardInds(cc))-(controlCardHeigth/2)-(controlCardTextSize*0.75)), textDefColor);
+        (controlRects(4, controlCardInds(cc))-(controlCardHeigth/2)-(controlCardTextSize*0.9)), textDefColor);
     end
     Screen('TextStyle', window, 1);
     DrawFormattedText(window, num2str(controlAnswers(controlCardCorrect)), 'center', ...
-        (controlRects(4, controlCardCorrect)-(controlCardHeigth/2)-(controlCardTextSize*0.75)), textColorCorrect);
-    DrawFormattedText(window, 'Richtig', controlRects(1,1)+controlTextMargin, (controlRects(4, controlCardCorrect)-(controlCardHeigth/2)-(controlCardTextSize*0.75)), textColorCorrect);
+        (controlRects(4, controlCardCorrect)-(controlCardHeigth/2)-(controlCardTextSize*0.9)), textColorCorrect);
+    DrawFormattedText(window, 'Richtig', controlRects(1,1)+controlTextMargin, (controlRects(4, controlCardCorrect)-(controlCardHeigth/2)-(controlCardTextSize*0.9)), textColorCorrect);
 else
     % Incorrect 
-    controlCardInds = find((1:nCardsControl ~= controlCardCorrect) & (1:nCardsControl ~= mouseOnCard));
+    controlCardInds = find((1:nControlAnswers ~= controlCardCorrect) & (1:nControlAnswers ~= mouseOnCard));
     for cc = 1 : nControlAnswers-2
     DrawFormattedText(window, num2str(controlAnswers(controlCardInds(cc))), 'center', ...
-        (controlRects(4, controlCardInds(cc))-(controlCardHeigth/2)-(controlCardTextSize*0.75)), textDefColor);
+        (controlRects(4, controlCardInds(cc))-(controlCardHeigth/2)-(controlCardTextSize*0.9)), textDefColor);
     end
     Screen('TextStyle', window, 1);
     DrawFormattedText(window, num2str(controlAnswers(controlCardCorrect)), 'center', ...
-        (controlRects(4, controlCardCorrect)-(controlCardHeigth/2)-(controlCardTextSize*0.75)), textColorCorrect);
+        (controlRects(4, controlCardCorrect)-(controlCardHeigth/2)-(controlCardTextSize*0.9)), textColorCorrect);
     DrawFormattedText(window, num2str(controlAnswers(mouseOnCard)), 'center', ...
-        (controlRects(4, mouseOnCard)-(controlCardHeigth/2)-(controlCardTextSize*0.75)), textColorIncorrect);
-    DrawFormattedText(window, 'Richtig', controlRects(1,1)+controlTextMargin, (controlRects(4, controlCardCorrect)-(controlCardHeigth/2)-(controlCardTextSize*0.75)), textColorCorrect);
-%     DrawFormattedText(window, 'Falsch', controlRects(1,1)+controlTextMargin, (controlRects(4, mouseOnCard)-(controlCardHeigth/2)-(controlCardTextSize*0.75)), textColorIncorrect);
+        (controlRects(4, mouseOnCard)-(controlCardHeigth/2)-(controlCardTextSize*0.9)), textColorIncorrect);
+    DrawFormattedText(window, 'Richtig', controlRects(1,1)+controlTextMargin, (controlRects(4, controlCardCorrect)-(controlCardHeigth/2)-(controlCardTextSize*0.9)), textColorCorrect);
+%     DrawFormattedText(window, 'Falsch', controlRects(1,1)+controlTextMargin, (controlRects(4, mouseOnCard)-(controlCardHeigth/2)-(controlCardTextSize*0.9)), textColorIncorrect);
 end
 Screen('Flip', window, flipTime);
 Priority(0);

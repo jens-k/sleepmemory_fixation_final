@@ -32,12 +32,26 @@ if iscell(text)
     for line = 1: size(text,1)-1
         DrawFormattedText(window, text{line}, textSx, textSy+line*textSize*textVSpacing, textDefColor);
     end
-    DrawFormattedText(window, text{end}, textSx, windowSize(2)-2*textSize, textDefColor);
 else
     DrawFormattedText(window, text, 'center', 'center', textDefColor);
 end
+DrawFormattedText(window, 'Beliebige Taste drücken...', textSx, windowSize(2)-2*textSize, textDefColor);
 
 % Display the text
 Screen('Flip', window); 
+
+% Wait until mouse click
+isClick = 0;
+while isClick == 0
+    [~, ~, isClick]   = GetMouse();
+    WaitSecs(.01);
+end
+% Wait until mouse released
+while sum(isClick) > 0 
+    [~, ~, isClick]   = GetMouse();
+    WaitSecs(.01);
+end
+
+
 
 end

@@ -23,6 +23,10 @@ function dirRoot = mt_setup(user)
 % Expermimental Details
 MRI             = 0;
 experimentName  = 'Sleep Connectivity';
+nLearningSess   = 2;
+nMinRecall      = 2; % as minimum for learning/feedback 
+nMaxRecall      = 5; % to exclude if too poor performance
+nFinalRecall    = 2; % number of final recall sessions
 
 %% ======================== IMAGE CONFIGURATION ========================= %
 % 1. Image configuration: put file names without file extension
@@ -35,7 +39,7 @@ imageConfiguration = {
   'scorpion',       'oyster',       'ostrich',          'horse',            'dromedary',    'dragonfly'
   }
   { % imagesA 	INTERFERENCE
-  'goose',       	'dromedary', 	'cat',              'starfish',			'hen', 			'pigeon';
+  'goose',       	'dromedary', 	'cat',              'starfish',			'rooster', 		'pigeon';
   'sparrow',      	'dragonfly',   	'armadillo',        'ostrich',      	'horse',    	'penguin';
   'grasshopper',	'whale',  		'scorpion',         'ray',      		'ant',  		'oyster';
   'hippopotamus', 	'wasp',   		'cow',              'praying_mantis',	'crocodile',	'raven';
@@ -50,7 +54,7 @@ imageConfiguration = {
   }
   { % imagesB 	INTERFERENCE
   'rhino',		'killer_whale',	'goose',	'kangaroo',     'tiger',		'seagull';
-  'beetle',		'crab',			'pomfret',  'platypus',     'bat	'       'zebra';
+  'beetle',		'crab',			'pomfret',  'platypus',     'bat'           'zebra';
   'kiwi',		'tapir',		'barn_owl', 'bee',          'partridge',    'termite';
   'dolphin',	'mussel', 		'elephant', 'hen',          'pelican',      'mosquito';
   'butterfly',	'manatee',      'ladybird', 'owl',          'cheetah',      'turtle'
@@ -64,21 +68,65 @@ imageConfiguration = {
 % 2D Table-view: Look at imagesATable or imagesBTable tables for 2D coordinates
 [imagesATable, imagesBTable] = mt_imageTable(imageConfiguration);
 
-% 2D coordinates for cards to be flipped
-% imageSequence2D 	= {...
-%     % Sequence for Control
-%     {'E5', 'F3' , 'D4', 'F1'} ... % identical across subjects
-%     % Sequence for Learning = 
-%     {'A1', 'B3' , 'C1'} ...
-% 	% Sequence for Interference
-%     {'A1', 'B3' , 'C1'} ...
-%     % Sequence for Immediate Recall & Retrieval
-%     {'A1', 'B3' , 'C1', 'D4'} ...
-%     % Sequence for Gray Mode
-%     {'A1', 'B3' , 'C1', 'D4'} ...
-%     }; 
+% Create sequence for learning and Interference
+imageSequenceLearningA = {
+    'starfish', 'pigeon', 'raven', 'hummingbird'
+    };
 
-imageSequence2D = {{'A2','A3','A4','A1'}, {'A1'}, {'A1'}, {'A1'}, {'A1'}, {'A1'}};
+imageSequenceLearningB = {
+    'beetle', 'mussel', 'hen', 'ladybird'
+    };
+
+% Convert sequences for further processing
+imageSequenceLearningCoordsA = zeros(1, size(imageSequenceLearningA, 2));
+imageSequenceInterferenceCoordsA = zeros(1, size(imageSequenceLearningA, 2));
+imageSequenceLearningCoordsB = zeros(1, size(imageSequenceLearningB, 2));
+imageSequenceInterferenceCoordsB = zeros(1, size(imageSequenceLearningB, 2));
+for i = 1: size(imageSequenceLearningA, 2)
+    imageSequenceLearningCoordsA(i)     = find(cellfun(@(x) strcmp(x, imageSequenceLearningA{i}), imageConfiguration{1}{1}'));
+    imageSequenceInterferenceCoordsA(i) = find(cellfun(@(x) strcmp(x, imageSequenceLearningA{i}), imageConfiguration{1}{2}'));
+    imageSequenceLearningCoordsB(i)     = find(cellfun(@(x) strcmp(x, imageSequenceLearningB{i}), imageConfiguration{2}{1}'));
+    imageSequenceInterferenceCoordsB(i) = find(cellfun(@(x) strcmp(x, imageSequenceLearningB{i}), imageConfiguration{2}{2}'));
+end
+
+% Load sequence for controlList
+try
+    controlSequence = load(fullfile(dirRoot, 'code/help_functions/controlSequence.mat'));
+    controlList     = controlSequence.controlList;
+    controlSequence = controlSequence.controlSequence;
+catch
+    fprintf('Control Lists missing: run mt_controlList.m\n')
+    error(ME.message)
+end
+
+% 2D coordinates for cards to be flipped
+cardSequence 	= {...
+    { % VERSION A
+    % Sequence for Control
+    controlSequence; % identical across subjects
+    % Sequence for Learning
+    imageSequenceLearningCoordsA; ...
+    % Sequence for Interference
+    imageSequenceInterferenceCoordsA; ...
+    % Sequence for Immediate Recall & Retrieval
+    imageSequenceLearningCoordsA; ...
+    % Sequence for Gray Mode
+    controlSequence ...
+    }
+    { % VERSION B
+    % Sequence for Control
+    controlSequence; % identical across subjects
+    % Sequence for Learning
+    imageSequenceLearningCoordsB; ...
+    % Sequence for Interference
+    imageSequenceInterferenceCoordsB; ...
+    % Sequence for Immediate Recall & Retrieval
+    imageSequenceLearningCoordsB; ...
+    % Sequence for Gray Mode
+    controlSequence ...
+    }
+}; 
+
 
 %% ================================ TEXT ================================ %
 % Text strings used during the program
@@ -90,7 +138,6 @@ textIntro = {  ...
     'Merken Sie sich die Positionen der Bilder.'
     ''
     'Viel Spaß!'
-    'Beliebige Taste drücken...'
     };
 textPracticeLearn = { ...
     'Demonstration:'
@@ -98,7 +145,6 @@ textPracticeLearn = { ...
     'Lernen:'
     '  Zwei Karten werden aufgedeckt.'
     '  Merken Sie sich die Position der Bilder'
-    'Beliebige Taste drücken...'
     };
 textPracticeRecall = { ...
     'Demonstration:'
@@ -106,19 +152,17 @@ textPracticeRecall = { ...
     'Abfrage:'
     '  Klicken Sie auf die Karte'
     '  unter der sich das Bild befindet'
-    'Beliebige Taste drücken...'
     };
 textOutro = {  ...
     'Ende';
     '';
     'Danke für die Teilnahme!';
     'Auf Wiedersehen!';
-    'Beliebige Taste drücken...'
     };
 textSession = {
     'Konzentration';    % Control    
     'Lernen';           % Learning
-    'Abfrage';          % Interference
+    'Lernen';           % Interference
     'Abfrage';          % Recall
     'Konzentration';    % Gray Mode
     };
@@ -139,7 +183,7 @@ imageFileExt      = '.jpg';		% image file types
 
 % Feedback images
 feedbackFolder    = 'imagesFeedback';
-imagesFeedback    = {'correct.png', 'incorrect.png', 'nofeedback.png'};
+imagesFeedback    = {'correct.png', 'incorrect.png', 'nofeedback.png', 'cross.png'};
 feedbackMargin    = 10;       	% #pixels the images are smaller than the cards
 
 
@@ -154,7 +198,7 @@ topCardColor        = [.9; .9; .9];    % Color of the top Card
 
 % Memory Cards
 cardColors          = [.5; .5; .5]; % Color of cards
-margin              = 5;            % Margin between cards
+cardMargin          = 5;            % Margin between cards
 frameWidth          = 2;            % Frame/border around cards
 frameColor          = 0;            % Frame color
 
@@ -163,16 +207,8 @@ cardColorControl        = 0.3;          % color of highlighted card
 textColorCorrect        = [0.2 1 0.2];  % text color for correct response
 textColorIncorrect      = [1 0.2 0.2];  % text color for incorrect response
 controlTextMargin       = 200;          % distance in x from text to card
-controlFeedbackDisplay  = 3;            % feedback display duration
+controlFeedbackDisplay  = 3;            % feedback display duration4
 
-% try
-%     controlList             = load(fullfile(dirRoot, 'controlList.mat'));
-% catch
-%     fprintf('Control Lists missing: run mt_controlList.m')
-%     error(ME.message)
-% end
-
-controlList = [4, 6, 7, 3, 5, 6, 4, 6, 3, 4, 6, 4, 5, 7];
 
 %% ============================== OPTIONAL ============================== %
 % Change Cursor Type
@@ -189,13 +225,13 @@ textBgColor         = [1 1 1]; % white background
 % window              = ;
 
 % Set Timing
-topCardDisplay      = 5;    	% Duartion top Card is shown (seconds)
-cardDisplay         = 5;     	% Duration memory cards are shown (seconds)
+topCardDisplay      = 1;    	% Duartion top Card is shown (seconds)
+cardDisplay         = 1;     	% Duration memory cards are shown (seconds)
 feedbackDisplay     = 1;        % Duration feedback is shown (seconds)
 if MRI
-    responseTime     = 5;
+    responseTime     = 5;       % Duration allowed to respond (click) in MRI
 else
-    responseTime     = 15;
+    responseTime     = 15;      % Duration allowed to respond (click) in MEG
 end
 
 
@@ -223,27 +259,29 @@ imgCorrect(:,:,4)           = alpha;
 imgIncorrect(:,:,4)         = alpha;
 [imgNoFeedback, ~, alpha]   = imread(fullfile(imgfolderFeedback, imagesFeedback{3}));
 imgNoFeedback(:,:,4)        = alpha;
+[imgMRICross, ~, alpha]     = imread(fullfile(imgfolderFeedback, imagesFeedback{4}));
+imgMRICross(:,:,4)          = alpha;
 
 % Size of Memory Cards
 topCardWidth        = topCardHeigth * (4/3);
 cardHeigth          = round((windowSize(2)-topCardHeigth)/ncards_y);
 cardWidth           = round(windowSize(1)/ncards_x);
 cardSize            = [0 0 cardWidth cardHeigth]; % size to fill screen
-cardSize(3:4)       = cardSize(end-1:end)-margin;
+cardSize(3:4)       = cardSize(end-1:end)-cardMargin;
 ncards              = ncards_x * ncards_y;
 
 % Size of images hidden under the cards
 imagesSize          = [0 0 cardHeigth*(4/3) cardHeigth]; % assure 4:3
-imagesSize(3:4)     = imagesSize(3:4)-margin;
+imagesSize(3:4)     = imagesSize(3:4)-cardMargin;
 
 % Generate file names of images
 imageFilesA         = {
-    cellfun(@(x) strcat(x,imageFileExt), imageConfiguration{1}{1}, 'UniformOutput', false)
-    cellfun(@(x) strcat(x,imageFileExt), imageConfiguration{1}{2}, 'UniformOutput', false)
+    cellfun(@(x) strcat(x, imageFileExt), imageConfiguration{1}{1}', 'UniformOutput', false)
+    cellfun(@(x) strcat(x, imageFileExt), imageConfiguration{1}{2}', 'UniformOutput', false)
     };
 imageFilesB         = {
-    cellfun(@(x) strcat(x,imageFileExt), imageConfiguration{2}{1}, 'UniformOutput', false)
-    cellfun(@(x) strcat(x,imageFileExt), imageConfiguration{2}{2}, 'UniformOutput', false)
+    cellfun(@(x) strcat(x, imageFileExt), imageConfiguration{2}{1}', 'UniformOutput', false)
+    cellfun(@(x) strcat(x, imageFileExt), imageConfiguration{2}{2}', 'UniformOutput', false)
     };
 
 % Practice set settings
@@ -252,16 +290,22 @@ imageSequencePractice   = [10, 26];
 imgfolderP              = fullfile(dirRoot, imageFolder{3});
 
 
-% Transform intuitive 2D coordinates into 1D coordinates used for iteration
-cardSequence        = cell(size(imageSequence2D));
-for r = 1: size(cardSequence, 2)
-    cardSequence{r} = cellfun(@(x) mt_cards2Dto1D(x, ncards_x, ncards_y), imageSequence2D{r});
-end
+% % Transform intuitive 2D coordinates into 1D coordinates used for iteration
+% cardSequence        = cell(size(imageSequence2D));
+% for r = 1: size(cardSequence, 2)
+%     cardSequence{r} = cellfun(@(x) mt_cards2Dto1D(x, ncards_x, ncards_y), imageSequence2D{r});
+% end
 
 % Folder for configurations
 setupdir            = fullfile(dirRoot, 'setup');
 if ~exist(setupdir, 'dir')
     mkdir(setupdir) % create folder in first run
+end
+
+% Folder for data
+if ~exist(fullfile(dirRoot, 'DATA'), 'dir')
+    mkdir(fullfile(dirRoot, 'DATA')) % create folder in first run
+    mkdir(fullfile(dirRoot, 'BACKUP'))
 end
 
 % Save configuration in workdir

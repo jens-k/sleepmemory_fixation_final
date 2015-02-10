@@ -1,33 +1,31 @@
-function mt_controlList(dirRoot)
-% ** function mt_controlList
-% This function creates lists for the control task.
-%
-% USAGE:
-%     mt_controlList(dirRoot)
-%
-% >>> INPUT VARIABLES >>>
-% NAME              TYPE        DESCRIPTION
-% dirRoot           char        path to root working directory
-%
-%
-% AUTHOR: Marco Rüth, contact@marcorueth.com
+controlList = [0, 4, 6, 7, 3, 5, 6, 4, 6, 3, 4, 6, 4, 5, 7];
 
-nLists        	= 100;      % number of different lists
-controlCards 	= 100;      % number of total cards per subject
-controlPrompts 	= 10;       % number of runs of control task
-
-% Pre-allocate memory for lists
-controlList  	= zeros(nLists, controlPrompts);
-tmpList         = zeros(1, controlPrompts);
-
-for list = 1 : nLists
-    % Random sampling of a list with elements that sum up to 100
-    while (sum(tmpList) ~= controlCards) || ismember(tmpList, controlList, 'rows')
-        tmpList       = randsample(5:15, controlPrompts);
+% create coordinates for cards that change color in the control task, while
+% 2 succeeding coordinates may not be identical
+controlLocations = zeros(1, sum(controlList));
+source = [1:30 1:30 randsample(1:30, 10, 1)];
+seed = randi(length(source), 1);
+controlLocations(1) = source(seed);
+source(seed) = [];
+for c = 2: sum(controlList)
+    seed = randi(length(source), 1);
+    if c <= 2
+        while source(seed) == controlLocations(c-1)
+            seed = randi(length(source), 1);
+        end
+    else
+        while source(seed) == controlLocations(c-1) || source(seed) == controlLocations(c-2)
+            seed = randi(length(source), 1);
+        end
     end
-    controlList(list, :) = tmpList;
+    controlLocations(c) = source(seed);
+    source(seed) = [];
 end
 
-save(fullfile(dirRoot, 'controlList.mat'), 'controlList');
-
+controlSequence = cell(length(controlList)-1, 1);
+for i = 2 : length(controlList)
+    controlSequence{i-1} = controlLocations(sum(controlList(1:i-1))+1:sum(controlList(1:i)));
 end
+controlList = controlList(2:end);
+
+save('controlSequence.mat', 'controlSequence', 'controlList')
