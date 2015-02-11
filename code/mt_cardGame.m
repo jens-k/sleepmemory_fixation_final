@@ -4,6 +4,7 @@ function perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, varargin)
 %
 % USAGE:
 %     mt_cardGame(dirRoot, cfg_window, iRecall)
+%     mt_cardGame(dirRoot, cfg_window, iRecall, 1, 4) % feedback on, recall
 %
 % >>> INPUT VARIABLES >>>
 % NAME              TYPE        DESCRIPTION
@@ -14,6 +15,9 @@ function perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, varargin)
 %   .window43       1X5 double  [window windowRect], 4:3 resolution
 %   .center         1X2 double  [Xcenter Ycenter]
 % iRecall           double      current recall session
+% varargin          cell        optional: 
+%                                   1. Feedback (0 or 1) 
+%                                   2. Session type: [1, 5]
 %
 % <<< OUTPUT VARIABLES <<<
 % NAME              TYPE        DESCRIPTION
@@ -68,6 +72,7 @@ for iCard = 1: length(cardShown)
     % Delay flipping in case of learning for cardDelay
     if currSesstype == 2 || currSesstype == 3
         WaitSecs(topCardDisplay);
+    % Show fixation crosses if in MRI
     elseif MRI
         HideCursor;
         imgCross = Screen('MakeTexture', window, imgMRICross);
@@ -129,8 +134,6 @@ for iCard = 1: length(cardShown)
         % Display the card for a time defined by cardDisplay
         WaitSecs(cardDisplay);
     end
-%     % Set fixed duration of trials 
-%     WaitSecs(responseTime);
 end
 
 %% performance

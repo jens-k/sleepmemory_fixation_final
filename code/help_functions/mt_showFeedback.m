@@ -22,7 +22,7 @@ function cardFlip = mt_showFeedback(dirRoot, window, cardFlip, feedbackOn, image
 load(fullfile(dirRoot,'setup','mt_params.mat'))   % load workspace information and properties
 
 %% Set parameters
-imageTop = images(imageCurrent);
+imageTop = imagesTop(imageCurrent);
 
 % show feedback on the card
 Priority(MaxPriority(window));

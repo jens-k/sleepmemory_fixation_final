@@ -63,9 +63,7 @@ save(fullfile(dirRoot, 'DATA', strcat(fName, '.mat')), 'subjectData')
 writetable(subjectData, fullfile(dirRoot, 'DATA', strcat(fName, '.csv')))
 
 % Backup
-if exist(fullfile(dirRoot, 'DATA'), 'dir') && ...
-        ~exist(fullfile(dirRoot, 'BACKUP', strcat(fName, '.mat')), 'file')
-    copyfile(fullfile(dirRoot, 'DATA', [fName '.*']), fullfile(dirRoot, 'BACKUP'), 'f');
-end
+copyfile(fullfile(dirRoot, 'DATA', [fName '.*']), fullfile(dirRoot, 'BACKUP'), 'f');
+
 
 end

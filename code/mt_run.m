@@ -65,12 +65,11 @@ end
 % Prepare Card Matrix
 mt_setupCards(dirRoot, cfg_window);
 
-%% Show introduction screen
-mt_showText(dirRoot, textIntro, window);
-
 %% Start the game
 % CONTROL
 if strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'c')
+    % Show introduction screen
+    mt_showText(dirRoot, textControl, window);
     % Start Control Task
     for cRun = 1: length(controlList)
         mt_controlTask(dirRoot, cfg_window, cRun);
@@ -78,6 +77,8 @@ if strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'c')
 % LEARNING & IMMEDIATE RECALL (learning & interference)
 elseif strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'l') ...
         || strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'i')
+    % Show introduction screen
+    mt_showText(dirRoot, textIntro, window);
     if strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'l')
         % Start practice session
         mt_cardGamePractice(dirRoot, cfg_window);
@@ -101,6 +102,8 @@ elseif strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'l') ...
     end
 % FINAL RECALL
 else
+    % Show introduction screen
+    mt_showText(dirRoot, textIntro, window);
     while (iRecall < nFinalRecall) 
         % Start Experimental Task
         perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall);

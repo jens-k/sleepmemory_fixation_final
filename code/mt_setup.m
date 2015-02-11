@@ -23,7 +23,7 @@ function dirRoot = mt_setup(user)
 % Expermimental Details
 MRI             = 0;
 experimentName  = 'Sleep Connectivity';
-nLearningSess   = 2;
+nLearningSess   = 2; % number of learning sessions
 nMinRecall      = 2; % as minimum for learning/feedback 
 nMaxRecall      = 5; % to exclude if too poor performance
 nFinalRecall    = 2; % number of final recall sessions
@@ -130,6 +130,15 @@ cardSequence 	= {...
 
 %% ================================ TEXT ================================ %
 % Text strings used during the program
+textControl = {  ...
+    'Willkommen!'
+    ''
+    'Im Folgenden sehen Sie mehrere Karten.'
+    'Die Karten werden nacheinander dunkler.'
+    'Z‰hlen Sie wie viele Karten dunkler werden.'
+    ''
+    'Viel Spaﬂ!'
+    };
 textIntro = {  ...
     'Willkommen!'
     ''
@@ -144,14 +153,14 @@ textPracticeLearn = { ...
     ''
     'Lernen:'
     '  Zwei Karten werden aufgedeckt.'
-    '  Merken Sie sich die Position der Bilder'
+    '  Merken Sie sich die Position der Bilder.'
     };
 textPracticeRecall = { ...
     'Demonstration:'
     ''
     'Abfrage:'
-    '  Klicken Sie auf die Karte'
-    '  unter der sich das Bild befindet'
+    '  Klicken Sie auf die Karte unter der'
+    '  sich das angezeigte Bild befindet.'
     };
 textOutro = {  ...
     'Ende';

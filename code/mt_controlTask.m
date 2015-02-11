@@ -83,7 +83,7 @@ Screen('TextSize', window, 20);               % set text size
 Priority(MaxPriority(window));
 Screen('FillRect', window, cardColors, controlRects);
 Screen('FrameRect', window, frameColor, controlRects, frameWidth);
-DrawFormattedText(window, 'Wie viele Karten wurden dunkler?', 'center', 10, textDefColor);
+DrawFormattedText(window, 'Wie viele Karten wurden dunkler?', 'center', 20, textDefColor);
 Screen('TextSize', window, controlCardTextSize);
 for cc = 1 : nControlAnswers
     DrawFormattedText(window, num2str(controlAnswers(cc)), 'center', ...
@@ -117,7 +117,7 @@ Screen('TextSize', window, 20);               % set text size
 Priority(MaxPriority(window));
 Screen('FillRect', window, cardColors, controlRects);
 Screen('FrameRect', window, frameColor, controlRects, frameWidth);
-DrawFormattedText(window, 'Wie viele Karten wurden dunkler?', 'center', 10, textDefColor);
+DrawFormattedText(window, 'Wie viele Karten wurden dunkler?', 'center', 20, textDefColor);
 Screen('TextSize', window, controlCardTextSize);
 if mouseOnCard == controlCardCorrect
     % Correct

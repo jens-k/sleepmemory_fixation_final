@@ -59,6 +59,9 @@ cfg_window.center = [xCenter, yCenter];
 % Activate alpha channel for transparency
 Screen('BlendFunction', window, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+% Set up alpha-blending for smooth (anti-aliased) lines
+Screen('BlendFunction', window, 'GL_SRC_ALPHA', 'GL_ONE_MINUS_SRC_ALPHA');
+
 % Set Text Font
 Screen('TextFont', window, textDefFont);
 

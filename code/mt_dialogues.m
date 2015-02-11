@@ -1,4 +1,4 @@
-function mt_dialogues(dirRoot)
+function cancel = mt_dialogues(dirRoot)
 % ** function mt_dialogues(dirRoot)
 % This script creates dialogue windows to configure the experiment. The
 % questions and defaults can be found and adjustet in "prompts.txt" and
@@ -52,7 +52,11 @@ for p = 1 : length(prompts)
         (p == 5 && ~ismember(answers{5}(:), cfg_cases.lab))     || ...
         (p == 6 && ~ismember(answers{6}(:), cfg_cases.odor))  
             answers{p} 	= upper(newid(prompts(p), '', [1 70], defaults(p), options));
-    end   
+        if isempty(answers{p})
+            close('dlgBackground')
+            error('Input cancelled')
+        end
+    end
     if str2double(answers{1}{:}) == 0
         load(fullfile(setupdir, 'mt_debug.mat'))
         break;

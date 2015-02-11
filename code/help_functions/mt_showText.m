@@ -4,6 +4,7 @@ function mt_showText(dirRoot, text, window, varargin)
 % mt_window
 %
 % USAGE:
+%       mt_showText(dirRoot, text, window)
 %       mt_showText(dirRoot, text, window, textSize)
 %
 % >>> INPUT VARIABLES >>>
@@ -51,7 +52,6 @@ while sum(isClick) > 0
     [~, ~, isClick]   = GetMouse();
     WaitSecs(.01);
 end
-
 
 
 end
