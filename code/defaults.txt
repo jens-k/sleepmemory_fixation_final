@@ -1,6 +1,6 @@
 (1-1000)
 1 or 2
-"A" or "B"
 "C" or "L" or "R" or "I" or "G"
+"A" or "B"
 "MEG" or "SL3" or "SL4"
 1 or 0

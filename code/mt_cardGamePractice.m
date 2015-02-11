@@ -87,6 +87,28 @@ for iCard = 1: length(cardShown)
     Screen('Flip', window, flipTime);
     Priority(0);
 
+    HideCursor;
+    imgCrossTex = Screen('MakeTexture', window, imgCross);
+    Priority(MaxPriority(window));
+    Screen('DrawTexture', window, imageTop, [], topCard);
+    Screen('FillRect', window, cardColors, rects);
+    Screen('FrameRect', window, frameColor, rects, frameWidth);
+    for iImage = 1:size(imgs, 2)
+        tmp = CenterRectOnPointd(crossSize, rects(1, iImage)+cardSize(3)/2, rects(2, iImage)+cardSize(4)/2);
+        tmp = reshape(tmp, 4, 1);
+        Screen('DrawTexture', window, imgCrossTex, [], tmp);
+    end
+    Screen('Flip', window, flipTime);
+    Priority(0);
+    WaitSecs(responseTime);
+    Priority(MaxPriority(window));
+    Screen('DrawTexture', window, imageTop, [], topCard);
+    Screen('FillRect', window, cardColors, rects);
+    Screen('FrameRect', window, frameColor, rects, frameWidth);
+    Screen('Flip', window, flipTime);
+    Priority(0);
+    ShowCursor;
+    
     % OnMouseClick: flip the card
     [cardFlip, mouseData(iCard, :)]	= mt_cardFlip(screenOff, ncards_x, cardSize, topCardHeigth, responseTime);
     
@@ -95,16 +117,18 @@ for iCard = 1: length(cardShown)
     Screen('DrawTexture', window, imageTop, [], topCard);
     Screen('FillRect', window, cardColors, rects);
     Screen('FrameRect', window, frameColor, rects, frameWidth);
-    if cardFlip == imageCurrent
-        % Correct: Show the green tick image
-        Screen('DrawTexture', window, Screen('MakeTexture', window, imgCorrect), ...
-            [], [imgs(1:2, cardFlip)+feedbackMargin; imgs(3:4, cardFlip)-feedbackMargin]);
-    else
-        % Incorrect: Show the red cross image
-        Screen('DrawTexture', window, Screen('MakeTexture', window, imgIncorrect), ...
-            [], [imgs(1:2, cardFlip)+feedbackMargin; imgs(3:4, cardFlip)-feedbackMargin]);
-        % Flip the correct image afterwards
-        cardFlip = imageCurrent;
+    if cardFlip ~= 0
+        if cardFlip == imageCurrent
+            % Correct: Show the green tick image
+            Screen('DrawTexture', window, Screen('MakeTexture', window, imgCorrect), ...
+                [], [imgs(1:2, cardFlip)+feedbackMargin; imgs(3:4, cardFlip)-feedbackMargin]);
+        else
+            % Incorrect: Show the red cross image
+            Screen('DrawTexture', window, Screen('MakeTexture', window, imgIncorrect), ...
+                [], [imgs(1:2, cardFlip)+feedbackMargin; imgs(3:4, cardFlip)-feedbackMargin]);
+            % Flip the correct image afterwards
+            cardFlip = imageCurrent;
+        end
     end
     Screen('Flip', window, flipTime);
     Priority(0);

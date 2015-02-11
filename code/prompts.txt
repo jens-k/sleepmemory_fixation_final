@@ -1,6 +1,6 @@
 Enter subject number: 
 Enter night number:
-Enter memory version:
 Session Type: control (C), learning (L) , retrieval (R), interference (I), or gray mode (G)
+Enter memory version:
 Enter in which lab you are:
 Enter if odor is on (1) or off (0):
