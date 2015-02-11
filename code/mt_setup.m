@@ -21,7 +21,7 @@ function dirRoot = mt_setup(user)
 [dirRoot, dirPTB]   = mt_profile(user);
 
 % Expermimental Details
-MRI             = 0;
+MRI             = 1;
 experimentName  = 'Sleep Connectivity';
 nLearningSess   = 2; % number of learning sessions
 nMinRecall      = 2; % as minimum for learning/feedback 
@@ -53,7 +53,7 @@ imageConfiguration = {
   'termite',   	'hen',          'kangaroo',	'killer_whale', 'duck',         'bat'
   }
   { % imagesB 	INTERFERENCE
-  'rhino',		'killer_whale',	'goose',	'kangaroo',     'tiger',		'seagull';
+  'rhino',		'killer_whale',	'duck',     'kangaroo',     'tiger',		'seagull';
   'beetle',		'crab',			'pomfret',  'platypus',     'bat'           'zebra';
   'kiwi',		'tapir',		'barn_owl', 'bee',          'partridge',    'termite';
   'dolphin',	'mussel', 		'elephant', 'hen',          'pelican',      'mosquito';
@@ -159,8 +159,8 @@ textPracticeRecall = { ...
     'Demonstration:'
     ''
     'Abfrage:'
-    '  Klicken Sie auf die Karte unter der'
-    '  sich das angezeigte Bild befindet.'
+    '  Klicken Sie auf die Karte unter'
+    '  der sich das angezeigte Bild befindet.'
     };
 textOutro = {  ...
     'Ende';
@@ -216,8 +216,10 @@ cardColorControl        = 0.3;          % color of highlighted card
 textColorCorrect        = [0.2 1 0.2];  % text color for correct response
 textColorIncorrect      = [1 0.2 0.2];  % text color for incorrect response
 controlTextMargin       = 200;          % distance in x from text to card
-controlFeedbackDisplay  = 3;            % feedback display duration4
+controlFeedbackDisplay  = 3;            % feedback display duration
 
+crossSize               = [0 0 50 50];
+circleSize              = [0 0 50 50];                  
 
 %% ============================== OPTIONAL ============================== %
 % Change Cursor Type
@@ -235,7 +237,8 @@ textBgColor         = [1 1 1]; % white background
 
 % Set Timing
 topCardDisplay      = 1;    	% Duartion top Card is shown (seconds)
-cardDisplay         = 1;     	% Duration memory cards are shown (seconds)
+cardDisplay         = 5;     	% Duration memory cards are shown (seconds)
+cardRecallDisplay   = 1;     	% Duration memory cards are shown (seconds)
 feedbackDisplay     = 1;        % Duration feedback is shown (seconds)
 if MRI
     responseTime     = 5;       % Duration allowed to respond (click) in MRI
@@ -268,8 +271,9 @@ imgCorrect(:,:,4)           = alpha;
 imgIncorrect(:,:,4)         = alpha;
 [imgNoFeedback, ~, alpha]   = imread(fullfile(imgfolderFeedback, imagesFeedback{3}));
 imgNoFeedback(:,:,4)        = alpha;
-[imgMRICross, ~, alpha]     = imread(fullfile(imgfolderFeedback, imagesFeedback{4}));
-imgMRICross(:,:,4)          = alpha;
+[imgCross, ~, alpha]        = imread(fullfile(imgfolderFeedback, imagesFeedback{4}));
+imgCross(:,:,4)             = alpha;
+
 
 % Size of Memory Cards
 topCardWidth        = topCardHeigth * (4/3);

@@ -34,6 +34,9 @@ mouseData    	= zeros(length(cardShown), 3);
 % Practice set
 images(imageSequencePractice(1))   = Screen('MakeTexture', window, imread(fullfile(imgfolderP, imageFilesP{1})));
 images(imageSequencePractice(2))   = Screen('MakeTexture', window, imread(fullfile(imgfolderP, imageFilesP{2})));
+imagesTop(imageSequencePractice(1))   = Screen('MakeTexture', window, imread(fullfile(imgfolderP, 'top', imageFilesP{1})));
+imagesTop(imageSequencePractice(2))   = Screen('MakeTexture', window, imread(fullfile(imgfolderP, 'top', imageFilesP{2})));
+
 feedbackOn      = 1;
 
 mt_showText(dirRoot, textPracticeLearn, window);
@@ -42,7 +45,7 @@ mt_showText(dirRoot, textPracticeLearn, window);
 for iCard = 1: length(cardShown)
     % Get current picture
     imageCurrent = cardShown(iCard);
-    imageTop = images(imageCurrent);
+    imageTop = imagesTop(imageCurrent);
     
     % Show a picture on top
     Priority(MaxPriority(window));
@@ -74,7 +77,7 @@ mt_showText(dirRoot, textPracticeRecall, window);
 for iCard = 1: length(cardShown)
     % Get current picture
     imageCurrent = cardShown(iCard);
-    imageTop = images(imageCurrent);
+    imageTop = imagesTop(imageCurrent);
     
     % Show a picture on top
     Priority(MaxPriority(window));
@@ -117,5 +120,5 @@ for iCard = 1: length(cardShown)
     Priority(0);
 
     % Display the card for a time defined by cardDisplay
-    WaitSecs(cardDisplay);
+    WaitSecs(cardRecallDisplay);
 end

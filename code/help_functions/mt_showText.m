@@ -30,7 +30,7 @@ Screen('TextSize', window, textSize);               % set text size
 
 % Set specific format if text is a cell array
 if iscell(text)
-    for line = 1: size(text,1)-1
+    for line = 1: size(text,1)
         DrawFormattedText(window, text{line}, textSx, textSy+line*textSize*textVSpacing, textDefColor);
     end
 else

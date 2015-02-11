@@ -32,8 +32,9 @@ Screen('FrameRect', window, frameColor, rects, frameWidth);
 % No feedback
 if feedbackOn == 0
     % Show the blue dot on the card which was clicked
-    Screen('DrawTexture', window, Screen('MakeTexture', window, imgNoFeedback), ...
-        [], [imgs(1:2, cardFlip)+feedbackMargin; imgs(3:4, cardFlip)-feedbackMargin]);
+    tmp = CenterRectOnPointd(circleSize, rects(1, cardFlip)+cardSize(3)/2, rects(2, cardFlip)+cardSize(4)/2);
+    tmp = reshape(tmp, 4, 1);
+    Screen('DrawTexture', window, Screen('MakeTexture', window, imgNoFeedback), [], tmp);
     cardFlip = 0;
 % Feedback for correct choice
 elseif cardFlip == imageCurrent

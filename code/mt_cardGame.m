@@ -43,6 +43,9 @@ elseif length(varargin) == 2
 else
     currSesstype = cfg_dlgs.sesstype;
 end
+if currSesstype == 4
+    showCross = 1;
+end
 
 %% Initialize variables for measured parameters
 cardShown     	= cardSequence{cfg_dlgs.memvers}{cfg_dlgs.sesstype}';
@@ -73,16 +76,17 @@ for iCard = 1: length(cardShown)
     if currSesstype == 2 || currSesstype == 3
         WaitSecs(topCardDisplay);
     % Show fixation crosses if in MRI
-    elseif MRI
+    elseif showCross
         HideCursor;
-        imgCross = Screen('MakeTexture', window, imgMRICross);
+        imgCrossTex = Screen('MakeTexture', window, imgCross);
         Priority(MaxPriority(window));
         Screen('DrawTexture', window, imageTop, [], topCard);
         Screen('FillRect', window, cardColors, rects);
         Screen('FrameRect', window, frameColor, rects, frameWidth);
         for iImage = 1:size(imgs, 2)
-            Screen('DrawTexture', window, imgCross, ...
-                [], [imgs(1:2, iImage)+feedbackMargin; imgs(3:4, iImage)-feedbackMargin]);
+            tmp = CenterRectOnPointd(crossSize, rects(1, iImage)+cardSize(3)/2, rects(2, iImage)+cardSize(4)/2);
+            tmp = reshape(tmp, 4, 1);
+            Screen('DrawTexture', window, imgCrossTex, [], tmp);
         end
         Screen('Flip', window, flipTime);
         Priority(0);
@@ -131,8 +135,12 @@ for iCard = 1: length(cardShown)
         Screen('Flip', window, flipTime);
         Priority(0);
 
-        % Display the card for a time defined by cardDisplay
-        WaitSecs(cardDisplay);
+        % Display the card for a pre-defined time
+        if currSesstype == 4
+            WaitSecs(cardRecallDisplay);
+        else
+            WaitSecs(cardDisplay);
+        end
     end
 end
 
