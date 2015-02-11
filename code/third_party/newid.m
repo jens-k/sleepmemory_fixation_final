@@ -284,8 +284,8 @@ FigPos=get(InputFig,'Position');
 FigWidth=max(FigWidth,2*(BtnWidth+DefOffset)+DefOffset);
 
 % MODIFIED
-screenSize = get(0,'ScreenSize');
-FigPos(1)=(screenSize(3)/2-FigWidth/1.3);
+screenSize = get(0,'MonitorPositions');
+FigPos(1)=(screenSize(3)/2-FigWidth/2);
 FigPos(2)=(screenSize(4)/2-FigHeight/2);
 FigPos(3)=FigWidth;
 FigPos(4)=FigHeight;

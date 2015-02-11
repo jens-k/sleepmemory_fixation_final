@@ -32,10 +32,10 @@ cardClicked  	= zeros(length(cardShown), 1);
 mouseData    	= zeros(length(cardShown), 3);
 
 % Practice set
-images(imageSequencePractice(1))   = Screen('MakeTexture', window, imread(fullfile(imgfolderP, imageFilesP{1})));
-images(imageSequencePractice(2))   = Screen('MakeTexture', window, imread(fullfile(imgfolderP, imageFilesP{2})));
-imagesTop(imageSequencePractice(1))   = Screen('MakeTexture', window, imread(fullfile(imgfolderP, 'top', imageFilesP{1})));
-imagesTop(imageSequencePractice(2))   = Screen('MakeTexture', window, imread(fullfile(imgfolderP, 'top', imageFilesP{2})));
+images(imageSequencePractice(1))	= Screen('MakeTexture', window, imread(fullfile(imgfolderP, imageFilesP{1})));
+images(imageSequencePractice(2))	= Screen('MakeTexture', window, imread(fullfile(imgfolderP, imageFilesP{2})));
+imagesTop(imageSequencePractice(1))	= Screen('MakeTexture', window, imread(fullfile(imgfolderP, 'top', imageFilesP{1})));
+imagesTop(imageSequencePractice(2))	= Screen('MakeTexture', window, imread(fullfile(imgfolderP, 'top', imageFilesP{2})));
 
 feedbackOn      = 1;
 
@@ -110,7 +110,7 @@ for iCard = 1: length(cardShown)
     ShowCursor;
     
     % OnMouseClick: flip the card
-    [cardFlip, mouseData(iCard, :)]	= mt_cardFlip(screenOff, ncards_x, cardSize, topCardHeigth, responseTime);
+    [cardFlip, mouseData(iCard, :)]	= mt_cardFlip(screenOff, ncards_x, cardSize+cardMargin, topCardHeigth, responseTime);
     
     % Show feedback
     Priority(MaxPriority(window));
@@ -129,7 +129,6 @@ for iCard = 1: length(cardShown)
             % Flip the correct image afterwards
             cardFlip = imageCurrent;
         end
-    end
     Screen('Flip', window, flipTime);
     Priority(0);
     WaitSecs(feedbackDisplay);
@@ -142,6 +141,7 @@ for iCard = 1: length(cardShown)
     Screen('FrameRect', window, frameColor, rects, frameWidth);
     Screen('Flip', window, flipTime);
     Priority(0);
+    end
 
     % Display the card for a time defined by cardDisplay
     WaitSecs(cardRecallDisplay);

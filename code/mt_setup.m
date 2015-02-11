@@ -177,7 +177,7 @@ textSession = {
     };
 
 % Text Properties
-textDefSize     = 35;           % default Text Size
+textDefSize     = 30;           % default Text Size
 textDefFont     = 'Georgia';    % default Text Font
 textDefColor    = [0 0 0];      % default Text Color
 textSx          = 'center';     % default Text x-position

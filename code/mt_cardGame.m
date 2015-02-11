@@ -53,7 +53,7 @@ cardClicked  	= zeros(length(cardShown), 1);
 mouseData    	= zeros(length(cardShown), 3);
 
 %% Show which session is upcoming
-mt_showText(dirRoot, textSession{currSesstype}, window);
+mt_showText(dirRoot, textSession{currSesstype}, window, 40);
 
 %% Start the game
 ShowCursor;
