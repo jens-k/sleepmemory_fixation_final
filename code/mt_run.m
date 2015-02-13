@@ -65,11 +65,17 @@ end
 % Prepare Card Matrix
 mt_setupCards(dirRoot, cfg_window);
 
+% Fixation task
+% mt_showText(dirRoot, textFixation, window);
+% mt_showText(dirRoot, textQuestion, window);
+% mt_fixationTask(dirRoot, cfg_window);
+
 %% Start the game
 % CONTROL
 if strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'c')
     % Show introduction screen
     mt_showText(dirRoot, textControl, window);
+    mt_showText(dirRoot, textQuestion, window);
     % Start Control Task
     for cRun = 1: length(controlList)
         mt_controlTask(dirRoot, cfg_window, cRun);
@@ -78,11 +84,13 @@ if strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'c')
 elseif strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'l') ...
         || strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'i')
     % Show introduction screen
-    mt_showText(dirRoot, textIntro, window);
+    mt_showText(dirRoot, textLearning, window);
     if strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'l')
         % Start practice session
         mt_cardGamePractice(dirRoot, cfg_window);
     end
+    mt_showText(dirRoot, textLearning2, window);
+    mt_showText(dirRoot, textQuestion, window);
     % Start learning sessions
     for lRun = 1: nLearningSess
         mt_cardGame(dirRoot, cfg_window, iRecall);
@@ -95,6 +103,7 @@ elseif strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'l') ...
     end
     if (iRecall < nMaxRecall) && (100*perc_correct > 60)
         % start recall without feedback
+        mt_showText(dirRoot, textRecallNoFeedback, window);
         perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 0, 4);
     elseif (iRecall >= nMaxRecall)
         sprintf('Maximum number of recall runs reached. Experiment cancelled.')
@@ -103,10 +112,12 @@ elseif strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'l') ...
 % FINAL RECALL
 else
     % Show introduction screen
-    mt_showText(dirRoot, textIntro, window);
+    mt_showText(dirRoot, textRecall, window);
+    mt_showText(dirRoot, textRecallNoFeedback, window);
+    mt_showText(dirRoot, textQuestion, window);
     while (iRecall < nFinalRecall) 
         % Start Experimental Task
-        perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall);
+        perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 0, 4);
         iRecall = iRecall + 1;
     end
     % Show final screen

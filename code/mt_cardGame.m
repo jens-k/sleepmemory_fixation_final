@@ -67,6 +67,7 @@ for iCard = 1: length(cardShown)
     % Show a picture on top
     Priority(MaxPriority(window));
     Screen('DrawTexture', window, imageTop, [], topCard);
+    Screen('FrameRect', window, frameColor, topCard, frameWidth);
     Screen('FillRect', window, cardColors, rects);
     Screen('FrameRect', window, frameColor, rects, frameWidth);
     Screen('Flip', window, flipTime);
@@ -75,12 +76,13 @@ for iCard = 1: length(cardShown)
     % Delay flipping in case of learning for cardDelay
     if currSesstype == 2 || currSesstype == 3
         WaitSecs(topCardDisplay);
-    % Show fixation crosses if in MRI
+    % Show fixation crosses
     elseif showCross
         HideCursor;
         imgCrossTex = Screen('MakeTexture', window, imgCross);
         Priority(MaxPriority(window));
         Screen('DrawTexture', window, imageTop, [], topCard);
+        Screen('FrameRect', window, frameColor, topCard, frameWidth);
         Screen('FillRect', window, cardColors, rects);
         Screen('FrameRect', window, frameColor, rects, frameWidth);
         for iImage = 1:size(imgs, 2)
@@ -90,9 +92,10 @@ for iCard = 1: length(cardShown)
         end
         Screen('Flip', window, flipTime);
         Priority(0);
-        WaitSecs(responseTime);
+        WaitSecs(cardCrossDisplay);
         Priority(MaxPriority(window));
         Screen('DrawTexture', window, imageTop, [], topCard);
+        Screen('FrameRect', window, frameColor, topCard, frameWidth);
         Screen('FillRect', window, cardColors, rects);
         Screen('FrameRect', window, frameColor, rects, frameWidth);
         Screen('Flip', window, flipTime);
@@ -106,7 +109,7 @@ for iCard = 1: length(cardShown)
             % The card with the same image shown on top will be flipped
             cardFlip            = imageCurrent;
             cardClicked(iCard)  = cardFlip; % dummy
-        otherwise % Immediate Recall
+        case 4 % (Immediate) Recall
             % OnMouseClick: flip the card
             [cardFlip, mouseData(iCard, :)]	= mt_cardFlip(screenOff, ncards_x, cardSize+cardMargin, topCardHeigth, responseTime);
             if cardFlip ~= 0
@@ -122,6 +125,7 @@ for iCard = 1: length(cardShown)
         % Flip the card
         Priority(MaxPriority(window));
         Screen('DrawTexture', window, imageTop, [], topCard);
+        Screen('FrameRect', window, frameColor, topCard, frameWidth);
 
         % Fill all rects but the flipped one
         if cardFlip
@@ -144,8 +148,9 @@ for iCard = 1: length(cardShown)
     end
 end
 
-%% performance
+%% Performance
 
+% Compute performance
 isinterf = (cfg_dlgs.sesstype==3)+1;    % check if interference
 
 correct             = (cardShown - cardClicked) + 1;
@@ -160,13 +165,20 @@ for iCard = 1: length(cardShown)
     coordsShown{iCard}      = mt_cards1Dto2D(cardShown(iCard), ncards_x, ncards_y);
     coordsClicked{iCard}    = mt_cards1Dto2D(cardClicked(iCard), ncards_x, ncards_y);
 end
+
+% Save performance
 % save cards shown, cards clicked, mouse click x/y coordinates, reaction time
 performance         = table(correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
 
 % save session data
 mt_saveTable(dirRoot, performance, feedbackOn)
 
-% return performance
+% Show performance for recall session
+if currSesstype == 4
+    mt_showText(dirRoot, [sprintf('%.f', 100*mean(correct)) '% (' sprintf('%.f', sum(correct)) ' von ' sprintf('%.f', length(correct)) ') waren korrekt!'], window);
+end
+
+% Return performance
 if currSesstype == 4 % if recall session
     perc_correct        = sum(correct)/length(correct);
 else

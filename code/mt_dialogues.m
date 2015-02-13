@@ -51,6 +51,9 @@ for p = 1 : length(prompts)
         (p == 4 && ~ismember(answers{4}(:), cfg_cases.memvers)))|| ...
         (p == 5 && ~ismember(answers{5}(:), cfg_cases.lab))     || ...
         (p == 6 && ~ismember(answers{6}(:), cfg_cases.odor))  
+        if p == 6 && strcmpi(char(answers{3}(:)), cfg_cases.sesstype{1})
+            break;
+        end
             answers{p} 	= upper(newid(prompts(p), '', [1 70], defaults(p), options));
         if isempty(answers{p})
             close('dlgBackground')

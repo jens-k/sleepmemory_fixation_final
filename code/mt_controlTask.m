@@ -1,9 +1,9 @@
 function mt_controlTask(dirRoot, cfg_window, iControlRun)
-% ** function mt_controlTask(dirRoot, cfg_window, controlRun)
+% ** function mt_controlTask(dirRoot, cfg_window, iControlRun)
 % This function initiates the control task.
 %
 % USAGE:
-%     mt_controlTask(dirRoot, cfg_window, controlRun)
+%     mt_controlTask(dirRoot, cfg_window, iControlRun)
 %
 % >>> INPUT VARIABLES >>>
 % NAME              TYPE        DESCRIPTION
@@ -39,6 +39,7 @@ HideCursor;
 % Draw the rects to the screen
 Priority(MaxPriority(window));
 Screen('FillRect', window, cardColorControl, topCard);
+Screen('FrameRect', window, frameColor, topCard, frameWidth);
 Screen('FillRect', window, cardColors, rects);
 Screen('FrameRect', window, frameColor, rects, frameWidth);
 Screen('Flip', window, flipTime);
@@ -51,9 +52,16 @@ for iCard = 1: nCardsShown
     % Flip the card
     Priority(MaxPriority(window));
     Screen('FillRect', window, cardColorControl, topCard);
+    Screen('FrameRect', window, frameColor, topCard, frameWidth);
     % Fill all rects but one
     Screen('FillRect', window, cardColors, rects(:, (1:ncards ~= cardCurrent)));
     Screen('FillRect', window, cardColorControl, rects(:, cardCurrent));
+    % Show fixation cross
+    imgCrossTex = Screen('MakeTexture', window, imgCross);
+    tmp = CenterRectOnPointd(crossSize, rects(1, cardCurrent)+cardSize(3)/2, rects(2, cardCurrent)+cardSize(4)/2);
+    tmp = reshape(tmp, 4, 1);
+    Screen('DrawTexture', window, imgCrossTex, [], tmp);
+    % Show frames
     Screen('FrameRect', window, frameColor, rects, frameWidth);
     Screen('Flip', window, flipTime);
     Priority(0);
@@ -130,7 +138,7 @@ if mouseOnCard == controlCardCorrect
     Screen('TextStyle', window, 1);
     DrawFormattedText(window, num2str(controlAnswers(controlCardCorrect)), 'center', ...
         (controlRects(4, controlCardCorrect)-(controlCardHeigth/2)-(controlCardTextSize*0.9)), textColorCorrect);
-    DrawFormattedText(window, 'Richtig', controlRects(1,1)+controlTextMargin, (controlRects(4, controlCardCorrect)-(controlCardHeigth/2)-(controlCardTextSize*0.9)), textColorCorrect);
+%     DrawFormattedText(window, 'Richtig', controlRects(1,1)+controlTextMargin, (controlRects(4, controlCardCorrect)-(controlCardHeigth/2)-(controlCardTextSize*0.9)), textColorCorrect);
 else
     % Incorrect 
     controlCardInds = find((1:nControlAnswers ~= controlCardCorrect) & (1:nControlAnswers ~= mouseOnCard));
@@ -143,8 +151,8 @@ else
         (controlRects(4, controlCardCorrect)-(controlCardHeigth/2)-(controlCardTextSize*0.9)), textColorCorrect);
     DrawFormattedText(window, num2str(controlAnswers(mouseOnCard)), 'center', ...
         (controlRects(4, mouseOnCard)-(controlCardHeigth/2)-(controlCardTextSize*0.9)), textColorIncorrect);
-    DrawFormattedText(window, 'Richtig', controlRects(1,1)+controlTextMargin, (controlRects(4, controlCardCorrect)-(controlCardHeigth/2)-(controlCardTextSize*0.9)), textColorCorrect);
-%     DrawFormattedText(window, 'Falsch', controlRects(1,1)+controlTextMargin, (controlRects(4, mouseOnCard)-(controlCardHeigth/2)-(controlCardTextSize*0.9)), textColorIncorrect);
+%     DrawFormattedText(window, 'Richtig', controlRects(1,1)+controlTextMargin, (controlRects(4, controlCardCorrect)-(controlCardHeigth/2)-(controlCardTextSize*0.9)), textColorCorrect);
+    DrawFormattedText(window, 'Falsch', controlRects(1,1)+controlTextMargin, (controlRects(4, mouseOnCard)-(controlCardHeigth/2)-(controlCardTextSize*0.9)), textColorIncorrect);
 end
 Screen('Flip', window, flipTime);
 Priority(0);

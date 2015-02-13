@@ -50,6 +50,7 @@ for iCard = 1: length(cardShown)
     % Show a picture on top
     Priority(MaxPriority(window));
     Screen('DrawTexture', window, imageTop, [], topCard);
+    Screen('FrameRect', window, frameColor, topCard, frameWidth);
     Screen('FillRect', window, cardColors, rects);
     Screen('FrameRect', window, frameColor, rects, frameWidth);
     Screen('Flip', window, flipTime);
@@ -59,6 +60,7 @@ for iCard = 1: length(cardShown)
     % Flip the card
     Priority(MaxPriority(window));
     Screen('DrawTexture', window, imageTop, [], topCard);
+    Screen('FrameRect', window, frameColor, topCard, frameWidth);
 
     % Fill all rects but the flipped one
     Screen('FillRect', window, cardColors, rects(:, (1:ncards ~= imageCurrent)));
@@ -82,6 +84,7 @@ for iCard = 1: length(cardShown)
     % Show a picture on top
     Priority(MaxPriority(window));
     Screen('DrawTexture', window, imageTop, [], topCard);
+    Screen('FrameRect', window, frameColor, topCard, frameWidth);
     Screen('FillRect', window, cardColors, rects);
     Screen('FrameRect', window, frameColor, rects, frameWidth);
     Screen('Flip', window, flipTime);
@@ -91,6 +94,7 @@ for iCard = 1: length(cardShown)
     imgCrossTex = Screen('MakeTexture', window, imgCross);
     Priority(MaxPriority(window));
     Screen('DrawTexture', window, imageTop, [], topCard);
+    Screen('FrameRect', window, frameColor, topCard, frameWidth);
     Screen('FillRect', window, cardColors, rects);
     Screen('FrameRect', window, frameColor, rects, frameWidth);
     for iImage = 1:size(imgs, 2)
@@ -100,9 +104,10 @@ for iCard = 1: length(cardShown)
     end
     Screen('Flip', window, flipTime);
     Priority(0);
-    WaitSecs(responseTime);
+    WaitSecs(cardCrossDisplay);
     Priority(MaxPriority(window));
     Screen('DrawTexture', window, imageTop, [], topCard);
+    Screen('FrameRect', window, frameColor, topCard, frameWidth);
     Screen('FillRect', window, cardColors, rects);
     Screen('FrameRect', window, frameColor, rects, frameWidth);
     Screen('Flip', window, flipTime);
@@ -115,6 +120,7 @@ for iCard = 1: length(cardShown)
     % Show feedback
     Priority(MaxPriority(window));
     Screen('DrawTexture', window, imageTop, [], topCard);
+    Screen('FrameRect', window, frameColor, topCard, frameWidth);
     Screen('FillRect', window, cardColors, rects);
     Screen('FrameRect', window, frameColor, rects, frameWidth);
     if cardFlip ~= 0
@@ -136,6 +142,7 @@ for iCard = 1: length(cardShown)
     % Flip the card
     Priority(MaxPriority(window));
     Screen('DrawTexture', window, imageTop, [], topCard);
+    Screen('FrameRect', window, frameColor, topCard, frameWidth);
     Screen('FillRect', window, cardColors, rects(:, (1:ncards ~= cardFlip)));
     Screen('DrawTexture', window, images(cardFlip), [], imgs(:, cardFlip));
     Screen('FrameRect', window, frameColor, rects, frameWidth);

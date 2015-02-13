@@ -21,7 +21,7 @@ function dirRoot = mt_setup(user)
 [dirRoot, dirPTB]   = mt_profile(user);
 
 % Expermimental Details
-MRI             = 1;
+MRI             = 0;
 experimentName  = 'Sleep Connectivity';
 nLearningSess   = 2; % number of learning sessions
 nMinRecall      = 2; % as minimum for learning/feedback 
@@ -131,49 +131,88 @@ cardSequence 	= {...
 %% ================================ TEXT ================================ %
 % Text strings used during the program
 textControl = {  ...
-    'Willkommen!'
+    'Zählaufgabe'
     ''
     'Im Folgenden sehen Sie mehrere Karten.'
     'Die Karten werden nacheinander dunkler.'
-    'Zählen Sie wie viele Karten dunkler werden.'
+    'Ihre Aufgabe: Zählen Sie wie viele Karten dunkler werden.'
+    'Schauen Sie dabei auf das Kreuz in der Kartenmitte.'
     ''
     'Viel Spaß!'
     };
-textIntro = {  ...
+textFixation = {  ...
+    'Fixation'
+    ''
+    'Es erscheint nun ein Kreuz in der Mitte'
+    'des Bildschirms. Bitte schauen Sie auf dieses'
+    'Kreuz, solange es angezeigt wird.'
+    };
+textLearning = {  ...
     'Willkommen!'
     ''
     'Im Folgenden sehen Sie mehrere Karten.'
     'Unter jeder Karte befindet sich ein Bild.'
+    'Das Bild wird zusätzlich oben in groß angezeigt.'
+    'Die Karten werden nacheinander aufgedeckt.'
+    ''
+    'Ihre Aufgabe: '
     'Merken Sie sich die Positionen der Bilder.'
     ''
-    'Viel Spaß!'
+    };
+textLearning2 = {  ...
+    'Lernen'
+    ''
+    'Es werden nun alle Bilder zwei Mal aufgedeckt.'
+    'Danach folgt eine Abfrage der Positionen.'
+    ''
+    'Ihre Aufgabe:'
+    'Merken Sie sich die Positionen der Bilder.'
     };
 textPracticeLearn = { ...
     'Demonstration:'
     ''
     'Lernen:'
-    '  Zwei Karten werden aufgedeckt.'
-    '  Merken Sie sich die Position der Bilder.'
+    'Zwei Karten werden aufgedeckt.'
+    'Merken Sie sich die Position der Bilder.'
     };
 textPracticeRecall = { ...
     'Demonstration:'
     ''
     'Abfrage:'
-    '  Klicken Sie auf die Karte unter'
-    '  der sich das angezeigte Bild befindet.'
+    '1. Fixieren Sie das Kreuz auf der verdeckten'
+    'Karte unter der sich das angezeigte Bild befindet.'
+    '2. Klicken Sie auf die Karte.'
+    };
+textRecall = { ...
+    'Abfrage:'
+    '1. Fixieren Sie das Kreuz auf der verdeckten'
+    'Karte unter der sich das angezeigte Bild befindet.'
+    '2. Klicken Sie auf die Karte.'
+    ''
+    };
+textRecallNoFeedback = { ...
+    'Bei der folgenden Abfrage wird nicht angezeigt'
+    'ob die geklickte Karte korrekt war.'
+    'Es erscheint lediglich ein blauer Punkt auf der'
+    'geklickten Karte.'
     };
 textOutro = {  ...
-    'Ende';
-    '';
-    'Danke für die Teilnahme!';
-    'Auf Wiedersehen!';
+    'Ende'
+    ''
+    'Danke für die Teilnahme!'
+    'Auf Wiedersehen!'
+    };
+textQuestion = {  ...
+    ''
+    ''
+    'Haben Sie noch Fragen zum Ablauf?'
     };
 textSession = {
-    'Konzentration';    % Control    
-    'Lernen';           % Learning
-    'Lernen';           % Interference
-    'Abfrage';          % Recall
-    'Konzentration';    % Gray Mode
+    'Konzentration'    % Control    
+    'Lernen'           % Learning
+    'Lernen'           % Interference
+    'Abfrage'          % Recall
+    'Konzentration'    % Gray Mode
     };
 
 % Text Properties
@@ -218,7 +257,7 @@ textColorIncorrect      = [1 0.2 0.2];  % text color for incorrect response
 controlTextMargin       = 200;          % distance in x from text to card
 controlFeedbackDisplay  = 3;            % feedback display duration
 
-crossSize               = [0 0 50 50];
+crossSize               = [0 0 30 30];
 circleSize              = [0 0 50 50];                  
 
 %% ============================== OPTIONAL ============================== %
@@ -238,6 +277,7 @@ textBgColor         = [1 1 1]; % white background
 % Set Timing
 topCardDisplay      = 1;    	% Duartion top Card is shown (seconds)
 cardDisplay         = 5;     	% Duration memory cards are shown (seconds)
+cardCrossDisplay    = 5;
 cardRecallDisplay   = 1;     	% Duration memory cards are shown (seconds)
 feedbackDisplay     = 1;        % Duration feedback is shown (seconds)
 if MRI
@@ -245,6 +285,7 @@ if MRI
 else
     responseTime     = 15;      % Duration allowed to respond (click) in MEG
 end
+fixationCrossDisplay = 7.5;
 
 
 %% ======================= DO NOT CHANGE FROM HERE ====================== %
