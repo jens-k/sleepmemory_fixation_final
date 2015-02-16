@@ -142,11 +142,11 @@ InputFig=dialog(                     ...
 %%% Set Positions %%%
 %%%%%%%%%%%%%%%%%%%%%
 DefOffset    = 5;
-DefBtnWidth  = 53;
+DefBtnWidth  = 83;
 DefBtnHeight = 23;
 
 TextInfo.Units              = 'pixels'   ;   
-TextInfo.FontSize           = get(0,'FactoryUIControlFontSize');
+TextInfo.FontSize           = 15; % get(0,'FactoryUIControlFontSize');
 TextInfo.FontWeight         = get(InputFig,'DefaultTextFontWeight');
 TextInfo.HorizontalAlignment= 'left'     ;
 TextInfo.HandleVisibility   = 'callback' ;
@@ -282,12 +282,17 @@ end
 FigPos=get(InputFig,'Position');
 
 FigWidth=max(FigWidth,2*(BtnWidth+DefOffset)+DefOffset);
-FigPos(1)=0;
-FigPos(2)=0;
+
+% MODIFIED
+screenSize = get(0,'MonitorPositions');
+FigPos(1)=(screenSize(3)/2-FigWidth/2);
+FigPos(2)=(screenSize(4)/2-FigHeight/2);
 FigPos(3)=FigWidth;
 FigPos(4)=FigHeight;
 
-set(InputFig,'Position',getnicedialoglocation(FigPos,get(InputFig,'Units')));
+% set(InputFig,'Position',getnicedialoglocation(FigPos,get(InputFig,'Units')));
+set(InputFig,'Position', FigPos);
+% MODIFIED END
 
 OKHandle=uicontrol(InputFig     ,              ...
                    BtnInfo      , ...
@@ -347,6 +352,12 @@ if ishandle(InputFig)
 else
     Answer={};
 end
+
+% drawnow expose
+% jFrame = get(handle(InputFig),'JavaFrame');
+% drawnow
+% jFrame.fHG1Client.getWindow.setAlwaysOnTop(true);
+
 
 end
 
@@ -565,4 +576,5 @@ end
         % Make sure it is stacked on the bottom.
         uistack(h1, 'bottom');
     end
+
 end

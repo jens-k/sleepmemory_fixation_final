@@ -1,5 +1,6 @@
-
-
+(1-1000)
+1 or 2
+"C" or "L" or "R" or "I" or "G"
 "A" or "B"
-"L" or "R" or "I"
-"M" or "S"
+"MEG" or "SL3" or "SL4"
+1 or 0
