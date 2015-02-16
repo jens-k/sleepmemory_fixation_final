@@ -10,7 +10,8 @@ function mt_run(user)
 % experiment consists of four phases:
 %
 % 1. Learning (L)
-%    First, one has to remember the cards in the learning phase.
+%    First, one has to remember cards of the main memory set in the 
+%    learning phase.
 %    The cards are displayed one after another.
 %
 % 2. Immediate Recall (R)
@@ -18,11 +19,18 @@ function mt_run(user)
 %    picture corresponding to the one displayed at the top center. 
 %
 % 3. Interference (I)
-%    Prior to recall another configuration of cards will be displayed.
+%    Prior to recall another interference configuration of cards will be 
+%    learned.
 %
 % 4. Recall (R)
-%    Eventually the recall phase shows the same configuration as in the
-%   Learning and Immediate Recall phase
+%    Eventually, the recall phase shows the same configuration as in the
+%    Learning and Immediate Recall phase
+%
+% Note the potential confusion arising from the phase 'Learning' refering
+% to both learning and immediate recall of the main memory, while also the
+% phase 'Interference' has a learning and immediate recall session.
+% TODO: Sollen wir diese Verwirrung auflösen und die erste Phase "Main"/M
+% nennen?
 %
 % IMPORTANT: 
 %  First you need to adjust the variables in "mt_setup.m"
@@ -43,13 +51,13 @@ function mt_run(user)
 % FIXME
 Screen('Preference', 'SkipSyncTests', 1);
 
-%% Prepare workspace
+%% PREPARE WORKSPACE & REQUEST USER INPUT
 close all;                  % Close all figures
 clearvars -except user;     % Clear all variables in the workspace
-iRecall         = 1;        % counts the number of recall sessions needed
+iRecall         = 1;        % counter for recall sessions
 perc_correct    = 0;        % initial value for percent correct clicked cards
 
-% workspace initialization
+% Initialize workspace; includes user dialogues
 dirRoot         = mt_prepare(user); 
 
 % Load workspace information and properties
@@ -65,12 +73,15 @@ end
 % Prepare Card Matrix
 mt_setupCards(dirRoot, cfg_window);
 
+% TODO: Delete if possible
 % Fixation task
 % mt_showText(dirRoot, textFixation, window);
 % mt_showText(dirRoot, textQuestion, window);
 % mt_fixationTask(dirRoot, cfg_window);
 
-%% Start the game
+
+%% START GAME   
+
 % CONTROL
 if strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'c')
     % Show introduction screen
@@ -80,7 +91,8 @@ if strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'c')
     for cRun = 1: length(controlList)
         mt_controlTask(dirRoot, cfg_window, cRun);
     end
-% LEARNING & IMMEDIATE RECALL (learning & interference)
+    
+% LEARNING and IMMEDIATE RECALL (learning & interference memory)
 elseif strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'l') ...
         || strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'i')
     % Show introduction screen
@@ -109,6 +121,7 @@ elseif strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'l') ...
         sprintf('Maximum number of recall runs reached. Experiment cancelled.')
         sca;
     end
+    
 % FINAL RECALL
 else
     % Show introduction screen

@@ -20,19 +20,24 @@ function cancel = mt_dialogues(dirRoot)
 % AUTHOR: Marco Rüth, contact@marcorueth.com
 
 %% Load parameters specified in mt_setup.m
+
 load(fullfile(dirRoot,'setup','mt_params.mat'))   % load workspace information and properties
 
+
 %% Read in questions/default answers shown in the dialogue windows
+
 % Read in dialogue questions
 fid                 = fopen(fullfile(dirRoot,'code','prompts.txt'));
 prompts             = textscan(fid,'%s','Delimiter','\n');
 prompts             = prompts{1};
 fclose(fid);
+
 % Read in dialogue default answers
 fid                 = fopen(fullfile(dirRoot,'code','defaults.txt'));
 defaults            = textscan(fid,'%s','Delimiter','\n');
 defaults            = defaults{1};
 fclose(fid);
+
 % Pre-allocation of cell array for answer strings
 [answers{1:length(prompts)}] = deal(cell(1));
 for r = 1:size(answers,2)
@@ -78,7 +83,7 @@ if ~exist('cfg_dlgs', 'var')
     cfg_dlgs.odor       = char(answers{6}); % Odor on or off
 end
 
-% save(fullfile(setupdir, 'mt_debug.mat'), 'cfg_dlgs') % decomment for new debug mat-file
+% save(fullfile(setupdir, 'mt_debug.mat'), 'cfg_dlgs') % uncomment for new debug mat-file
 
 %% Evaluate the answers to set memory version, session type, and lab
 % Create a new folder for the subject data
