@@ -1,10 +1,10 @@
 function dirRoot = mt_setup(user)
-% ** function mt_setup(user)
-% This script allows to adjust the parameters for the memory task. 
-% Define the variables here before you run mt_run.m
+% ** function mt_setup(user) 
+% This script allows to adjust the most important parameters for the memory
+% task. Define the variables here before you run mt_run.m.
 % 
 % IMPORTANT:    Do not change the order in which the variables are defined.
-%               Some variables rely on each other
+%               Some variables have mutual dependencies.
 %
 % >>> INPUT VARIABLES >>>
 % NAME              TYPE        DESCRIPTION
@@ -17,19 +17,23 @@ function dirRoot = mt_setup(user)
 % 
 % AUTHOR: Marco Rüth, contact@marcorueth.com
 
-%% IMPORTANT: add your user profile in mt_loadUser
+%% ============================== BASICS ================================ %
+% IMPORTANT: add your user profile in mt_loadUser
 [dirRoot, dirPTB]   = mt_profile(user);
 
 % Expermimental Details
-MRI             = 0;
-experimentName  = 'Sleep Connectivity';
-nLearningSess   = 2; % number of learning sessions
+% TODO: Warum steht da "...for learning/feedback"?
+MRI             = false; % set true for use in MRI scanner
+experimentName  = 'Sleep Connectivity'; % name of your study
+nLearningSess   = 2; % number of runs for learning
 nMinRecall      = 2; % as minimum for learning/feedback 
-nMaxRecall      = 5; % to exclude if too poor performance
-nFinalRecall    = 2; % number of final recall sessions
+nMaxRecall      = 5; % maximum runs for immediate recall (to exclude if too poor performance)
+nFinalRecall    = 2; % number of runs for final recall (incl. one last session w/o feedback)
+
 
 %% ======================== IMAGE CONFIGURATION ========================= %
-% 1. Image configuration: put file names without file extension
+
+% Use file names without file extension
 imageConfiguration = {
   {{ % imagesA 	LEARNING
   'ant',            'whale',        'ray',          	'hippopotamus',     'fly'           'crocodile';
@@ -65,10 +69,19 @@ imageConfiguration = {
 %% =========================== IMAGE SEQUENCE =========================== %
 
 % Define in which order cards are flipped
-% 2D Table-view: Look at imagesATable or imagesBTable tables for 2D coordinates
+% Special feature for you: 2D Table-view
+% You can run the section 'IMAGE CONFIGURATION' above and then look at the
+% tables 'imagesATable' and 'imagesBTable' for 2D coordinates below
 [imagesATable, imagesBTable] = mt_imageTable(imageConfiguration);
 
-% Create sequence for learning and Interference
+% TODO: Add variables for main immediate recall, interference learning,
+% interference immediate recall, learning final recall. Die identischen
+% Reihenfolgen dürfen ruhig einfach Verweise auf die bestehenden
+% Reihenfolgen sein. Außerdem sollte ein check rein, der eine Warnung
+% wirft, wenn nicht alle Bilder verwendet wurden oder wenn Bilder innerhalb
+% einer Sequenz doppelt verwendet wurden.
+
+% Create sequence for learning and interference
 imageSequenceLearningA = {
     'starfish', 'pigeon', 'raven', 'hummingbird'
     };
@@ -135,7 +148,8 @@ textControl = {  ...
     ''
     'Im Folgenden sehen Sie mehrere Karten.'
     'Die Karten werden nacheinander dunkler.'
-    'Ihre Aufgabe: Zählen Sie wie viele Karten dunkler werden.'
+    ''
+    'Ihre Aufgabe: Zählen Sie, wie viele Karten dunkler werden.'
     'Schauen Sie dabei auf das Kreuz in der Kartenmitte.'
     ''
     'Viel Spaß!'
@@ -146,61 +160,94 @@ textFixation = {  ...
     'Es erscheint nun ein Kreuz in der Mitte'
     'des Bildschirms. Bitte schauen Sie auf dieses'
     'Kreuz, solange es angezeigt wird.'
+    ''
+    'Dies wird etwa 6 Minuten dauern.'
     };
 textLearning = {  ...
     'Willkommen!'
     ''
-    'Im Folgenden sehen Sie mehrere Karten.'
+    'Im Folgenden sehen Sie ein Feld voller verdeckter Karten.'
     'Unter jeder Karte befindet sich ein Bild.'
-    'Das Bild wird zusätzlich oben in groß angezeigt.'
-    'Die Karten werden nacheinander aufgedeckt.'
+    ''
+    'Jedes Bild wird zunächst oben angezeigt.'
+    'Dann wird darunter die dazu passende Karte aufgedeckt.'
     ''
     'Ihre Aufgabe: '
-    'Merken Sie sich die Positionen der Bilder.'
+    'Fixieren Sie die jeweils aufgedeckte Karte und merken '
+    'Sie sich ihre Position.'
+    };
+textPracticeLearn = { ...
+    'Zunächst ein Übungsdurchgang!'
     ''
+    'Teil 1 - Lernen:'
+    ''
+    'Fixieren Sie die jeweils aufgedeckte Karte und merken'
+    'Sie sich ihre Position.'
+    };
+textPracticeRecall = { ...
+    'Übungsdurchgang'
+    ''
+    'Teil 2 - Abfrage:'
+    ''
+    'Oben erscheint wieder jeweils ein Bild.'
+    'Fixieren Sie darunter bitte das Kreuz auf der'
+    'verdeckten Karte, unter der Sie dieses Bild vermuten.'
+    ''
+    'Sobald die Kreuze verschwinden, '
+    'klicken Sie bitte auf diese Karte.'
     };
 textLearning2 = {  ...
     'Lernen'
     ''
-    'Es werden nun alle Bilder zwei Mal aufgedeckt.'
+    'Jetzt geht es wirklich los!'
+    ''
+    'Es werden nun alle 30 Bilder zwei Mal aufgedeckt.'
     'Danach folgt eine Abfrage der Positionen.'
     ''
-    'Ihre Aufgabe:'
-    'Merken Sie sich die Positionen der Bilder.'
-    };
-textPracticeLearn = { ...
-    'Demonstration:'
-    ''
-    'Lernen:'
-    'Zwei Karten werden aufgedeckt.'
-    'Merken Sie sich die Position der Bilder.'
-    };
-textPracticeRecall = { ...
-    'Demonstration:'
-    ''
-    'Abfrage:'
-    '1. Fixieren Sie das Kreuz auf der verdeckten'
-    'Karte unter der sich das angezeigte Bild befindet.'
-    '2. Klicken Sie auf die Karte.'
+    'Ihre Aufgabe: '
+    'Fixieren Sie die jeweils aufgedeckte Karte und merken '
+    'Sie sich ihre Position.'
     };
 textRecall = { ...
-    'Abfrage:'
-    '1. Fixieren Sie das Kreuz auf der verdeckten'
-    'Karte unter der sich das angezeigte Bild befindet.'
-    '2. Klicken Sie auf die Karte.'
+    'Teil 2 - Abfrage:'
+    'Oben erscheint ein Bild. Fixieren Sie das Kreuz auf der'
+    'verdeckten Karte unter der Sie die das Bild vermuten.'
+    ''
+    'Sobald die Kreuze verschwinden, klicken Sie bitte auf die Karte.'
     ''
     };
+
+% TODO: Diese beiden Feedback-Texte sollten noch eingebaut werden. Sollte
+% das zu viel Code overhead machen, diesen Text hier zu bestimmten, darf er
+% auch ruhig woanders, wo die Performance bereits bekannt ist, hard-gecoded sein.
+textRecallAgain = { ...
+    ''
+    'Sie hatten XXX Prozent richtig.'
+    ''
+    'Die Abfrage wird wiederholt.'
+    ''
+    };
+textRecallDone = { ...
+    ''
+    'Glückwunsch!'
+    ''
+    'Sie hatten XXX Prozent richtig.'
+    'Jetzt nur noch ein Durchlauf!'
+    ''
+    };
+
 textRecallNoFeedback = { ...
-    'Bei der folgenden Abfrage wird nicht angezeigt'
-    'ob die geklickte Karte korrekt war.'
+    'Die Abfrage wird noch einmal wiederholt. Diesmal wird Ihnen nicht'
+    'mehr angezeigt, ob Sie richtig gelegen haben.'
+    ''
     'Es erscheint lediglich ein blauer Punkt auf der'
     'geklickten Karte.'
     };
 textOutro = {  ...
     'Ende'
     ''
-    'Danke für die Teilnahme!'
-    'Auf Wiedersehen!'
+    'Vielen Dank!'
+    ''
     };
 textQuestion = {  ...
     ''
@@ -216,11 +263,11 @@ textSession = {
     };
 
 % Text Properties
-textDefSize     = 30;           % default Text Size
-textDefFont     = 'Georgia';    % default Text Font
+textDefSize     = 26;           % default Text Size
+textDefFont     = 'Arial';    % default Text Font
 textDefColor    = [0 0 0];      % default Text Color
 textSx          = 'center';     % default Text x-position
-textSy          = 5;            % default Text y-position
+textSy          = 10;            % default Text y-position
 textVSpacing    = 2;            % default Text vertical line spacing
 
 
@@ -260,6 +307,7 @@ controlFeedbackDisplay  = 3;            % feedback display duration
 crossSize               = [0 0 30 30];
 circleSize              = [0 0 50 50];                  
 
+
 %% ============================== OPTIONAL ============================== %
 % Change Cursor Type
 CursorType          = 'Arrow';
@@ -277,15 +325,15 @@ textBgColor         = [1 1 1]; % white background
 % Set Timing
 topCardDisplay      = 1;    	% Duartion top Card is shown (seconds)
 cardDisplay         = 5;     	% Duration memory cards are shown (seconds)
-cardCrossDisplay    = 5;
+cardCrossDisplay    = 5;        % TODO: Add description.
 cardRecallDisplay   = 1;     	% Duration memory cards are shown (seconds)
 feedbackDisplay     = 1;        % Duration feedback is shown (seconds)
 if MRI
-    responseTime     = 5;       % Duration allowed to respond (click) in MRI
+    responseTime     = 10;       % Duration allowed to respond (click) in MRI
 else
     responseTime     = 15;      % Duration allowed to respond (click) in MEG
 end
-fixationCrossDisplay = 7.5;
+fixationCrossDisplay = 7.5;     % TODO: Is this for the control task?
 
 
 %% ======================= DO NOT CHANGE FROM HERE ====================== %
