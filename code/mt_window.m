@@ -79,6 +79,6 @@ Priority(0);
 flipTime            = vbl + (waitframes - 0.5) * ifi;
 
 %% Save information about display timing in dirRoot
-save(fullfile(dirRoot,'setup','mt_params.mat'), '-append', 'flipTime', 'cfg_window')
+save(fullfile(dirRoot, 'setup', 'mt_params.mat'), '-append', 'flipTime', 'cfg_window')
 
 end

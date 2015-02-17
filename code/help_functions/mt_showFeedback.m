@@ -27,6 +27,7 @@ imageTop = imagesTop(imageCurrent);
 % show feedback on the card
 Priority(MaxPriority(window));
 Screen('DrawTexture', window, imageTop, [], topCard);
+Screen('FrameRect', window, frameColor, topCard, frameWidth);
 Screen('FillRect', window, cardColors, rects);
 Screen('FrameRect', window, frameColor, rects, frameWidth);
 % No feedback

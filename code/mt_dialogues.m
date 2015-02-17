@@ -104,20 +104,20 @@ end
 % Session type: defines cardSequence
 switch cfg_dlgs.sesstype
     case cfg_cases.sesstype{1}
-        cfg_dlgs.sessName = 'Control';
+        cfg_dlgs.sessName = cfg_cases.sessNames{1};
         cfg_dlgs.sesstype = 1;
     case cfg_cases.sesstype{2} 
-        cfg_dlgs.sessName = 'Learning';
-        cfg_dlgs.sesstype = 2; % Learning
+        cfg_dlgs.sessName = cfg_cases.sessNames{2};
+        cfg_dlgs.sesstype = 2;
     case cfg_cases.sesstype{3}
-        cfg_dlgs.sessName = 'Interference';
-        cfg_dlgs.sesstype = 3; % Interference
+        cfg_dlgs.sessName = cfg_cases.sessNames{3};
+        cfg_dlgs.sesstype = 3;
     case cfg_cases.sesstype{4} 
-        cfg_dlgs.sessName = 'Recall';
-        cfg_dlgs.sesstype = 4; % Recall
-    case cfg_cases.sesstype{5}       
+        cfg_dlgs.sessName = cfg_cases.sessNames{4};
+        cfg_dlgs.sesstype = 4;
+    case cfg_cases.sesstype{5}    
         % gray background and no images are shown
-        cfg_dlgs.sessName = 'GrayMode';
+        cfg_dlgs.sessName = cfg_cases.sessNames{5};
         screenBgColor   = 0.5;
         topCardColor    = 0.5;
         frameWidth      = 0;

@@ -22,14 +22,13 @@ function dirRoot = mt_setup(user)
 [dirRoot, dirPTB]   = mt_profile(user);
 
 % Expermimental Details
-% TODO: Warum steht da "...for learning/feedback"?
 MRI             = false; % set true for use in MRI scanner
 experimentName  = 'Sleep Connectivity'; % name of your study
 nLearningSess   = 2; % number of runs for learning
-nMinRecall      = 2; % as minimum for learning/feedback 
+nMinRecall      = 2; % minimum runs for immediate recall (with feedback)
 nMaxRecall      = 5; % maximum runs for immediate recall (to exclude if too poor performance)
 nFinalRecall    = 2; % number of runs for final recall (incl. one last session w/o feedback)
-
+RecallThreshold = 60;% miniumum correct answers in recall (in percent)
 
 %% ======================== IMAGE CONFIGURATION ========================= %
 
@@ -74,71 +73,22 @@ imageConfiguration = {
 % tables 'imagesATable' and 'imagesBTable' for 2D coordinates below
 [imagesATable, imagesBTable] = mt_imageTable(imageConfiguration);
 
-% TODO: Add variables for main immediate recall, interference learning,
-% interference immediate recall, learning final recall. Die identischen
-% Reihenfolgen dürfen ruhig einfach Verweise auf die bestehenden
-% Reihenfolgen sein. Außerdem sollte ein check rein, der eine Warnung
-% wirft, wenn nicht alle Bilder verwendet wurden oder wenn Bilder innerhalb
-% einer Sequenz doppelt verwendet wurden.
-
 % Create sequence for learning and interference
-imageSequenceLearningA = {
+% Image Sequence for Image Set A
+imageSequenceMainLearningA = {
     'starfish', 'pigeon', 'raven', 'hummingbird'
     };
+imageSequenceInterferenceLearningA = imageSequenceMainLearningA;
+imageSequenceInterferenceRecallA = imageSequenceMainLearningA;
+imageSequenceMainRecallA = imageSequenceMainLearningA;
 
-imageSequenceLearningB = {
+% Image Sequence for Image Set B
+imageSequenceMainLearningB = {
     'beetle', 'mussel', 'hen', 'ladybird'
     };
-
-% Convert sequences for further processing
-imageSequenceLearningCoordsA = zeros(1, size(imageSequenceLearningA, 2));
-imageSequenceInterferenceCoordsA = zeros(1, size(imageSequenceLearningA, 2));
-imageSequenceLearningCoordsB = zeros(1, size(imageSequenceLearningB, 2));
-imageSequenceInterferenceCoordsB = zeros(1, size(imageSequenceLearningB, 2));
-for i = 1: size(imageSequenceLearningA, 2)
-    imageSequenceLearningCoordsA(i)     = find(cellfun(@(x) strcmp(x, imageSequenceLearningA{i}), imageConfiguration{1}{1}'));
-    imageSequenceInterferenceCoordsA(i) = find(cellfun(@(x) strcmp(x, imageSequenceLearningA{i}), imageConfiguration{1}{2}'));
-    imageSequenceLearningCoordsB(i)     = find(cellfun(@(x) strcmp(x, imageSequenceLearningB{i}), imageConfiguration{2}{1}'));
-    imageSequenceInterferenceCoordsB(i) = find(cellfun(@(x) strcmp(x, imageSequenceLearningB{i}), imageConfiguration{2}{2}'));
-end
-
-% Load sequence for controlList
-try
-    controlSequence = load(fullfile(dirRoot, 'code/help_functions/controlSequence.mat'));
-    controlList     = controlSequence.controlList;
-    controlSequence = controlSequence.controlSequence;
-catch
-    fprintf('Control Lists missing: run mt_controlList.m\n')
-    error(ME.message)
-end
-
-% 2D coordinates for cards to be flipped
-cardSequence 	= {...
-    { % VERSION A
-    % Sequence for Control
-    controlSequence; % identical across subjects
-    % Sequence for Learning
-    imageSequenceLearningCoordsA; ...
-    % Sequence for Interference
-    imageSequenceInterferenceCoordsA; ...
-    % Sequence for Immediate Recall & Retrieval
-    imageSequenceLearningCoordsA; ...
-    % Sequence for Gray Mode
-    controlSequence ...
-    }
-    { % VERSION B
-    % Sequence for Control
-    controlSequence; % identical across subjects
-    % Sequence for Learning
-    imageSequenceLearningCoordsB; ...
-    % Sequence for Interference
-    imageSequenceInterferenceCoordsB; ...
-    % Sequence for Immediate Recall & Retrieval
-    imageSequenceLearningCoordsB; ...
-    % Sequence for Gray Mode
-    controlSequence ...
-    }
-}; 
+imageSequenceInterferenceLearningB = imageSequenceMainLearningB;
+imageSequenceInterferenceRecallB = imageSequenceMainLearningB;
+imageSequenceMainRecallB = imageSequenceMainLearningB;
 
 
 %% ================================ TEXT ================================ %
@@ -211,15 +161,14 @@ textLearning2 = {  ...
 textRecall = { ...
     'Teil 2 - Abfrage:'
     'Oben erscheint ein Bild. Fixieren Sie das Kreuz auf der'
-    'verdeckten Karte unter der Sie die das Bild vermuten.'
+    'verdeckten Karte unter der Sie das Bild vermuten.'
     ''
     'Sobald die Kreuze verschwinden, klicken Sie bitte auf die Karte.'
     ''
+    'Es erscheint lediglich ein blauer Punkt auf der'
+    'geklickten Karte.'
+    ''
     };
-
-% TODO: Diese beiden Feedback-Texte sollten noch eingebaut werden. Sollte
-% das zu viel Code overhead machen, diesen Text hier zu bestimmten, darf er
-% auch ruhig woanders, wo die Performance bereits bekannt ist, hard-gecoded sein.
 textRecallAgain = { ...
     ''
     'Sie hatten XXX Prozent richtig.'
@@ -235,7 +184,6 @@ textRecallDone = { ...
     'Jetzt nur noch ein Durchlauf!'
     ''
     };
-
 textRecallNoFeedback = { ...
     'Die Abfrage wird noch einmal wiederholt. Diesmal wird Ihnen nicht'
     'mehr angezeigt, ob Sie richtig gelegen haben.'
@@ -243,10 +191,10 @@ textRecallNoFeedback = { ...
     'Es erscheint lediglich ein blauer Punkt auf der'
     'geklickten Karte.'
     };
-textOutro = {  ...
-    'Ende'
+textRecallFinal = { ...
     ''
-    'Vielen Dank!'
+    'Sie hatten XXX Prozent richtig.'
+    ''
     ''
     };
 textQuestion = {  ...
@@ -254,20 +202,27 @@ textQuestion = {  ...
     ''
     'Haben Sie noch Fragen zum Ablauf?'
     };
+textOutro = {  ...
+    'Ende'
+    ''
+    'Vielen Dank!'
+    ''
+    };
 textSession = {
-    'Konzentration'    % Control    
-    'Lernen'           % Learning
-    'Lernen'           % Interference
-    'Abfrage'          % Recall
+    'Konzentration'    % Control Task  
+    'Lernen'           % Main Learning
+    'Lernen'           % Interference Learning
+    'Abfrage'          % Interference Recall
+    'Abfrage'          % Immediate Recall & Main Recall 
     'Konzentration'    % Gray Mode
     };
 
 % Text Properties
 textDefSize     = 26;           % default Text Size
-textDefFont     = 'Arial';    % default Text Font
+textDefFont     = 'Arial';      % default Text Font
 textDefColor    = [0 0 0];      % default Text Color
 textSx          = 'center';     % default Text x-position
-textSy          = 10;            % default Text y-position
+textSy          = 10;           % default Text y-position
 textVSpacing    = 2;            % default Text vertical line spacing
 
 
@@ -322,18 +277,19 @@ textBgColor         = [1 1 1]; % white background
 % Note: by default external screens are automatically used if connected 
 % window              = ;
 
-% Set Timing
-topCardDisplay      = 1;    	% Duartion top Card is shown (seconds)
-cardDisplay         = 5;     	% Duration memory cards are shown (seconds)
-cardCrossDisplay    = 5;        % TODO: Add description.
-cardRecallDisplay   = 1;     	% Duration memory cards are shown (seconds)
-feedbackDisplay     = 1;        % Duration feedback is shown (seconds)
+% Set Timing (seconds)
+topCardDisplay      = 1;    	% Duartion top Card is shown 
+cardDisplay         = 5;     	% Duration memory cards are shown
+cardCrossDisplay    = 5;        % Duration cross is displayed on cards
+cardRecallDisplay   = 1;     	% Duration memory cards are shown
+feedbackDisplay     = 1;        % Duration feedback is shown
 if MRI
-    responseTime     = 10;       % Duration allowed to respond (click) in MRI
+    responseTime	= 10;      % Duration allowed to respond (click) in MRI
 else
-    responseTime     = 15;      % Duration allowed to respond (click) in MEG
+    responseTime	= 15;      % Duration allowed to respond (click) in MEG
 end
-fixationCrossDisplay = 7.5;     % TODO: Is this for the control task?
+% Fixation Task (mt_fixationTask)
+fixationCrossDisplay = 7.5;     % Duration fixation cross is displayed
 
 
 %% ======================= DO NOT CHANGE FROM HERE ====================== %
@@ -347,6 +303,8 @@ cfg_cases.memvers   = {'A', 'B'};                   % Memory version
 cfg_cases.sesstype  = {'C', 'L', 'I', 'R', 'G'};    % Session Type
 cfg_cases.lab       = {'MEG', 'SL3', 'SL4'};        % Lab/Location
 cfg_cases.odor      = {'0', '1'}; 
+cfg_cases.sessNames = {'Control', 'Learning', 'Interference', ...
+    'Recall', 'Recall', 'GrayMode'};
 
 % image folder
 imgfolderA        	= fullfile(dirRoot, imageFolder{1});
@@ -391,6 +349,83 @@ imageFilesP             = {'teapot.jpg', 'guitar.jpg'};
 imageSequencePractice   = [10, 26];
 imgfolderP              = fullfile(dirRoot, imageFolder{3});
 
+
+% Convert image sequences for further processing
+imageSequenceMainLearningCoordsA            = zeros(1, size(imageSequenceMainLearningA, 2));
+imageSequenceInterferenceLearningCoordsA    = zeros(1, size(imageSequenceInterferenceLearningA, 2));
+imageSequenceInterferenceRecallCoordsA      = zeros(1, size(imageSequenceInterferenceRecallA, 2));
+imageSequenceMainRecallCoordsA              = zeros(1, size(imageSequenceMainRecallA, 2));
+
+imageSequenceMainLearningCoordsB            = zeros(1, size(imageSequenceMainLearningB, 2));
+imageSequenceInterferenceLearningCoordsB    = zeros(1, size(imageSequenceInterferenceLearningB, 2));
+imageSequenceInterferenceRecallCoordsB      = zeros(1, size(imageSequenceInterferenceRecallB, 2));
+imageSequenceMainRecallCoordsB              = zeros(1, size(imageSequenceMainRecallB, 2));
+
+for i = 1: size(imageSequenceMainLearningA, 2)
+    imageSequenceMainLearningCoordsA(i)         = find(cellfun(@(x) strcmp(x, imageSequenceMainLearningA{i}), imageConfiguration{1}{1}'));
+    imageSequenceInterferenceLearningCoordsA(i) = find(cellfun(@(x) strcmp(x, imageSequenceInterferenceLearningA{i}), imageConfiguration{1}{2}'));
+    imageSequenceInterferenceRecallCoordsA(i)   = find(cellfun(@(x) strcmp(x, imageSequenceInterferenceRecallA{i}), imageConfiguration{1}{2}'));
+    imageSequenceMainRecallCoordsA(i)           = find(cellfun(@(x) strcmp(x, imageSequenceMainRecallA{i}), imageConfiguration{1}{1}'));
+    
+    imageSequenceMainLearningCoordsB(i)         = find(cellfun(@(x) strcmp(x, imageSequenceMainLearningB{i}), imageConfiguration{2}{1}'));
+    imageSequenceInterferenceLearningCoordsB(i) = find(cellfun(@(x) strcmp(x, imageSequenceInterferenceLearningB{i}), imageConfiguration{2}{2}'));
+    imageSequenceInterferenceRecallCoordsB(i)   = find(cellfun(@(x) strcmp(x, imageSequenceInterferenceRecallB{i}), imageConfiguration{2}{2}'));
+    imageSequenceMainRecallCoordsB(i)           = find(cellfun(@(x) strcmp(x, imageSequenceMainRecallB{i}), imageConfiguration{2}{1}'));
+end
+
+% % Check if every image were used exactly once
+% if  ~isempty(setdiff(imageConfiguration{1}{1}', imageSequenceMainLearningA)) ...
+%         || ~isempty(setdiff(imageConfiguration{1}{2}', imageSequenceInterferenceLearningA)) ...
+%         || ~isempty(setdiff(imageConfiguration{1}{2}', imageSequenceInterferenceRecallA)) ...
+%         || ~isempty(setdiff(imageConfiguration{1}{1}', imageSequenceMainRecallA)) ... 
+%         || ~isempty(setdiff(imageConfiguration{2}{1}', imageSequenceMainLearningB)) ...
+%         || ~isempty(setdiff(imageConfiguration{2}{2}', imageSequenceInterferenceLearningB)) ...
+%         || ~isempty(setdiff(imageConfiguration{2}{2}', imageSequenceInterferenceRecallB)) ...
+%         || ~isempty(setdiff(imageConfiguration{2}{1}', imageSequenceMainRecallB)) 
+%     error('Every image has to be used exactly once')
+% end
+
+% Load sequence for controlList
+try
+    controlSequence = load(fullfile(dirRoot, 'code/help_functions/controlSequence.mat'));
+    controlList     = controlSequence.controlList;
+    controlSequence = controlSequence.controlSequence;
+catch
+    fprintf('Control Lists missing: run mt_controlList.m\n')
+    error(ME.message)
+end
+
+% Store 2D coordinates for cards to be flipped
+cardSequence 	= {...
+    { % Memory version A
+    % Sequence for Control
+    controlSequence; % identical across subjects
+    % Sequence for Learning
+    imageSequenceMainLearningCoordsA; ...
+    % Sequence for Interference Learning
+    imageSequenceInterferenceLearningCoordsA; ...
+    % Sequence for Interference Recall
+    imageSequenceInterferenceRecallCoordsA; ...
+    % Sequence for Immediate Recall & Retrieval
+    imageSequenceMainRecallCoordsA; ...
+    % Sequence for Gray Mode
+    controlSequence ...
+    }
+    { % Memory version B
+    % Sequence for Control
+    controlSequence; % identical across subjects
+    % Sequence for Learning
+    imageSequenceMainLearningCoordsB; ...
+    % Sequence for Interference Learning
+    imageSequenceInterferenceLearningCoordsB; ...
+    % Sequence for Interference Recall
+    imageSequenceInterferenceRecallCoordsB; ...
+    % Sequence for Immediate Recall & Retrieval
+    imageSequenceMainRecallCoordsB; ...
+    % Sequence for Gray Mode
+    controlSequence ...
+    }
+}; 
 
 % % Transform intuitive 2D coordinates into 1D coordinates used for iteration
 % cardSequence        = cell(size(imageSequence2D));

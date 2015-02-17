@@ -1,45 +1,37 @@
 function mt_run(user)
-% function mt_run(user)
-% ** mt_run(user)
+% ** function mt_run(user)
 % Runs the Memory Task (mt).
 % The memory task consists of 30 cards which are displayed in 5 rows of 6
 % cards each. The target card to search for is displayed at the top center 
-% of the screen. There are two configurations of the cards - one for
-% learning and recall, one for interference. The upper case letters
-% correspond to the parameters in the dialogues at the start. The
-% experiment consists of four phases:
+% of the screen. There are two configurations of the cards - main and 
+% interference. The upper case letters correspond to the parameters in 
+% the dialogues at the start. The experiment consists of three phases:
 %
-% 1. Learning (L)
-%    First, one has to remember cards of the main memory set in the 
-%    learning phase.
-%    The cards are displayed one after another.
+% 1. Main Learning & Immediate Recall (L)
+%    First, one has to learn the positions of the cards during the 
+%    learning phase. All cards are displayed one after another.
+%    Subsequently during the immediate recall phase one has to find 
+%    the picture corresponding to the one displayed at the top center. 
 %
-% 2. Immediate Recall (R)
-%    The task is to find the card which shows the 
-%    picture corresponding to the one displayed at the top center. 
+% 2. Interference Learning & Interference Recall (I)
+%    Prior to recall another configuration of cards will be learned.
+%    This phase consists of interference learning and interference
+%    recall.
 %
-% 3. Interference (I)
-%    Prior to recall another interference configuration of cards will be 
-%    learned.
+% 3. Main Recall (R)
+%    Finally, the recall phase shows the same configuration as in ML.
+%    Again, one has to find the picture corresponding to the one 
+%    displayed at the top center.
 %
-% 4. Recall (R)
-%    Eventually, the recall phase shows the same configuration as in the
-%    Learning and Immediate Recall phase
-%
-% Note the potential confusion arising from the phase 'Learning' refering
-% to both learning and immediate recall of the main memory, while also the
-% phase 'Interference' has a learning and immediate recall session.
-% TODO: Sollen wir diese Verwirrung auflösen und die erste Phase "Main"/M
-% nennen?
 %
 % IMPORTANT: 
 %  First you need to adjust the variables in "mt_setup.m"
 %
 % USAGE:
-%       mt_run('user'); % works if user in mt_profile is specified
+%       mt_run('user'); % works if user is specified in mt_profile
 %
 % Notes: 
-%   debug mode: enter 0 (zero) in input dialogue for subject number
+%   fast/debug mode: enter 0 (zero) when prompted for subject number
 %
 % >>> INPUT VARIABLES >>>
 % NAME              TYPE        DESCRIPTION
@@ -73,68 +65,97 @@ end
 % Prepare Card Matrix
 mt_setupCards(dirRoot, cfg_window);
 
-% TODO: Delete if possible
-% Fixation task
-% mt_showText(dirRoot, textFixation, window);
-% mt_showText(dirRoot, textQuestion, window);
-% mt_fixationTask(dirRoot, cfg_window);
-
-
 %% START GAME   
-
-% CONTROL
-if strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'c')
+switch upper(cfg_cases.sesstype{cfg_dlgs.sesstype})
+    
+% CONTROL TASK
+case cfg_cases.sesstype{1}
     % Show introduction screen
     mt_showText(dirRoot, textControl, window);
     mt_showText(dirRoot, textQuestion, window);
     % Start Control Task
-    for cRun = 1: length(controlList)
+    for cRun = 1: 1% length(controlList)
         mt_controlTask(dirRoot, cfg_window, cRun);
     end
     
-% LEARNING and IMMEDIATE RECALL (learning & interference memory)
-elseif strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'l') ...
-        || strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'i')
+% MAIN LEARNING and IMMEDIATE RECALL
+case cfg_cases.sesstype{2}
     % Show introduction screen
     mt_showText(dirRoot, textLearning, window);
-    if strcmpi(cfg_cases.sesstype{cfg_dlgs.sesstype}, 'l')
-        % Start practice session
-        mt_cardGamePractice(dirRoot, cfg_window);
-    end
+    % Start practice session
+    mt_cardGamePractice(dirRoot, cfg_window);
     mt_showText(dirRoot, textLearning2, window);
     mt_showText(dirRoot, textQuestion, window);
     % Start learning sessions
     for lRun = 1: nLearningSess
-        mt_cardGame(dirRoot, cfg_window, iRecall);
+        mt_cardGame(dirRoot, cfg_window, lRun);
     end
     % Start immediate recall
-    while (iRecall < nMaxRecall) && ((100*perc_correct < 60) || (iRecall < nMinRecall)) 
+    while (iRecall <= nMaxRecall) && ((100*perc_correct < RecallThreshold) || (iRecall <= nMinRecall)) 
         % Start Experimental Task
-        perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 1, 4);
+        perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 1, 5);
+        if ((100*perc_correct < RecallThreshold) || (iRecall < nMinRecall))
+            mt_showText(dirRoot, strrep(textRecallAgain, 'XXX', num2str(100*perc_correct)), window);
+        end
         iRecall = iRecall + 1;
     end
-    if (iRecall < nMaxRecall) && (100*perc_correct > 60)
-        % start recall without feedback
+    if (iRecall <= nMaxRecall) && (100*perc_correct > RecallThreshold)
+        % Start recall without feedback
+        mt_showText(dirRoot, strrep(textRecallDone, 'XXX', num2str(100*perc_correct)), window);
         mt_showText(dirRoot, textRecallNoFeedback, window);
-        perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 0, 4);
-    elseif (iRecall >= nMaxRecall)
+        perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 0, 5);
+    elseif (iRecall > nMaxRecall)
         sprintf('Maximum number of recall runs reached. Experiment cancelled.')
         sca;
     end
+
+% INTERFERENCE LEARNING and IMMEDIATE RECALL
+case cfg_cases.sesstype{3}
+    % Show introduction screen
+    mt_showText(dirRoot, textLearning, window);
+    mt_showText(dirRoot, textLearning2, window);
+    mt_showText(dirRoot, textQuestion, window);
+    % Start learning sessions
+    for lRun = 1: nLearningSess
+        mt_cardGame(dirRoot, cfg_window, lRun);
+    end
+    % Start immediate recall
+    while (iRecall <= nMaxRecall) && ((100*perc_correct < RecallThreshold) || (iRecall <= nMinRecall)) 
+        % Start Experimental Task
+        perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 1, 4);
+        iRecall = iRecall + 1;
+        if ((100*perc_correct < RecallThreshold) || (iRecall < nMinRecall))
+            mt_showText(dirRoot, strrep(textRecallAgain, 'XXX', num2str(100*perc_correct)), window);
+        end
+    end
+    if (iRecall <= nMaxRecall) && (100*perc_correct > RecallThreshold)
+        % Start recall without feedback
+        mt_showText(dirRoot, strrep(textRecallDone, 'XXX', num2str(100*perc_correct)), window);
+        mt_showText(dirRoot, textRecallNoFeedback, window);
+        perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 0, 4);
+    elseif (iRecall > nMaxRecall)
+        sprintf('Maximum number of recall runs reached. Experiment cancelled.')
+        sca;
+    end        
     
 % FINAL RECALL
-else
+case cfg_cases.sesstype{4}
     % Show introduction screen
     mt_showText(dirRoot, textRecall, window);
-    mt_showText(dirRoot, textRecallNoFeedback, window);
     mt_showText(dirRoot, textQuestion, window);
-    while (iRecall < nFinalRecall) 
+    while (iRecall <= nFinalRecall) 
         % Start Experimental Task
-        perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 0, 4);
+        perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 0, 5);
         iRecall = iRecall + 1;
+        mt_showText(dirRoot, strrep(textRecallFinal, 'XXX', num2str(100*perc_correct)), window);
     end
     % Show final screen
     mt_showText(dirRoot, textOutro, window);
+    
+% ERROR CASE
+otherwise
+    sca;
+    error('Invalid Session')
 end
 sca;
 end

@@ -21,17 +21,25 @@ SessionDate         = {datestr(now, 'yyyy/mm/dd')};
 Lab                 = cfg_cases.lab(cfg_dlgs.lab);
 ExperimentName      = {experimentName};
 Subject             = {cfg_dlgs.subject};
-Session             = {cfg_dlgs.sessName};
+if strcmp(cfg_dlgs.sessName, 'Control')
+    Session         = {cfg_dlgs.sessName};
+elseif strcmp(performance.session{1}, 'Practice')
+    Session         = {'Practice'};
+else
+    Session         = {[cfg_dlgs.sessName '-' cfg_cases.sessNames{performance.session{1}}]};
+end
 Feedback            = {feedbackOn};
 MemoryVersion       = cfg_cases.memvers(cfg_dlgs.memvers);
 Odor                = {cfg_dlgs.odor};
 Accuracy            = {100 * sum(performance.correct) / nRuns};
+
 
 tableLeft   = table(SessionTime, SessionDate, Lab, ExperimentName, Subject, Session, ...
     Feedback, MemoryVersion, Odor, Accuracy);
 tableLeft   = repmat(tableLeft, nRuns, 1);
 
 % Changing variables
+Block               = performance.run;
 Correct             = performance.correct;
 Stimulus            = performance.imageShown;
 Response            = performance.imageClicked;
@@ -41,7 +49,7 @@ MouseY              = performance.mouseData(:, 2);
 CardShownCoords     = performance.coordsShown;
 CardClickedCoords   = performance.coordsClicked;
 
-tableRight  = table(Correct, Stimulus, Response, ReactionTime, MouseX, ...
+tableRight  = table(Block, Correct, Stimulus, Response, ReactionTime, MouseX, ...
     MouseY, CardShownCoords, CardClickedCoords);
 
 tableSave   = [tableLeft tableRight];
