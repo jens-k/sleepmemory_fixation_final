@@ -96,7 +96,7 @@ DrawFormattedText(window, 'Wie viele Karten wurden dunkler?', 'center', yOffset,
 Screen('TextSize', window, controlCardTextSize);
 for cc = 1 : nControlAnswers
     DrawFormattedText(window, num2str(controlAnswers(cc)), 'center', ...
-        (controlRects(4, cc)-(controlCardHeigth/2)-(controlCardTextSize*0.9)), textDefColor);
+        (controlRects(4, cc)-(controlCardHeigth/2)-(controlCardTextSize*0.8)), textDefColor);
 end
 Screen('Flip', window, flipTime);
 Priority(0);
@@ -133,26 +133,26 @@ if mouseOnCard == controlCardCorrect
     controlCardInds = find(1:nControlAnswers ~= controlCardCorrect);
     for cc = 1 : nControlAnswers-1
     DrawFormattedText(window, num2str(controlAnswers(controlCardInds(cc))), 'center', ...
-        (controlRects(4, controlCardInds(cc))-(controlCardHeigth/2)-(controlCardTextSize*0.9)), textDefColor);
+        (controlRects(4, controlCardInds(cc))-(controlCardHeigth/2)-(controlCardTextSize*0.8)), textDefColor);
     end
     Screen('TextStyle', window, 1);
     DrawFormattedText(window, num2str(controlAnswers(controlCardCorrect)), 'center', ...
-        (controlRects(4, controlCardCorrect)-(controlCardHeigth/2)-(controlCardTextSize*0.9)), textColorCorrect);
+        (controlRects(4, controlCardCorrect)-(controlCardHeigth/2)-(controlCardTextSize*0.8)), textColorCorrect);
 %     DrawFormattedText(window, 'Richtig', controlRects(1,1)+controlTextMargin, (controlRects(4, controlCardCorrect)-(controlCardHeigth/2)-(controlCardTextSize*0.9)), textColorCorrect);
 else
     % Incorrect 
     controlCardInds = find((1:nControlAnswers ~= controlCardCorrect) & (1:nControlAnswers ~= mouseOnCard));
     for cc = 1 : nControlAnswers-2
     DrawFormattedText(window, num2str(controlAnswers(controlCardInds(cc))), 'center', ...
-        (controlRects(4, controlCardInds(cc))-(controlCardHeigth/2)-(controlCardTextSize*0.9)), textDefColor);
+        (controlRects(4, controlCardInds(cc))-(controlCardHeigth/2)-(controlCardTextSize*0.8)), textDefColor);
     end
     Screen('TextStyle', window, 1);
     DrawFormattedText(window, num2str(controlAnswers(controlCardCorrect)), 'center', ...
-        (controlRects(4, controlCardCorrect)-(controlCardHeigth/2)-(controlCardTextSize*0.9)), textColorCorrect);
+        (controlRects(4, controlCardCorrect)-(controlCardHeigth/2)-(controlCardTextSize*0.8)), textColorCorrect);
     DrawFormattedText(window, num2str(controlAnswers(mouseOnCard)), 'center', ...
-        (controlRects(4, mouseOnCard)-(controlCardHeigth/2)-(controlCardTextSize*0.9)), textColorIncorrect);
-%     DrawFormattedText(window, 'Richtig', controlRects(1,1)+controlTextMargin, (controlRects(4, controlCardCorrect)-(controlCardHeigth/2)-(controlCardTextSize*0.9)), textColorCorrect);
-    DrawFormattedText(window, 'Falsch', controlRects(1,1)+controlTextMargin, (controlRects(4, mouseOnCard)-(controlCardHeigth/2)-(controlCardTextSize*0.9)), textColorIncorrect);
+        (controlRects(4, mouseOnCard)-(controlCardHeigth/2)-(controlCardTextSize*0.8)), textColorIncorrect);
+%     DrawFormattedText(window, 'Richtig', controlRects(1,1)+controlTextMargin, (controlRects(4, controlCardCorrect)-(controlCardHeigth/2)-(controlCardTextSize*0.8)), textColorCorrect);
+    DrawFormattedText(window, 'Falsch', controlRects(1,1)+controlTextMargin, (controlRects(4, mouseOnCard)-(controlCardHeigth/2)-(controlCardTextSize*0.8)), textColorIncorrect);
 end
 Screen('Flip', window, flipTime);
 Priority(0);
@@ -163,18 +163,22 @@ Screen('TextStyle', window, 0);
 %% save session data
 isinterf = (cfg_dlgs.sesstype==3)+1;    % check if interference
 
-correct             = (cardShown - cardClicked) + 1;
+run                 = cell(length(cardShown),1);
+run(:)              = {iControlRun};
+correct             = zeros(length(cardShown),1);
+correct(:)          = controlAnswers(controlCardCorrect) - controlAnswers(mouseOnCard) + 1 ;
 correct(correct~=1) = 0; % set others incorrect
 imageShown          = cell(length(cardShown),1);
-imageShown(:)       = {'Control'};
-imageClicked        = imageShown;
+imageClicked        = cell(length(cardShown),1);
+imageShown(:)       = {nCardsShown};
+imageClicked(:)     = {controlAnswers(mouseOnCard)};
 coordsShown         = cell(length(cardShown), 1);
 for iCard = 1: length(cardShown)
     coordsShown{iCard}      = mt_cards1Dto2D(cardShown(iCard), ncards_x, ncards_y);
 end
 coordsClicked       = coordsShown;
 % save cards shown, cards clicked, mouse click x/y coordinates, reaction time
-performance         = table(correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
+performance         = table(run, correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
 
 mt_saveTable(dirRoot, performance)
 

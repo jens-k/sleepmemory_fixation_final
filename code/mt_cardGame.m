@@ -1,10 +1,11 @@
-function perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, varargin)
-% ** function mt_cardGame(dirRoot, cfg_window, iRecall)
+function perc_correct = mt_cardGame(dirRoot, cfg_window, iRun, varargin)
+% ** function mt_cardGame(dirRoot, cfg_window, iRun)
 % This function starts the memory task.
 %
 % USAGE:
-%     mt_cardGame(dirRoot, cfg_window, iRecall)
-%     mt_cardGame(dirRoot, cfg_window, iRecall, 1, 4) % feedback on, recall
+%     mt_cardGame(dirRoot, cfg_window, iRun)
+%     mt_cardGame(dirRoot, cfg_window, iRun, 1, 4) % feedback on, interference recall
+%     mt_cardGame(dirRoot, cfg_window, iRun, 1, 5) % feedback on, main recall
 %
 % >>> INPUT VARIABLES >>>
 % NAME              TYPE        DESCRIPTION
@@ -14,7 +15,7 @@ function perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, varargin)
 %   .window         1X5 double  [window windowRect], actual resolution
 %   .window43       1X5 double  [window windowRect], 4:3 resolution
 %   .center         1X2 double  [Xcenter Ycenter]
-% iRecall           double      current recall session
+% iRun              double      current recall session
 % varargin          cell        optional: 
 %                                   1. Feedback (0 or 1) 
 %                                   2. Session type: [1, 5]
@@ -43,12 +44,12 @@ elseif length(varargin) == 2
 else
     currSesstype = cfg_dlgs.sesstype;
 end
-if currSesstype == 4
+if (currSesstype == 4) || (currSesstype == 5)
     showCross = 1;
 end
 
 %% Initialize variables for measured parameters
-cardShown     	= cardSequence{cfg_dlgs.memvers}{cfg_dlgs.sesstype}';
+cardShown     	= cardSequence{cfg_dlgs.memvers}{currSesstype}';
 cardClicked  	= zeros(length(cardShown), 1);
 mouseData    	= zeros(length(cardShown), 3);
 
@@ -109,7 +110,7 @@ for iCard = 1: length(cardShown)
             % The card with the same image shown on top will be flipped
             cardFlip            = imageCurrent;
             cardClicked(iCard)  = cardFlip; % dummy
-        case 4 % (Immediate) Recall
+        case {4, 5} % (Immediate) Recall
             % OnMouseClick: flip the card
             [cardFlip, mouseData(iCard, :)]	= mt_cardFlip(screenOff, ncards_x, cardSize+cardMargin, topCardHeigth, responseTime);
             if cardFlip ~= 0
@@ -119,8 +120,7 @@ for iCard = 1: length(cardShown)
                 cardFlip                        = mt_showFeedback(dirRoot, window, cardFlip, feedbackOn, imageCurrent);
             end
     end
-    
-    
+        
     if cardFlip ~= 0 && feedbackOn
         % Flip the card
         Priority(MaxPriority(window));
@@ -132,7 +132,7 @@ for iCard = 1: length(cardShown)
             Screen('FillRect', window, cardColors, rects(:, (1:ncards ~= cardFlip)));
             Screen('DrawTexture', window, images(cardFlip), [], imgs(:, cardFlip));
         else
-            % no cardFlip in last recall session
+            % No cardFlip in last recall session
             Screen('FillRect', window, cardColors, rects);
         end
         Screen('FrameRect', window, frameColor, rects, frameWidth);
@@ -140,7 +140,7 @@ for iCard = 1: length(cardShown)
         Priority(0);
 
         % Display the card for a pre-defined time
-        if currSesstype == 4
+        if (currSesstype == 4) || (currSesstype == 5)
             WaitSecs(cardRecallDisplay);
         else
             WaitSecs(cardDisplay);
@@ -148,13 +148,18 @@ for iCard = 1: length(cardShown)
     end
 end
 
-%% Performance
+%% Performance    
 
 % Compute performance
-isinterf = (cfg_dlgs.sesstype==3)+1;    % check if interference
-
 correct             = (cardShown - cardClicked) + 1;
 correct(correct~=1) = 0; % set others incorrect
+
+% Collect information about displayed imagesc
+session             = cell(length(cardShown),1);
+session(:)          = {currSesstype};
+run                 = cell(length(cardShown),1);
+run(:)              = {iRun};
+isinterf            = (cfg_dlgs.sesstype==3)+1; % check if interference
 imageNames          = imageConfiguration{cfg_dlgs.memvers}{isinterf}';
 imageShown          = imageNames(cardShown);
 imageClicked        = cell(length(cardShown), 1);
@@ -168,21 +173,21 @@ end
 
 % Save performance
 % save cards shown, cards clicked, mouse click x/y coordinates, reaction time
-performance         = table(correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
+performance         = table(session, run, correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
 
 % save session data
 mt_saveTable(dirRoot, performance, feedbackOn)
 
-% Show performance for recall session
-if currSesstype == 4
-    mt_showText(dirRoot, [sprintf('%.f', 100*mean(correct)) '% (' sprintf('%.f', sum(correct)) ' von ' sprintf('%.f', length(correct)) ') waren korrekt!'], window);
-end
+% % Show performance for recall session
+% if (currSesstype == 4) || (currSesstype == 5)
+%     mt_showText(dirRoot, [sprintf('%.f', 100*mean(correct)) '% (' sprintf('%.f', sum(correct)) ' von ' sprintf('%.f', length(correct)) ') waren korrekt!'], window);
+% end
 
-% Return performance
-if currSesstype == 4 % if recall session
-    perc_correct        = sum(correct)/length(correct);
+% Return performance for recall session
+if (currSesstype == 4) || (currSesstype == 5)
+    perc_correct        = mean(correct);
 else
-    perc_correct           = 1; % in percent
+    perc_correct    	= 1;
 end
 
 end

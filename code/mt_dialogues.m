@@ -20,19 +20,24 @@ function cancel = mt_dialogues(dirRoot)
 % AUTHOR: Marco Rüth, contact@marcorueth.com
 
 %% Load parameters specified in mt_setup.m
+
 load(fullfile(dirRoot,'setup','mt_params.mat'))   % load workspace information and properties
 
+
 %% Read in questions/default answers shown in the dialogue windows
+
 % Read in dialogue questions
 fid                 = fopen(fullfile(dirRoot,'code','prompts.txt'));
 prompts             = textscan(fid,'%s','Delimiter','\n');
 prompts             = prompts{1};
 fclose(fid);
+
 % Read in dialogue default answers
 fid                 = fopen(fullfile(dirRoot,'code','defaults.txt'));
 defaults            = textscan(fid,'%s','Delimiter','\n');
 defaults            = defaults{1};
 fclose(fid);
+
 % Pre-allocation of cell array for answer strings
 [answers{1:length(prompts)}] = deal(cell(1));
 for r = 1:size(answers,2)
@@ -78,7 +83,7 @@ if ~exist('cfg_dlgs', 'var')
     cfg_dlgs.odor       = char(answers{6}); % Odor on or off
 end
 
-% save(fullfile(setupdir, 'mt_debug.mat'), 'cfg_dlgs') % decomment for new debug mat-file
+% save(fullfile(setupdir, 'mt_debug.mat'), 'cfg_dlgs') % uncomment for new debug mat-file
 
 %% Evaluate the answers to set memory version, session type, and lab
 % Create a new folder for the subject data
@@ -99,20 +104,20 @@ end
 % Session type: defines cardSequence
 switch cfg_dlgs.sesstype
     case cfg_cases.sesstype{1}
-        cfg_dlgs.sessName = 'Control';
+        cfg_dlgs.sessName = cfg_cases.sessNames{1};
         cfg_dlgs.sesstype = 1;
     case cfg_cases.sesstype{2} 
-        cfg_dlgs.sessName = 'Learning';
-        cfg_dlgs.sesstype = 2; % Learning
+        cfg_dlgs.sessName = cfg_cases.sessNames{2};
+        cfg_dlgs.sesstype = 2;
     case cfg_cases.sesstype{3}
-        cfg_dlgs.sessName = 'Interference';
-        cfg_dlgs.sesstype = 3; % Interference
+        cfg_dlgs.sessName = cfg_cases.sessNames{3};
+        cfg_dlgs.sesstype = 3;
     case cfg_cases.sesstype{4} 
-        cfg_dlgs.sessName = 'Recall';
-        cfg_dlgs.sesstype = 4; % Recall
-    case cfg_cases.sesstype{5}       
+        cfg_dlgs.sessName = cfg_cases.sessNames{4};
+        cfg_dlgs.sesstype = 4;
+    case cfg_cases.sesstype{5}    
         % gray background and no images are shown
-        cfg_dlgs.sessName = 'GrayMode';
+        cfg_dlgs.sessName = cfg_cases.sessNames{5};
         screenBgColor   = 0.5;
         topCardColor    = 0.5;
         frameWidth      = 0;

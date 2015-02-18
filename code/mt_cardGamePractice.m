@@ -27,7 +27,7 @@ window      	= cfg_window.window(1);
 ShowCursor;
 
 %% Initialize variables for measured parameters
-cardShown     	= imageSequencePractice;
+cardShown     	= imageSequencePractice';
 cardClicked  	= zeros(length(cardShown), 1);
 mouseData    	= zeros(length(cardShown), 3);
 
@@ -116,6 +116,7 @@ for iCard = 1: length(cardShown)
     
     % OnMouseClick: flip the card
     [cardFlip, mouseData(iCard, :)]	= mt_cardFlip(screenOff, ncards_x, cardSize+cardMargin, topCardHeigth, responseTime);
+    cardClicked(iCard)  = cardFlip;
     
     % Show feedback
     Priority(MaxPriority(window));
@@ -153,3 +154,35 @@ for iCard = 1: length(cardShown)
     % Display the card for a time defined by cardDisplay
     WaitSecs(cardRecallDisplay);
 end
+
+
+%% Performance    
+
+% Compute performance
+correct             = (cardShown - cardClicked) + 1;
+correct(correct~=1) = 0; % set others incorrect
+
+% Collect information about displayed imagesc
+session             = cell(length(cardShown),1);
+session(:)          = {'Practice'};
+run                 = cell(length(cardShown),1);
+run(:)              = {1};
+isinterf            = (cfg_dlgs.sesstype==3)+1; % check if interference
+imageNames          = imageFilesP;
+imageShown          = imageNames(1:length(cardShown))';
+imageClicked        = cell(length(cardShown), 1);
+imageClicked(cardClicked~=0, 1) = imageNames(cardClicked~=0);
+imageClicked(correct==0, 1) = {''};
+coordsShown         = cell(length(cardShown), 1);
+coordsClicked       = cell(length(cardShown), 1);
+for iCard = 1: length(cardShown)
+    coordsShown{iCard}      = mt_cards1Dto2D(cardShown(iCard), ncards_x, ncards_y);
+    coordsClicked{iCard}    = mt_cards1Dto2D(cardClicked(iCard), ncards_x, ncards_y);
+end
+
+% Save performance
+% save cards shown, cards clicked, mouse click x/y coordinates, reaction time
+performance         = table(session, run, correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
+
+% save session data
+mt_saveTable(dirRoot, performance)

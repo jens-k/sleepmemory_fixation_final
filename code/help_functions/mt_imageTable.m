@@ -25,7 +25,7 @@ tableImagesA = table();
 tableImagesB = table();
 for c = 1: size(imageConfiguration{1}, 2)
     tableImagesA = [tableImagesA cell2table(imageConfiguration{1}(:,c))];
-    tableImagesB = [tableImagesB cell2table(imageConfiguration{1}(:,c))];
+    tableImagesB = [tableImagesB cell2table(imageConfiguration{2}(:,c))];
     tableImagesA.Properties.VariableNames{'Var1'} = alphabet(c);
     tableImagesB.Properties.VariableNames{'Var1'} = alphabet(c);
 end
