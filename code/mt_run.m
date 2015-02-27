@@ -41,7 +41,7 @@ function mt_run(user)
 % AUTHOR: Marco Rüth, contact@marcorueth.com
 
 % FIXME
-Screen('Preference', 'SkipSyncTests', 1);
+% Screen('Preference', 'SkipSyncTests', 1);
 
 %% PREPARE WORKSPACE & REQUEST USER INPUT
 close all;                  % Close all figures
@@ -74,7 +74,7 @@ case cfg_cases.sesstype{1}
     mt_showText(dirRoot, textControl, window);
     mt_showText(dirRoot, textQuestion, window);
     % Start Control Task
-    for cRun = 1: 1% length(controlList)
+    for cRun = 1: length(controlList)
         mt_controlTask(dirRoot, cfg_window, cRun);
     end
     
@@ -95,18 +95,18 @@ case cfg_cases.sesstype{2}
         % Start Experimental Task
         perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 1, 5);
         if ((100*perc_correct < RecallThreshold) || (iRecall < nMinRecall))
-            mt_showText(dirRoot, strrep(textRecallAgain, 'XXX', num2str(100*perc_correct)), window);
+            mt_showText(dirRoot, strrep(textRecallAgain, 'XXX', sprintf('%3.f', (100*perc_correct))), window);
         end
         iRecall = iRecall + 1;
     end
     if (iRecall <= nMaxRecall) && (100*perc_correct > RecallThreshold)
         % Start recall without feedback
-        mt_showText(dirRoot, strrep(textRecallDone, 'XXX', num2str(100*perc_correct)), window);
+        mt_showText(dirRoot, strrep(textRecallDone, 'XXX', sprintf('%3.f', (100*perc_correct))), window);
         mt_showText(dirRoot, textRecallNoFeedback, window);
         perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 0, 5);
     elseif (iRecall > nMaxRecall)
-        sprintf('Maximum number of recall runs reached. Experiment cancelled.')
         sca;
+        error('Maximum number of recall runs reached. Experiment cancelled.')
     end
 
 % INTERFERENCE LEARNING and IMMEDIATE RECALL
@@ -125,12 +125,12 @@ case cfg_cases.sesstype{3}
         perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 1, 4);
         iRecall = iRecall + 1;
         if ((100*perc_correct < RecallThreshold) || (iRecall < nMinRecall))
-            mt_showText(dirRoot, strrep(textRecallAgain, 'XXX', num2str(100*perc_correct)), window);
+            mt_showText(dirRoot, strrep(textRecallAgain, 'XXX', sprintf('%3.f', (100*perc_correct))), window);
         end
     end
     if (iRecall <= nMaxRecall) && (100*perc_correct > RecallThreshold)
         % Start recall without feedback
-        mt_showText(dirRoot, strrep(textRecallDone, 'XXX', num2str(100*perc_correct)), window);
+        mt_showText(dirRoot, strrep(textRecallDone, 'XXX', sprintf('%3.f', (100*perc_correct))), window);
         mt_showText(dirRoot, textRecallNoFeedback, window);
         perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 0, 4);
     elseif (iRecall > nMaxRecall)
@@ -147,15 +147,16 @@ case cfg_cases.sesstype{4}
         % Start Experimental Task
         perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 0, 5);
         iRecall = iRecall + 1;
-        mt_showText(dirRoot, strrep(textRecallFinal, 'XXX', num2str(100*perc_correct)), window);
+        mt_showText(dirRoot, strrep(textRecallFinal, 'XXX', sprintf('%3.f', (100*perc_correct))), window);
     end
-    % Show final screen
-    mt_showText(dirRoot, textOutro, window);
     
 % ERROR CASE
 otherwise
     sca;
     error('Invalid Session')
 end
+
+% Show final screen
+mt_showText(dirRoot, textOutro, window);
 sca;
 end

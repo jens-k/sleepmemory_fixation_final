@@ -32,9 +32,10 @@ mouseData    	= zeros(length(cardShown), 3);
 nCardsShown     = length(cardShown);
 
 %% Start the game
+% Get Session Time
+sessTime        = datestr(now, 'HH:MM:SS');
+TrialTime       = cell(length(cardShown),1);
 HideCursor;
-% In the learning session all pictures are shown in a sequence
-% In the recall sessions mouse interaction is activated
 
 % Draw the rects to the screen
 Priority(MaxPriority(window));
@@ -47,7 +48,9 @@ Priority(0);
 WaitSecs(topCardDisplay);
 
 for iCard = 1: nCardsShown 
-    cardCurrent = cardShown(iCard);
+    % Get Trial Time
+    TrialTime{iCard}    = datestr(now, 'HH:MM:SS.FFF');
+    cardCurrent         = cardShown(iCard);
     
     % Flip the card
     Priority(MaxPriority(window));
@@ -64,6 +67,7 @@ for iCard = 1: nCardsShown
     % Show frames
     Screen('FrameRect', window, frameColor, rects, frameWidth);
     Screen('Flip', window, flipTime);
+    Screen('Close', imgCrossTex);
     Priority(0);
 
     % Display the card for a time defined by cardDisplay
@@ -138,7 +142,7 @@ if mouseOnCard == controlCardCorrect
     Screen('TextStyle', window, 1);
     DrawFormattedText(window, num2str(controlAnswers(controlCardCorrect)), 'center', ...
         (controlRects(4, controlCardCorrect)-(controlCardHeigth/2)-(controlCardTextSize*0.8)), textColorCorrect);
-%     DrawFormattedText(window, 'Richtig', controlRects(1,1)+controlTextMargin, (controlRects(4, controlCardCorrect)-(controlCardHeigth/2)-(controlCardTextSize*0.9)), textColorCorrect);
+    DrawFormattedText(window, 'Richtig', controlRects(1,1)+controlTextMargin, (controlRects(4, controlCardCorrect)-(controlCardHeigth/2)-(controlCardTextSize*0.8)), textColorCorrect);
 else
     % Incorrect 
     controlCardInds = find((1:nControlAnswers ~= controlCardCorrect) & (1:nControlAnswers ~= mouseOnCard));
@@ -160,7 +164,9 @@ WaitSecs(controlFeedbackDisplay);
 
 Screen('TextStyle', window, 0);
 
-%% save session data
+%% Save session data
+SessionTime         = cell(length(cardShown),1);
+SessionTime(:)      = {sessTime};
 isinterf = (cfg_dlgs.sesstype==3)+1;    % check if interference
 
 run                 = cell(length(cardShown),1);
@@ -178,7 +184,7 @@ for iCard = 1: length(cardShown)
 end
 coordsClicked       = coordsShown;
 % save cards shown, cards clicked, mouse click x/y coordinates, reaction time
-performance         = table(run, correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
+performance         = table(SessionTime, TrialTime, run, correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
 
 mt_saveTable(dirRoot, performance)
 

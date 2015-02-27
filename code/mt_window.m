@@ -67,7 +67,6 @@ Screen('TextFont', window, textDefFont);
 
 % Set Cursor
 ShowCursor(CursorType, window);
-HideCursor;
 
 %% 3. Perform Timing tests
 ifi                 = Screen('GetFlipInterval', window);

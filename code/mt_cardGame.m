@@ -45,25 +45,33 @@ else
     currSesstype = cfg_dlgs.sesstype;
 end
 if (currSesstype == 4) || (currSesstype == 5)
-    showCross = 1;
+    showCross = 1;  % show crosses 
+elseif (currSesstype == 2)
+    HideCursor;     % hide cursor during learning
 end
 
 %% Initialize variables for measured parameters
 cardShown     	= cardSequence{cfg_dlgs.memvers}{currSesstype}';
 cardClicked  	= zeros(length(cardShown), 1);
-mouseData    	= zeros(length(cardShown), 3);
+mouseData    	= zeros(1, 3);
 
+isinterf        = (cfg_dlgs.sesstype==3)+1;
+imagesT         = imageConfiguration{cfg_dlgs.memvers}{isinterf}';
 %% Show which session is upcoming
 mt_showText(dirRoot, textSession{currSesstype}, window, 40);
 
 %% Start the game
-ShowCursor;
+% Get Session Time
+SessionTime         = {datestr(now, 'HH:MM:SS')};
 % In the learning session all pictures are shown in a sequence
 % In the recall sessions mouse interaction is activated
 for iCard = 1: length(cardShown)
+    % Get Trial Time
+    TrialTime           = {datestr(now, 'HH:MM:SS.FFF')};
+    
     % Get current picture
-    imageCurrent = cardShown(iCard);
-    imageTop = imagesTop(imageCurrent);
+    imageCurrent    = cardShown(iCard);
+    imageTop        = Screen('MakeTexture', window, imagesTop{imageCurrent});
     
     % Show a picture on top
     Priority(MaxPriority(window));
@@ -78,7 +86,7 @@ for iCard = 1: length(cardShown)
     if currSesstype == 2 || currSesstype == 3
         WaitSecs(topCardDisplay);
     % Show fixation crosses
-    elseif showCross
+    elseif showCross == 1
         HideCursor;
         imgCrossTex = Screen('MakeTexture', window, imgCross);
         Priority(MaxPriority(window));
@@ -92,6 +100,7 @@ for iCard = 1: length(cardShown)
             Screen('DrawTexture', window, imgCrossTex, [], tmp);
         end
         Screen('Flip', window, flipTime);
+        Screen('Close', imgCrossTex);
         Priority(0);
         WaitSecs(cardCrossDisplay);
         Priority(MaxPriority(window));
@@ -101,6 +110,8 @@ for iCard = 1: length(cardShown)
         Screen('FrameRect', window, frameColor, rects, frameWidth);
         Screen('Flip', window, flipTime);
         Priority(0);
+        ShowCursor;
+    else
         ShowCursor;
     end
     
@@ -112,7 +123,7 @@ for iCard = 1: length(cardShown)
             cardClicked(iCard)  = cardFlip; % dummy
         case {4, 5} % (Immediate) Recall
             % OnMouseClick: flip the card
-            [cardFlip, mouseData(iCard, :)]	= mt_cardFlip(screenOff, ncards_x, cardSize+cardMargin, topCardHeigth, responseTime);
+            [cardFlip, mouseData]	= mt_cardFlip(screenOff, ncards_x, cardSize+cardMargin, topCardHeigth, responseTime);
             if cardFlip ~= 0
                 % Save which card was clicked
                 cardClicked(iCard)           	= cardFlip;
@@ -130,13 +141,16 @@ for iCard = 1: length(cardShown)
         % Fill all rects but the flipped one
         if cardFlip
             Screen('FillRect', window, cardColors, rects(:, (1:ncards ~= cardFlip)));
-            Screen('DrawTexture', window, images(cardFlip), [], imgs(:, cardFlip));
+            imageFlip = Screen('MakeTexture', window, images{cardFlip});
+            Screen('DrawTexture', window, imageFlip, [], imgs(:, cardFlip));
         else
             % No cardFlip in last recall session
             Screen('FillRect', window, cardColors, rects);
         end
         Screen('FrameRect', window, frameColor, rects, frameWidth);
         Screen('Flip', window, flipTime);
+        Screen('Close', imageTop);
+        Screen('Close', imageFlip);
         Priority(0);
 
         % Display the card for a pre-defined time
@@ -146,37 +160,40 @@ for iCard = 1: length(cardShown)
             WaitSecs(cardDisplay);
         end
     end
+  
+    
+    % Compute trial performance
+    correct             = (cardShown(iCard) - cardClicked(iCard)) + 1;
+    correct(correct~=1) = 0;
+    session             = currSesstype;
+    run                 = iRun;
+    
+    imageShown          = imagesT(iCard);
+    if cardClicked(iCard)~=0
+        imageClicked   	= imagesT(cardClicked(iCard));
+    else
+        imageClicked    = '';
+    end
+    
+    coordsShown         = {mt_cards1Dto2D(cardShown(iCard), ncards_x, ncards_y)};
+    coordsClicked       = {mt_cards1Dto2D(cardClicked(iCard), ncards_x, ncards_y)};
+
+    performance         = table(SessionTime, TrialTime, session, run, correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
+
+    % Save trial performance
+    mt_saveTable(dirRoot, performance, feedbackOn)
 end
 
 %% Performance    
 
+% Save session performance
 % Compute performance
 correct             = (cardShown - cardClicked) + 1;
 correct(correct~=1) = 0; % set others incorrect
-
-% Collect information about displayed imagesc
-session             = cell(length(cardShown),1);
-session(:)          = {currSesstype};
-run                 = cell(length(cardShown),1);
-run(:)              = {iRun};
-isinterf            = (cfg_dlgs.sesstype==3)+1; % check if interference
-imageNames          = imageConfiguration{cfg_dlgs.memvers}{isinterf}';
-imageShown          = imageNames(cardShown);
-imageClicked        = cell(length(cardShown), 1);
-imageClicked(cardClicked~=0, 1) = imageNames(cardClicked(cardClicked~=0));
-coordsShown         = cell(length(cardShown), 1);
-coordsClicked       = cell(length(cardShown), 1);
-for iCard = 1: length(cardShown)
-    coordsShown{iCard}      = mt_cards1Dto2D(cardShown(iCard), ncards_x, ncards_y);
-    coordsClicked{iCard}    = mt_cards1Dto2D(cardClicked(iCard), ncards_x, ncards_y);
-end
-
-% Save performance
 % save cards shown, cards clicked, mouse click x/y coordinates, reaction time
-performance         = table(session, run, correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
-
+accuracy            = 100 * mean(correct);
 % save session data
-mt_saveTable(dirRoot, performance, feedbackOn)
+mt_saveTable(dirRoot, performance, feedbackOn, accuracy)
 
 % % Show performance for recall session
 % if (currSesstype == 4) || (currSesstype == 5)

@@ -54,9 +54,8 @@ for p = 1 : length(prompts)
         (p == 2 && ~ismember(answers{2}(:), cfg_cases.nights))  || ...
         (p == 3 && ~ismember(answers{3}(:), cfg_cases.sesstype) || ...
         (p == 4 && ~ismember(answers{4}(:), cfg_cases.memvers)))|| ...
-        (p == 5 && ~ismember(answers{5}(:), cfg_cases.lab))     || ...
-        (p == 6 && ~ismember(answers{6}(:), cfg_cases.odor))  
-        if p == 6 && strcmpi(char(answers{3}(:)), cfg_cases.sesstype{1})
+        (p == 5 && ~ismember(answers{5}(:), cfg_cases.odor))  
+        if p == 5 && strcmpi(char(answers{3}(:)), cfg_cases.sesstype{1})
             break;
         end
             answers{p} 	= upper(newid(prompts(p), '', [1 70], defaults(p), options));
@@ -79,8 +78,7 @@ if ~exist('cfg_dlgs', 'var')
     cfg_dlgs.night      = char(answers{2}); % Night number
     cfg_dlgs.sesstype 	= char(answers{3}); % Session type
     cfg_dlgs.memvers    = char(answers{4}); % Memory version
-    cfg_dlgs.lab        = char(answers{5}); % Lab
-    cfg_dlgs.odor       = char(answers{6}); % Odor on or off
+    cfg_dlgs.odor       = char(answers{5}); % Odor on or off
 end
 
 % save(fullfile(setupdir, 'mt_debug.mat'), 'cfg_dlgs') % uncomment for new debug mat-file
@@ -129,21 +127,24 @@ switch cfg_dlgs.sesstype
 end
 
 % Lab
-switch cfg_dlgs.lab
-    case cfg_cases.lab{1} 
+switch upper(user)
+    case 'MEG' 
         cfg_dlgs.lab = 1;
         % TODO: set triggers for MEG
         % Parallel port trigger in PTB
         % In the MEG will be the old olfactometer
-    case cfg_cases.lab{2}
+    case 'SL3'
         cfg_dlgs.lab = 2;
         % TODO: set triggers for sleep lab (left)
         % In the sleep lab will be the new olfactometer
-    case cfg_cases.lab{3}
+    case 'SL4'
         cfg_dlgs.lab = 3;
         % TODO: set triggers for sleep lab (right)
         % In the sleep lab will be the new olfactometer
         % Only in this lab one can learn and stimulate with odors
+    case 0 
+        % development mode
+        cfg_dlgs.lab = 4;
     otherwise
         error('Invalid Lab')
 end

@@ -75,8 +75,13 @@ imageConfiguration = {
 
 % Create sequence for learning and interference
 % Image Sequence for Image Set A
+
 imageSequenceMainLearningA = {
-    'starfish', 'pigeon', 'raven', 'hummingbird'
+    'starfish', 'pigeon', 'armadillo', 'crocodile', 'raven', 'horse', ...
+	'hummingbird', 'lioness', 'lobster', 'penguin', 'dragonfly', 'fly', ...
+	'ostrich', 'ant', 'cow', 'giraffe', 'cat', 'hippopotamus', ...
+	'scorpion', 'whale', 'sparrow', 'rooster', 'oyster', 'toucan', ...
+	'goose', 'grasshopper', 'wasp', 'praying_mantis', 'dromedary', 'ray'
     };
 imageSequenceInterferenceLearningA = imageSequenceMainLearningA;
 imageSequenceInterferenceRecallA = imageSequenceMainLearningA;
@@ -84,7 +89,11 @@ imageSequenceMainRecallA = imageSequenceMainLearningA;
 
 % Image Sequence for Image Set B
 imageSequenceMainLearningB = {
-    'beetle', 'mussel', 'hen', 'ladybird'
+    'butterfly', 'beetle', 'mussel', 'hen', 'ladybird', 'cheetah', ...
+	'killer_whale', 'owl', 'mosquito', 'manatee', 'duck', 'dolphin', ...
+	'elephant', 'bee', 'crab', 'tapir', 'pomfret', 'tiger', ...
+	'zebra', 'seagull', 'termite', 'rhino', 'turtle', 'partridge', ...
+	'kangaroo', 'kiwi', 'barn_owl', 'pelican', 'platypus', 'bat'
     };
 imageSequenceInterferenceLearningB = imageSequenceMainLearningB;
 imageSequenceInterferenceRecallB = imageSequenceMainLearningB;
@@ -297,11 +306,11 @@ fixationCrossDisplay = 7.5;     % Duration fixation cross is displayed
 % !!!!! Changes need further adjustments in other files and scripts !!!!! %
 
 % Changing the accepted cases also requires to change mt_dialogues.m
-cfg_cases.subjects  = 0:1000;                       % 0 is debug
-cfg_cases.nights    = {'1', '2'};                   % Night 1 or 2
-cfg_cases.memvers   = {'A', 'B'};                   % Memory version
-cfg_cases.sesstype  = {'C', 'L', 'I', 'R', 'G'};    % Session Type
-cfg_cases.lab       = {'MEG', 'SL3', 'SL4'};        % Lab/Location
+cfg_cases.subjects  = 0:1000;                           % 0 is debug
+cfg_cases.nights    = {'1', '2'};                       % Night 1 or 2
+cfg_cases.memvers   = {'A', 'B'};                       % Memory version
+cfg_cases.sesstype  = {'C', 'L', 'I', 'R', 'G'};        % Session Type
+cfg_cases.lab       = {'MEG', 'SL3', 'SL4', 'local'};   % Lab/Location
 cfg_cases.odor      = {'0', '1'}; 
 cfg_cases.sessNames = {'Control', 'Learning', 'Interference', ...
     'Recall', 'Recall', 'GrayMode'};
@@ -345,8 +354,8 @@ imageFilesB         = {
     };
 
 % Practice set settings
-imageFilesP             = {'teapot.jpg', 'guitar.jpg'};
-imageSequencePractice   = [10, 26];
+imageFilesP             = {'teapot.jpg', 'guitar.jpg', 'jacket.jpg'};
+imageSequencePractice   = [10, 26, 8];
 imgfolderP              = fullfile(dirRoot, imageFolder{3});
 
 
@@ -373,17 +382,17 @@ for i = 1: size(imageSequenceMainLearningA, 2)
     imageSequenceMainRecallCoordsB(i)           = find(cellfun(@(x) strcmp(x, imageSequenceMainRecallB{i}), imageConfiguration{2}{1}'));
 end
 
-% % Check if every image were used exactly once
-% if  ~isempty(setdiff(imageConfiguration{1}{1}', imageSequenceMainLearningA)) ...
-%         || ~isempty(setdiff(imageConfiguration{1}{2}', imageSequenceInterferenceLearningA)) ...
-%         || ~isempty(setdiff(imageConfiguration{1}{2}', imageSequenceInterferenceRecallA)) ...
-%         || ~isempty(setdiff(imageConfiguration{1}{1}', imageSequenceMainRecallA)) ... 
-%         || ~isempty(setdiff(imageConfiguration{2}{1}', imageSequenceMainLearningB)) ...
-%         || ~isempty(setdiff(imageConfiguration{2}{2}', imageSequenceInterferenceLearningB)) ...
-%         || ~isempty(setdiff(imageConfiguration{2}{2}', imageSequenceInterferenceRecallB)) ...
-%         || ~isempty(setdiff(imageConfiguration{2}{1}', imageSequenceMainRecallB)) 
-%     error('Every image has to be used exactly once')
-% end
+% Check if every image were used exactly once
+if  ~isempty(setdiff(imageConfiguration{1}{1}', imageSequenceMainLearningA)) ...
+        || ~isempty(setdiff(imageConfiguration{1}{2}', imageSequenceInterferenceLearningA)) ...
+        || ~isempty(setdiff(imageConfiguration{1}{2}', imageSequenceInterferenceRecallA)) ...
+        || ~isempty(setdiff(imageConfiguration{1}{1}', imageSequenceMainRecallA)) ... 
+        || ~isempty(setdiff(imageConfiguration{2}{1}', imageSequenceMainLearningB)) ...
+        || ~isempty(setdiff(imageConfiguration{2}{2}', imageSequenceInterferenceLearningB)) ...
+        || ~isempty(setdiff(imageConfiguration{2}{2}', imageSequenceInterferenceRecallB)) ...
+        || ~isempty(setdiff(imageConfiguration{2}{1}', imageSequenceMainRecallB)) 
+    error('Every image has to be used exactly once')
+end
 
 % Load sequence for controlList
 try
