@@ -36,7 +36,8 @@ if iscell(text)
 else
     DrawFormattedText(window, text, 'center', 'center', textDefColor);
 end
-DrawFormattedText(window, 'Beliebige Taste drücken...', textSx, windowSize(2)-2*textSize, textDefColor);
+Screen('TextSize', window, textDefSize);
+DrawFormattedText(window, 'Beliebige Taste drücken...', textSx, windowSize(2)-2*textDefSize, textDefColor);
 
 % Display the text
 Screen('Flip', window); 

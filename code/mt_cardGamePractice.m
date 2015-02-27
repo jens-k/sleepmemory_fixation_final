@@ -24,7 +24,6 @@ load(fullfile(dirRoot, 'setup', 'mt_params.mat'))   % load workspace information
 %% Set window parameters
 % Specify the display window 
 window      	= cfg_window.window(1);
-ShowCursor;
 
 %% Initialize variables for measured parameters
 cardShown     	= imageSequencePractice';
@@ -32,17 +31,21 @@ cardClicked  	= zeros(length(cardShown), 1);
 mouseData    	= zeros(length(cardShown), 3);
 
 % Practice set
-images(imageSequencePractice(1))	= Screen('MakeTexture', window, imread(fullfile(imgfolderP, imageFilesP{1})));
-images(imageSequencePractice(2))	= Screen('MakeTexture', window, imread(fullfile(imgfolderP, imageFilesP{2})));
-imagesTop(imageSequencePractice(1))	= Screen('MakeTexture', window, imread(fullfile(imgfolderP, 'top', imageFilesP{1})));
-imagesTop(imageSequencePractice(2))	= Screen('MakeTexture', window, imread(fullfile(imgfolderP, 'top', imageFilesP{2})));
+for i = 1: length(imageFilesP)
+    images(imageSequencePractice(i))	= Screen('MakeTexture', window, imread(fullfile(imgfolderP, imageFilesP{i})));
+    imagesTop(imageSequencePractice(i))	= Screen('MakeTexture', window, imread(fullfile(imgfolderP, 'top', imageFilesP{i})));
+end
 
 feedbackOn      = 1;
 
 mt_showText(dirRoot, textPracticeLearn, window);
 
-%% In the practice  learning session all pictures are shown in a sequence
+%% In the practice learning session all pictures are shown in a sequence
+HideCursor;
+% Get Session Time
+SessionTime         = {datestr(now, 'HH:MM:SS')};
 for iCard = 1: length(cardShown)
+    
     % Get current picture
     imageCurrent = cardShown(iCard);
     imageTop = imagesTop(imageCurrent);
@@ -77,6 +80,9 @@ mt_showText(dirRoot, textPracticeRecall, window);
 
 % In the recall sessions mouse interaction is activated
 for iCard = 1: length(cardShown)
+    % Get Trial Time
+    TrialTime           = {datestr(now, 'HH:MM:SS.FFF')};
+    
     % Get current picture
     imageCurrent = cardShown(iCard);
     imageTop = imagesTop(imageCurrent);
@@ -153,36 +159,39 @@ for iCard = 1: length(cardShown)
 
     % Display the card for a time defined by cardDisplay
     WaitSecs(cardRecallDisplay);
+    
+    
+    % Compute trial performance
+    correct             = (cardShown(iCard) - cardClicked(iCard)) + 1;
+    correct(correct~=1) = 0;
+    session             = {'Practice'};
+    run                 = {1};
+    
+    imageShown          = imageFilesP(iCard);
+    if cardClicked(iCard)~=0
+        imageClicked   	= imageFilesP(iCard);
+    else
+        imageClicked    = '';
+    end
+    
+    coordsShown         = {mt_cards1Dto2D(cardShown(iCard), ncards_x, ncards_y)};
+    coordsClicked       = {mt_cards1Dto2D(cardClicked(iCard), ncards_x, ncards_y)};
+    mouseData           = mouseData(iCard, :);
+    
+    performance         = table(SessionTime, TrialTime, session, run, correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
+
+    % Save trial performance
+    mt_saveTable(dirRoot, performance)
 end
 
 
 %% Performance    
 
+% Save session performance
 % Compute performance
 correct             = (cardShown - cardClicked) + 1;
 correct(correct~=1) = 0; % set others incorrect
-
-% Collect information about displayed imagesc
-session             = cell(length(cardShown),1);
-session(:)          = {'Practice'};
-run                 = cell(length(cardShown),1);
-run(:)              = {1};
-isinterf            = (cfg_dlgs.sesstype==3)+1; % check if interference
-imageNames          = imageFilesP;
-imageShown          = imageNames(1:length(cardShown))';
-imageClicked        = cell(length(cardShown), 1);
-imageClicked(cardClicked~=0, 1) = imageNames(cardClicked~=0);
-imageClicked(correct==0, 1) = {''};
-coordsShown         = cell(length(cardShown), 1);
-coordsClicked       = cell(length(cardShown), 1);
-for iCard = 1: length(cardShown)
-    coordsShown{iCard}      = mt_cards1Dto2D(cardShown(iCard), ncards_x, ncards_y);
-    coordsClicked{iCard}    = mt_cards1Dto2D(cardClicked(iCard), ncards_x, ncards_y);
-end
-
-% Save performance
 % save cards shown, cards clicked, mouse click x/y coordinates, reaction time
-performance         = table(session, run, correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
-
+accuracy            = 100 * mean(correct);
 % save session data
-mt_saveTable(dirRoot, performance)
+mt_saveTable(dirRoot, performance, 0, accuracy)

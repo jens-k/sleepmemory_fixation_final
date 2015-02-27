@@ -75,6 +75,7 @@ imageConfiguration = {
 
 % Create sequence for learning and interference
 % Image Sequence for Image Set A
+
 imageSequenceMainLearningA = {
     'starfish', 'pigeon', 'armadillo', 'crocodile', 'raven', 'horse', ...
 	'hummingbird', 'lioness', 'lobster', 'penguin', 'dragonfly', 'fly', ...
@@ -305,11 +306,11 @@ fixationCrossDisplay = 7.5;     % Duration fixation cross is displayed
 % !!!!! Changes need further adjustments in other files and scripts !!!!! %
 
 % Changing the accepted cases also requires to change mt_dialogues.m
-cfg_cases.subjects  = 0:1000;                       % 0 is debug
-cfg_cases.nights    = {'1', '2'};                   % Night 1 or 2
-cfg_cases.memvers   = {'A', 'B'};                   % Memory version
-cfg_cases.sesstype  = {'C', 'L', 'I', 'R', 'G'};    % Session Type
-cfg_cases.lab       = {'MEG', 'SL3', 'SL4'};        % Lab/Location
+cfg_cases.subjects  = 0:1000;                           % 0 is debug
+cfg_cases.nights    = {'1', '2'};                       % Night 1 or 2
+cfg_cases.memvers   = {'A', 'B'};                       % Memory version
+cfg_cases.sesstype  = {'C', 'L', 'I', 'R', 'G'};        % Session Type
+cfg_cases.lab       = {'MEG', 'SL3', 'SL4', 'local'};   % Lab/Location
 cfg_cases.odor      = {'0', '1'}; 
 cfg_cases.sessNames = {'Control', 'Learning', 'Interference', ...
     'Recall', 'Recall', 'GrayMode'};
@@ -353,8 +354,8 @@ imageFilesB         = {
     };
 
 % Practice set settings
-imageFilesP             = {'teapot.jpg', 'guitar.jpg'};
-imageSequencePractice   = [10, 26];
+imageFilesP             = {'teapot.jpg', 'guitar.jpg', 'jacket.jpg'};
+imageSequencePractice   = [10, 26, 8];
 imgfolderP              = fullfile(dirRoot, imageFolder{3});
 
 
