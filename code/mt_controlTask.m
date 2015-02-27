@@ -67,6 +67,7 @@ for iCard = 1: nCardsShown
     % Show frames
     Screen('FrameRect', window, frameColor, rects, frameWidth);
     Screen('Flip', window, flipTime);
+    Screen('Close', imgCrossTex);
     Priority(0);
 
     % Display the card for a time defined by cardDisplay

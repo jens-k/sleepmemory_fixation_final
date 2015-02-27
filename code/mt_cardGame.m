@@ -70,8 +70,8 @@ for iCard = 1: length(cardShown)
     TrialTime           = {datestr(now, 'HH:MM:SS.FFF')};
     
     % Get current picture
-    imageCurrent = cardShown(iCard);
-    imageTop = imagesTop(imageCurrent);
+    imageCurrent    = cardShown(iCard);
+    imageTop        = Screen('MakeTexture', window, imagesTop{imageCurrent});
     
     % Show a picture on top
     Priority(MaxPriority(window));
@@ -100,6 +100,7 @@ for iCard = 1: length(cardShown)
             Screen('DrawTexture', window, imgCrossTex, [], tmp);
         end
         Screen('Flip', window, flipTime);
+        Screen('Close', imgCrossTex);
         Priority(0);
         WaitSecs(cardCrossDisplay);
         Priority(MaxPriority(window));
@@ -140,13 +141,16 @@ for iCard = 1: length(cardShown)
         % Fill all rects but the flipped one
         if cardFlip
             Screen('FillRect', window, cardColors, rects(:, (1:ncards ~= cardFlip)));
-            Screen('DrawTexture', window, images(cardFlip), [], imgs(:, cardFlip));
+            imageFlip = Screen('MakeTexture', window, images{cardFlip});
+            Screen('DrawTexture', window, imageFlip, [], imgs(:, cardFlip));
         else
             % No cardFlip in last recall session
             Screen('FillRect', window, cardColors, rects);
         end
         Screen('FrameRect', window, frameColor, rects, frameWidth);
         Screen('Flip', window, flipTime);
+        Screen('Close', imageTop);
+        Screen('Close', imageFlip);
         Priority(0);
 
         % Display the card for a pre-defined time

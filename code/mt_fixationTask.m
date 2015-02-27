@@ -35,6 +35,7 @@ imgCrossTex = Screen('MakeTexture', window, imgCross);
 fixRect = reshape(fixRect, 4, 1);
 Screen('DrawTexture', window, imgCrossTex, [], fixRect);
 Screen('Flip', window, flipTime);
+Screen('Close', imgCrossTex);
 
     
 WaitSecs(fixationCrossDisplay);

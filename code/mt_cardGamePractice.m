@@ -32,8 +32,10 @@ mouseData    	= zeros(length(cardShown), 3);
 
 % Practice set
 for i = 1: length(imageFilesP)
-    images(imageSequencePractice(i))	= Screen('MakeTexture', window, imread(fullfile(imgfolderP, imageFilesP{i})));
-    imagesTop(imageSequencePractice(i))	= Screen('MakeTexture', window, imread(fullfile(imgfolderP, 'top', imageFilesP{i})));
+    pic_file = fullfile(imgfolderP, imageFilesP{i});
+    images{imageSequencePractice(i)}	= imread(pic_file);
+    pic_file = fullfile(imgfolderP, 'top', imageFilesP{i});
+    imagesTop{imageSequencePractice(i)}	= imread(pic_file);
 end
 
 feedbackOn      = 1;
@@ -47,8 +49,8 @@ SessionTime         = {datestr(now, 'HH:MM:SS')};
 for iCard = 1: length(cardShown)
     
     % Get current picture
-    imageCurrent = cardShown(iCard);
-    imageTop = imagesTop(imageCurrent);
+    imageCurrent    = cardShown(iCard);
+    imageTop        = Screen('MakeTexture', window, imagesTop{imageCurrent});
     
     % Show a picture on top
     Priority(MaxPriority(window));
@@ -67,9 +69,11 @@ for iCard = 1: length(cardShown)
 
     % Fill all rects but the flipped one
     Screen('FillRect', window, cardColors, rects(:, (1:ncards ~= imageCurrent)));
-    Screen('DrawTexture', window, images(imageCurrent), [], imgs(:, imageCurrent));
+    imageCard = Screen('MakeTexture', window, images{imageCurrent});
+    Screen('DrawTexture', window, imageCard, [], imgs(:, imageCurrent));
     Screen('FrameRect', window, frameColor, rects, frameWidth);
     Screen('Flip', window, flipTime);
+    Screen('Close', imageTop);
     Priority(0);
 
     % Display the card for a time defined by cardDisplay
@@ -84,8 +88,8 @@ for iCard = 1: length(cardShown)
     TrialTime           = {datestr(now, 'HH:MM:SS.FFF')};
     
     % Get current picture
-    imageCurrent = cardShown(iCard);
-    imageTop = imagesTop(imageCurrent);
+    imageCurrent    = cardShown(iCard);
+    imageTop        = Screen('MakeTexture', window, imagesTop{imageCurrent});
     
     % Show a picture on top
     Priority(MaxPriority(window));
@@ -109,6 +113,7 @@ for iCard = 1: length(cardShown)
         Screen('DrawTexture', window, imgCrossTex, [], tmp);
     end
     Screen('Flip', window, flipTime);
+    Screen('Close', imgCrossTex);
     Priority(0);
     WaitSecs(cardCrossDisplay);
     Priority(MaxPriority(window));
@@ -132,17 +137,20 @@ for iCard = 1: length(cardShown)
     Screen('FrameRect', window, frameColor, rects, frameWidth);
     if cardFlip ~= 0
         if cardFlip == imageCurrent
+            imageFeedback = Screen('MakeTexture', window, imgCorrect);
             % Correct: Show the green tick image
-            Screen('DrawTexture', window, Screen('MakeTexture', window, imgCorrect), ...
+            Screen('DrawTexture', window, imageFeedback, ...
                 [], [imgs(1:2, cardFlip)+feedbackMargin; imgs(3:4, cardFlip)-feedbackMargin]);
         else
+            imageFeedback = Screen('MakeTexture', window, imgIncorrect);
             % Incorrect: Show the red cross image
-            Screen('DrawTexture', window, Screen('MakeTexture', window, imgIncorrect), ...
+            Screen('DrawTexture', window, imageFeedback, ...
                 [], [imgs(1:2, cardFlip)+feedbackMargin; imgs(3:4, cardFlip)-feedbackMargin]);
             % Flip the correct image afterwards
             cardFlip = imageCurrent;
         end
     Screen('Flip', window, flipTime);
+    Screen('Close', imageFeedback);
     Priority(0);
     WaitSecs(feedbackDisplay);
 
@@ -151,9 +159,12 @@ for iCard = 1: length(cardShown)
     Screen('DrawTexture', window, imageTop, [], topCard);
     Screen('FrameRect', window, frameColor, topCard, frameWidth);
     Screen('FillRect', window, cardColors, rects(:, (1:ncards ~= cardFlip)));
-    Screen('DrawTexture', window, images(cardFlip), [], imgs(:, cardFlip));
+    imageFlip        = Screen('MakeTexture', window, images{cardFlip});
+    Screen('DrawTexture', window, imageFlip, [], imgs(:, cardFlip));
     Screen('FrameRect', window, frameColor, rects, frameWidth);
     Screen('Flip', window, flipTime);
+    Screen('Close', imageTop);
+    Screen('Close', imageFlip);
     Priority(0);
     end
 
