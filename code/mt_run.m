@@ -41,7 +41,7 @@ function mt_run(user)
 % AUTHOR: Marco Rüth, contact@marcorueth.com
 
 % FIXME
-% Screen('Preference', 'SkipSyncTests', 1);
+Screen('Preference', 'SkipSyncTests', 1);
 
 %% PREPARE WORKSPACE & REQUEST USER INPUT
 close all;                  % Close all figures

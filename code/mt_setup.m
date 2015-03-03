@@ -22,7 +22,6 @@ function dirRoot = mt_setup(user)
 [dirRoot, dirPTB]   = mt_profile(user);
 
 % Expermimental Details
-MRI             = false; % set true for use in MRI scanner
 experimentName  = 'Sleep Connectivity'; % name of your study
 nLearningSess   = 2; % number of runs for learning
 nMinRecall      = 2; % minimum runs for immediate recall (with feedback)
@@ -292,11 +291,7 @@ cardDisplay         = 5;     	% Duration memory cards are shown
 cardCrossDisplay    = 5;        % Duration cross is displayed on cards
 cardRecallDisplay   = 1;     	% Duration memory cards are shown
 feedbackDisplay     = 1;        % Duration feedback is shown
-if MRI
-    responseTime	= 10;      % Duration allowed to respond (click) in MRI
-else
-    responseTime	= 15;      % Duration allowed to respond (click) in MEG
-end
+responseTime        = 15;       % Duration allowed to respond (click) in MEG
 % Fixation Task (mt_fixationTask)
 fixationCrossDisplay = 7.5;     % Duration fixation cross is displayed
 
