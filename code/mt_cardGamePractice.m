@@ -182,7 +182,7 @@ for iCard = 1: length(cardShown)
     if cardClicked(iCard)~=0
         imageClicked   	= imageFilesP(iCard);
     else
-        imageClicked    = '';
+        imageClicked    = {'NONE'};
     end
     
     coordsShown         = {mt_cards1Dto2D(cardShown(iCard), ncards_x, ncards_y)};

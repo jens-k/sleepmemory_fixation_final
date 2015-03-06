@@ -27,6 +27,8 @@ switch upper(user)
     otherwise
         error('Invalid User Name. Define workspace in mt_profile.m')
 end
+
+
 addpath(genpath(dirRoot))
 addpath(dirPTB)
 end

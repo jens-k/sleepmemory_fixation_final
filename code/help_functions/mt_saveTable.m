@@ -16,10 +16,10 @@ function mt_saveTable(dirRoot, performance, varargin)
 % AUTHOR: Marco Rüth, contact@marcorueth.com
 
 %% Load parameters specified in mt_setup.m
-load(fullfile(dirRoot, 'setup', 'mt_params.mat'))   % load workspace information and properties
+load(fullfile(dirRoot, 'setup', 'mt_params.mat'), 'cfg_dlgs', 'cfg_cases', 'experimentName')   % load workspace information and properties
 
 %% Load table if already exists
-fName = ['mtp_sub_' cfg_dlgs.subject '_night_' cfg_dlgs.night];
+fName = ['mtp_sub_' cfg_dlgs.subject '_night_' cfg_dlgs.night '_sess_' num2str(cfg_dlgs.sesstype)];
 % save performance of subject for each run with recall 
 if exist(fullfile(dirRoot, 'DATA', strcat(fName, '.mat')), 'file')
     tableOld = load(fullfile(dirRoot, 'DATA', strcat(fName, '.mat')));
@@ -91,11 +91,5 @@ end
 
 % Save updated table 
 save(fullfile(dirRoot, 'DATA', strcat(fName, '.mat')), 'subjectData')
-% Save in .csv for python analysis
-writetable(subjectData, fullfile(dirRoot, 'DATA', strcat(fName, '.csv')))
-
-% Backup
-copyfile(fullfile(dirRoot, 'DATA', [fName '.*']), fullfile(dirRoot, 'BACKUP'), 'f');
-
 
 end

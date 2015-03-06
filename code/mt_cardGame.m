@@ -55,7 +55,7 @@ cardShown     	= cardSequence{cfg_dlgs.memvers}{currSesstype}';
 cardClicked  	= zeros(length(cardShown), 1);
 mouseData    	= zeros(1, 3);
 
-isinterf        = (cfg_dlgs.sesstype==3)+1;
+isinterf        = (cfg_dlgs.sesstype==3) + 1;
 imagesT         = imageConfiguration{cfg_dlgs.memvers}{isinterf}';
 %% Show which session is upcoming
 mt_showText(dirRoot, textSession{currSesstype}, window, 40);
@@ -172,7 +172,7 @@ for iCard = 1: length(cardShown)
     if cardClicked(iCard)~=0
         imageClicked   	= imagesT(cardClicked(iCard));
     else
-        imageClicked    = '';
+        imageClicked    = {'NONE'};
     end
     
     coordsShown         = {mt_cards1Dto2D(cardShown(iCard), ncards_x, ncards_y)};
@@ -206,5 +206,9 @@ if (currSesstype == 4) || (currSesstype == 5)
 else
     perc_correct    	= 1;
 end
+
+% Backup
+fName = ['mtp_sub_' cfg_dlgs.subject '_night_' cfg_dlgs.night '_sess_' num2str(cfg_dlgs.sesstype)];
+copyfile(fullfile(dirRoot, 'DATA', [fName '.*']), fullfile(dirRoot, 'BACKUP'), 'f');
 
 end
