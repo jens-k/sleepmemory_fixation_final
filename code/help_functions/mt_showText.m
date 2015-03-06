@@ -17,7 +17,8 @@ function mt_showText(dirRoot, text, window, varargin)
 % AUTHOR: Marco Rüth, contact@marcorueth.com
 
 %% Load parameters specified in mt_setup.m
-load(fullfile(dirRoot,'setup','mt_params.mat'))     % load workspace information and properties
+load(fullfile(dirRoot,'setup','mt_params.mat'), 'textDefSize', 'textBgColor', ...
+     'textSx', 'textSy', 'textVSpacing', 'textDefColor', 'windowSize')
 
 if length(varargin) == 1
     textSize = varargin{1};

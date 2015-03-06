@@ -120,23 +120,8 @@ case cfg_cases.sesstype{3}
         mt_cardGame(dirRoot, cfg_window, lRun);
     end
     % Start immediate recall
-    while (iRecall <= nMaxRecall) && ((100*perc_correct < RecallThreshold) || (iRecall <= nMinRecall)) 
-        % Start Experimental Task
-        perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 1, 4);
-        iRecall = iRecall + 1;
-        if ((100*perc_correct < RecallThreshold) || (iRecall < nMinRecall))
-            mt_showText(dirRoot, strrep(textRecallAgain, 'XXX', sprintf('%3.f', (100*perc_correct))), window);
-        end
-    end
-    if (iRecall <= nMaxRecall) && (100*perc_correct > RecallThreshold)
-        % Start recall without feedback
-        mt_showText(dirRoot, strrep(textRecallDone, 'XXX', sprintf('%3.f', (100*perc_correct))), window);
-        mt_showText(dirRoot, textRecallNoFeedback, window);
-        perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 0, 4);
-    elseif (iRecall > nMaxRecall)
-        sprintf('Maximum number of recall runs reached. Experiment cancelled.')
-        sca;
-    end        
+    mt_showText(dirRoot, textRecallNoFeedback, window);
+    mt_cardGame(dirRoot, cfg_window, iRecall, 0, 4);      
     
 % FINAL RECALL
 case cfg_cases.sesstype{4}
