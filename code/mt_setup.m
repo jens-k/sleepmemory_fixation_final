@@ -104,11 +104,11 @@ imageSequenceMainRecallB = imageSequenceMainLearningB;
 textControl = {  ...
     'Zählaufgabe'
     ''
-    'Im Folgenden sehen Sie mehrere Karten.'
-    'Die Karten werden nacheinander dunkler.'
+    'Im Folgenden sehen Sie ein Feld voller grauer Karten.'
+    'In jedem Lauf wird eine bestimmte Anzahl von Karten nacheinander dunkler werden.'
     ''
-    'Ihre Aufgabe: Zählen Sie, wie viele Karten dunkler werden.'
-    'Schauen Sie dabei auf das Kreuz in der Kartenmitte.'
+    'Ihre Aufgabe: Zählen Sie, wie viele Karten insgesamt dunkler werden.'
+    'Schauen Sie dabei ganz entspannt auf das Kreuz in der Mitte der jeweils verdunkelten Karte.'
     ''
     'Viel Spaß!'
     };
