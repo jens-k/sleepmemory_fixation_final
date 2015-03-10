@@ -41,7 +41,7 @@ function mt_run(user)
 % AUTHOR: Marco Rüth, contact@marcorueth.com
 
 % FIXME
-Screen('Preference', 'SkipSyncTests', 1);
+% Screen('Preference', 'SkipSyncTests', 1);
 
 %% PREPARE WORKSPACE & REQUEST USER INPUT
 close all;                  % Close all figures
@@ -120,8 +120,9 @@ case cfg_cases.sesstype{3}
         mt_cardGame(dirRoot, cfg_window, lRun);
     end
     % Start immediate recall
-    mt_showText(dirRoot, textRecallNoFeedback, window);
-    mt_cardGame(dirRoot, cfg_window, iRecall, 0, 4);      
+    mt_showText(dirRoot, textRecallInterference, window);
+    perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 0, 4);
+    mt_showText(dirRoot, strrep(textRecallPerformance, 'XXX', sprintf('%3.f', (100*perc_correct))), window);
     
 % FINAL RECALL
 case cfg_cases.sesstype{4}
@@ -132,7 +133,7 @@ case cfg_cases.sesstype{4}
         % Start Experimental Task
         perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 0, 5);
         iRecall = iRecall + 1;
-        mt_showText(dirRoot, strrep(textRecallFinal, 'XXX', sprintf('%3.f', (100*perc_correct))), window);
+        mt_showText(dirRoot, strrep(textRecallPerformance, 'XXX', sprintf('%3.f', (100*perc_correct))), window);
     end
     
 % ERROR CASE

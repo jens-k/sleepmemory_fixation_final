@@ -76,7 +76,7 @@ for iCard = 1: nCardsShown
 end
 
 %% Ask how many cards changed their color up to now
-ShowCursor;
+ShowCursor(CursorType, window);
 nControlAnswers     = 4;
 controlAnswers      = round(abs(nCardsShown-nControlAnswers):nCardsShown+nControlAnswers);
 controlAnswers      = controlAnswers(controlAnswers~=nCardsShown & controlAnswers~=0);
@@ -110,7 +110,7 @@ while ~(sum(mouseOnCard)==1)
     % Runs until a mouse button is pressed
     MousePress      = 0; % initializes flag to indicate no response
     while    ( MousePress==0 ) 
-        [x, y, buttons]     = GetMouse();   % wait for a key-press
+        [x, y, buttons]     = GetMouse(window);   % wait for a key-press
         % stop loop if the first mouse button is pressed
         if buttons(1)
             MousePress      = buttons(1); % sets to 1 if a button was pressed

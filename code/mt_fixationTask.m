@@ -39,6 +39,6 @@ Screen('Close', imgCrossTex);
 
     
 WaitSecs(fixationCrossDisplay);
-ShowCursor;
+ShowCursor(CursorType, window);
 
 end

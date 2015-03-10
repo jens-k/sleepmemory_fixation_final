@@ -46,12 +46,12 @@ Screen('Flip', window);
 % Wait until mouse click
 isClick = 0;
 while isClick == 0
-    [~, ~, isClick]   = GetMouse();
+    [~, ~, isClick]   = GetMouse(window);
     WaitSecs(.01);
 end
 % Wait until mouse released
 while sum(isClick) > 0 
-    [~, ~, isClick]   = GetMouse();
+    [~, ~, isClick]   = GetMouse(window);
     WaitSecs(.01);
 end
 

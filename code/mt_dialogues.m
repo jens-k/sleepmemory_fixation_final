@@ -55,7 +55,7 @@ for p = 1 : length(prompts)
         (p == 3 && ~ismember(answers{3}(:), cfg_cases.sesstype) || ...
         (p == 4 && ~ismember(answers{4}(:), cfg_cases.memvers)))|| ...
         (p == 5 && ~ismember(answers{5}(:), cfg_cases.odor))  
-        if p == 5 && strcmpi(char(answers{3}(:)), cfg_cases.sesstype{1})
+        if p == 4 && strcmpi(char(answers{3}(:)), cfg_cases.sesstype{1})
             break;
         end
             answers{p} 	= upper(newid(prompts(p), '', [1 70], defaults(p), options));
@@ -66,6 +66,8 @@ for p = 1 : length(prompts)
     end
     if str2double(answers{1}{:}) == 0
         load(fullfile(setupdir, 'mt_debug.mat'))
+        break;
+    elseif p == 4 && strcmpi(char(answers{3}(:)), cfg_cases.sesstype{1})
         break;
     end
 end

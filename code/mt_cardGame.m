@@ -110,9 +110,9 @@ for iCard = 1: length(cardShown)
         Screen('FrameRect', window, frameColor, rects, frameWidth);
         Screen('Flip', window, flipTime);
         Priority(0);
-        ShowCursor;
+        ShowCursor(CursorType, window);
     else
-        ShowCursor;
+        ShowCursor(CursorType, window);
     end
     
     % Define which card will be flipped
@@ -123,7 +123,7 @@ for iCard = 1: length(cardShown)
             cardClicked(iCard)  = cardFlip; % dummy
         case {4, 5} % (Immediate) Recall
             % OnMouseClick: flip the card
-            [cardFlip, mouseData]	= mt_cardFlip(screenOff, ncards_x, cardSize+cardMargin, topCardHeigth, responseTime);
+            [cardFlip, mouseData]	= mt_cardFlip(window, screenOff, ncards_x, cardSize+cardMargin, topCardHeigth, responseTime);
             if cardFlip ~= 0
                 % Save which card was clicked
                 cardClicked(iCard)           	= cardFlip;

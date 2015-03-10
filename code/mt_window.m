@@ -34,8 +34,10 @@ PsychDefaultSetup(2);
 % Get screens connected
 screens = Screen('Screens');
 
-% Display on external screen if available
-screenNumber = max(screens);
+% If no screen is pre-specified display on external screen if available
+if ~exist('screenNumber', 'var')
+    screenNumber = max(screens);
+end
 
 %% 1. Get Window Properties
 %       window - opened window

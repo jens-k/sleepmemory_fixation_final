@@ -22,13 +22,14 @@ switch upper(user)
         dirRoot             = 'D:\Master Thesis\00 - Program\';
         dirPTB              = 'D:\AnalysisSoftware\PTB\Psychtoolbox\';
     case {'MEG', 'SL3', 'SL4'}
-        dirRoot 			= 'C:\Users\Doktorand\Desktop\Studies\GitHub\sleepmemory\';
-        dirPTB              = 'C:\Users\Doktorand\Desktop\Studies\Psychtoolbox\';
+        dirRoot 			= 'C:\Users\Olfactometer\Desktop\Studies\Code\sleepmemory\';
+        dirPTB              = 'C:\Users\Olfactometer\Documents\MATLAB\Psychtoolbox\Psychtoolbox\';
+    case {'MRI'}
+       dirRoot              = 'E:\USERS\veit\memory_psychtoolbox\sleepmemory';
+       dirPTB               = 'C:\Program Files\MATLAB\Psyschtoolbox\Psychtoolbox'; 
     otherwise
         error('Invalid User Name. Define workspace in mt_profile.m')
 end
-
-
 addpath(genpath(dirRoot))
 addpath(dirPTB)
 end
