@@ -44,6 +44,8 @@ end
 %       windowRect - position array [left top right bottom]
 Screen('Preference', 'VisualDebugLevel', 1);
 [window, windowRect] = PsychImaging('OpenWindow', screenNumber, screenBgColor);
+% DEBUG
+% [window, windowRect] = Screen('OpenWindow', screenNumber, [], [30 30 1024 768]);
 
 % Get the window center coordinates
 [xCenter, yCenter] = RectCenter(windowRect);

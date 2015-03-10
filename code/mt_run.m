@@ -112,8 +112,7 @@ case cfg_cases.sesstype{2}
 % INTERFERENCE LEARNING and IMMEDIATE RECALL
 case cfg_cases.sesstype{3}
     % Show introduction screen
-    mt_showText(dirRoot, textLearning, window);
-    mt_showText(dirRoot, textLearning2, window);
+    mt_showText(dirRoot, textLearningInterference, window);
     mt_showText(dirRoot, textQuestion, window);
     % Start learning sessions
     for lRun = 1: nLearningSess

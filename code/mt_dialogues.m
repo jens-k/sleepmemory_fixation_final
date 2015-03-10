@@ -67,7 +67,8 @@ for p = 1 : length(prompts)
     if str2double(answers{1}{:}) == 0
         load(fullfile(setupdir, 'mt_debug.mat'))
         break;
-    elseif p == 4 && strcmpi(char(answers{3}(:)), cfg_cases.sesstype{1})
+    end
+    if p == 4 && strcmpi(char(answers{3}(:)), cfg_cases.sesstype{1})
         break;
     end
 end
@@ -92,13 +93,18 @@ end
 %         strcat('Night_', cfg_dlgs.night))
 
 % Memory version
-switch cfg_dlgs.memvers
-    case cfg_cases.memvers{1} 
-        cfg_dlgs.memvers = 1; % Version A of memory
-    case cfg_cases.memvers{2}
-        cfg_dlgs.memvers = 2; % Version B of memory
-    otherwise
-        error('Invalid Memory Version')
+if ~isempty(cfg_dlgs.memvers)
+    switch cfg_dlgs.memvers
+        case cfg_cases.memvers{1} 
+            cfg_dlgs.memvers = 1; % Version A of memory
+        case cfg_cases.memvers{2}
+            cfg_dlgs.memvers = 2; % Version B of memory
+        otherwise
+            error('Invalid Memory Version')
+    
+    end
+else
+    cfg_dlgs.memvers = 1;
 end
 
 % Session type: defines cardSequence

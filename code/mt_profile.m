@@ -21,9 +21,12 @@ switch upper(user)
     case 0
         dirRoot             = 'D:\Master Thesis\00 - Program\';
         dirPTB              = 'D:\AnalysisSoftware\PTB\Psychtoolbox\';
-    case {'MEG', 'SL3', 'SL4'}
+    case {'MEG'}
         dirRoot 			= 'C:\Users\Olfactometer\Desktop\Studies\Code\sleepmemory\';
         dirPTB              = 'C:\Users\Olfactometer\Documents\MATLAB\Psychtoolbox\Psychtoolbox\';
+    case {'SL3', 'SL4'}
+        dirRoot 			= 'E:\memoryLatest';
+        dirPTB              = 'C:\Users\Doktorand\Toolbox\Psychtoolbox';
     case {'MRI'}
        dirRoot              = 'E:\USERS\veit\memory_psychtoolbox\sleepmemory';
        dirPTB               = 'C:\Program Files\MATLAB\Psyschtoolbox\Psychtoolbox'; 

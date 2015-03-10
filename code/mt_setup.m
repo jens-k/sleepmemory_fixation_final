@@ -38,29 +38,29 @@ imageConfiguration = {
   'ant',            'whale',        'ray',          	'hippopotamus',     'fly'           'crocodile';
   'wasp',           'toucan',       'raven',            'lobster',          'giraffe',      'cow';
   'starfish',       'rooster',      'praying_mantis',   'lioness',          'grasshopper',  'cat';
-  'barn_owl',        'pigeon',       'penguin',          'hummingbird',      'goose',        'armadillo';
+  'barn_owl',       'pigeon',       'penguin',          'hummingbird',      'goose',        'armadillo';
   'scorpion',       'oyster',       'ostrich',          'horse',            'dromedary',    'dragonfly'
   }
   { % imagesA 	INTERFERENCE
-  'goose',       	'dromedary', 	'cat',              'starfish',			'rooster', 		'pigeon';
-  'barn_owl',      	'dragonfly',   	'armadillo',        'ostrich',      	'horse',    	'penguin';
-  'grasshopper',	'whale',  		'scorpion',         'ray',      		'ant',  		'oyster';
-  'hippopotamus', 	'wasp',   		'cow',              'praying_mantis',	'crocodile',	'raven';
-  'lioness',		'fly',   		'lobster',          'giraffe',        	'hummingbird',  'toucan'
+  'goose',       	'barn_owl', 	'cat',              'starfish',			'rooster', 		'pigeon';
+  'dromedary',      'dragonfly',   	'armadillo',        'ostrich',      	'horse',    	'penguin';
+  'hummingbird',	'scorpion',  	'whale',            'ray',      		'ant',  		'oyster';
+  'grasshopper', 	'wasp',   		'cow',              'fly',              'crocodile',	'raven';
+  'lioness',		'praying_mantis','lobster',         'giraffe',        	'hippopotamus',  'toucan'
   }}
   {{ % imagesB 	LEARNING
-  'sparrow',   'tiger',        'seagull',	'owl',          'partridge',    'cheetah';
-  'zebra',      'pelican',      'dolphin',	'mussel',       'kiwi'          'butterfly';
+  'sparrow',    'tiger',        'seagull',	'owl',          'partridge',    'cheetah';
+  'zebra',      'pelican',      'dolphin',	'mussel',       'manatee'       'butterfly';
   'turtle',     'ladybird',     'rhino',	'mosquito',     'tapir',        'beetle';
-  'elephant',   'platypus',     'pomfret',	'manatee',      'crab',         'bee';
+  'elephant',   'platypus',     'pomfret',	'kiwi',         'crab',         'bee';
   'termite',   	'hen',          'kangaroo',	'killer_whale', 'duck',         'bat'
   }
   { % imagesB 	INTERFERENCE
-  'rhino',		'killer_whale',	'duck',     'kangaroo',     'tiger',		'seagull';
-  'beetle',		'crab',			'pomfret',  'platypus',     'bat'           'zebra';
-  'kiwi',		'tapir',		'sparrow',  'bee',          'partridge',    'termite';
-  'dolphin',	'mussel', 		'elephant', 'hen',          'pelican',      'mosquito';
-  'butterfly',	'manatee',      'ladybird', 'owl',          'cheetah',      'turtle'
+  'rhino',		'killer_whale',	'duck',     'kangaroo',     'pomfret',		'zebra';
+  'beetle',		'crab',			'bat',      'platypus',     'ladybird'      'seagull';
+  'manatee',	'butterfly',	'bee',      'sparrow',      'hen',          'termite';
+  'dolphin',	'mussel', 		'cheetah',  'partridge',    'pelican',      'turtle';
+  'kiwi',       'tapir',        'tiger',    'elephant',     'owl',          'mosquito'
   }}
 };
 
@@ -84,8 +84,14 @@ imageSequenceMainLearningA = {
 	'goose', 'praying_mantis', 'wasp', 'grasshopper', 'dromedary', 'ray'
     };
 imageSequenceInterferenceLearningA = imageSequenceMainLearningA;
-% TODO: Sequence 2 
-imageSequenceimmediateRecallA = imageSequenceMainLearningA;
+% Sequence 2: Recall
+imageSequenceimmediateRecallA = {
+    'rooster', 'grasshopper', 'whale', 'crocodile', 'lobster', 'toucan', ...
+	'cat', 'oyster', 'giraffe', 'barn_owl', 'ostrich', 'dromedary', ...
+	'praying_mantis', 'dragonfly', 'penguin', 'starfish', 'lioness', 'scorpion', ...
+	'raven', 'pigeon', 'cow', 'goose', 'hippopotamus', 'horse', ...
+	'fly', 'hummingbird', 'wasp', 'ray', 'armadillo', 'ant'
+    };
 imageSequenceInterferenceRecallA = imageSequenceimmediateRecallA;
 imageSequenceMainRecallA = imageSequenceimmediateRecallA;
 
@@ -99,15 +105,21 @@ imageSequenceMainLearningB = {
 	'kangaroo', 'kiwi', 'sparrow', 'pelican', 'platypus', 'bat'
     };
 imageSequenceInterferenceLearningB = imageSequenceMainLearningB;
-% TODO: Sequence 2 
-imageSequenceimmediateRecallB = imageSequenceMainLearningB;
+% Sequence 2: Recall
+imageSequenceimmediateRecallB = {
+    'termite', 'zebra', 'kiwi', 'butterfly', 'duck', 'platypus', ...
+	'pelican', 'kangaroo', 'crab', 'sparrow', 'tapir', 'rhino' ...
+	'owl', 'beetle', 'seagull', 'bat', 'turtle', 'cheetah', ...
+	'hen', 'dolphin', 'pomfret', 'bee', 'manatee', 'tiger', 'killer_whale', ...
+	'elephant' , 'mosquito', 'partridge', 'ladybird', 'mussel'
+    };
 imageSequenceInterferenceRecallB = imageSequenceimmediateRecallB;
 imageSequenceMainRecallB = imageSequenceimmediateRecallB;
 
 
 %% ================================ TEXT ================================ %
 % Text strings used during the program
-textControl = {  ...
+textControl = { ...
     'Zählaufgabe'
     ''
     'Im Folgenden sehen Sie ein Feld voller grauer Karten.'
@@ -119,8 +131,8 @@ textControl = {  ...
     'der momentan verdunkelten Karte.'
     ''
     'Viel Spaß!'
-    };
-textFixation = {  ...
+};
+textFixation = { ...
     'Fixation'
     ''
     'Es erscheint nun ein Kreuz in der Mitte'
@@ -128,17 +140,8 @@ textFixation = {  ...
     'Kreuz, solange es angezeigt wird.'
     ''
     'Dies wird etwa 6 Minuten dauern.'
-    };
-% TODO: add to program
-textimmediateRecall = { ...
-    'Oben erscheint wieder jeweils ein Bild.'
-    'Fixieren Sie darunter bitte entspannt das Kreuz auf der'
-    'verdeckten Karte, unter der Sie dieses Bild vermuten.'
-    ''
-    'Sobald die Kreuze verschwinden, '
-    'klicken Sie bitte auf diese Karte.'
-    };
-textLearning = {  ...
+};
+textLearning = { ...
     'Willkommen!'
     ''
     'Im Folgenden sehen Sie ein Feld voller verdeckter Karten.'
@@ -150,28 +153,8 @@ textLearning = {  ...
     'Ihre Aufgabe: '
     'Fixieren Sie die jeweils aufgedeckte Karte und merken '
     'Sie sich ihre Position. Nachher werden die Positionen abgefragt.'
-    };
-textPracticeLearn = { ...
-    'Zunächst ein Übungsdurchgang!'
-    ''
-    'Teil 1 - Lernen:'
-    ''
-    'Fixieren Sie die jeweils aufgedeckte Karte und merken'
-    'Sie sich ihre Position.'
-    };
-textPracticeRecall = { ...
-    'Übungsdurchgang'
-    ''
-    'Teil 2 - Abfrage:'
-    ''
-    'Oben erscheint wieder jeweils ein Bild.'
-    'Fixieren Sie darunter bitte das Kreuz auf der'
-    'verdeckten Karte, unter der Sie dieses Bild vermuten.'
-    ''
-    'Sobald die Kreuze verschwinden, '
-    'klicken Sie bitte auf diese Karte.'
-    };
-textLearning2 = {  ...
+};
+textLearning2 = { ...
     'Lernen'
     ''
     'Jetzt geht es wirklich los!'
@@ -185,6 +168,48 @@ textLearning2 = {  ...
     'mitgeteilt, wie viel Prozent Sie richtig hatten. Die Abfrage wird so'
     'lange wiederholt, bis Sie bei 60% der Karten richtig liegen.'
     };
+textLearningInterference = { ...
+    'Lernen'
+    ''
+    'Nun machen wir einen weiteren Lerndurchgang.'
+    'Die Karten haben sogar die gleichen Motive wie vor dem Schlafengehen.'
+    'Allerdings befinden sich die Motive nun an anderen Positionen.'
+    ''
+    'Ihre Aufgabe: '
+    'Fixieren Sie jeweils ganz entspannt die aufgedeckte Karte und'
+    'merken Sie sich ihre Position.'
+};
+textOutro = { ...
+    'Ende'
+    ''
+    'Vielen Dank!'
+    ''
+};
+textPracticeLearn = { ...
+    'Zunächst ein Übungsdurchgang!'
+    ''
+    'Teil 1 - Lernen:'
+    ''
+    'Fixieren Sie die jeweils aufgedeckte Karte und merken'
+    'Sie sich ihre Position.'
+};
+textPracticeRecall = { ...
+    'Übungsdurchgang'
+    ''
+    'Teil 2 - Abfrage:'
+    ''
+    'Oben erscheint wieder jeweils ein Bild.'
+    'Fixieren Sie darunter bitte das Kreuz auf der'
+    'verdeckten Karte, unter der Sie dieses Bild vermuten.'
+    ''
+    'Sobald die Kreuze verschwinden, '
+    'klicken Sie bitte auf diese Karte.'
+};
+textQuestion = { ...
+    ''
+    ''
+    'Haben Sie noch Fragen zum Ablauf?'
+};
 textRecall = { ...
     'Abfrage:'
     'Nun möchten wir von Ihnen wissen, wo die Bilder waren, die Sie VOR dem'
@@ -199,14 +224,14 @@ textRecall = { ...
     'lediglich ein blauer Punkt auf der geklickten Karte (kein Kreuz oder.'
     'Häkchen. Am Ende wird Ihnen aber wie bisher gesagt, wie gut sie waren.'
     ''
-    };
+};
 textRecallAgain = { ...
     ''
     'Sie hatten XXX Prozent richtig.'
     ''
     'Die Abfrage wird wiederholt.'
     ''
-    };
+};
 textRecallDone = { ...
     ''
     'Glückwunsch!'
@@ -214,7 +239,16 @@ textRecallDone = { ...
     'Sie hatten XXX Prozent richtig.'
     'Jetzt nur noch ein Durchlauf!'
     ''
-    };
+};
+% TODO: add to program
+textRecallImmediate = { ...
+    'Oben erscheint wieder jeweils ein Bild.'
+    'Fixieren Sie darunter bitte entspannt das Kreuz auf der'
+    'verdeckten Karte, unter der Sie dieses Bild vermuten.'
+    ''
+    'Sobald die Kreuze verschwinden, '
+    'klicken Sie bitte auf diese Karte.'
+};
 textRecallInterference = textRecall;
 textRecallNoFeedback = { ...
     'Die Abfrage wird noch einmal wiederholt. Diesmal wird Ihnen nicht'
@@ -222,24 +256,13 @@ textRecallNoFeedback = { ...
     ''
     'Es erscheint lediglich ein blauer Punkt auf der'
     'geklickten Karte.'
-    };
+};
 textRecallPerformance = { ...
     ''
     'Sie hatten XXX Prozent richtig.'
     ''
     ''
-    };
-textQuestion = {  ...
-    ''
-    ''
-    'Haben Sie noch Fragen zum Ablauf?'
-    };
-textOutro = {  ...
-    'Ende'
-    ''
-    'Vielen Dank!'
-    ''
-    };
+};
 textSession = {
     'Konzentration'    % Control Task  
     'Lernen'           % Main Learning
@@ -247,7 +270,7 @@ textSession = {
     'Abfrage'          % Interference Recall
     'Abfrage'          % Immediate Recall & Main Recall 
     'Konzentration'    % Gray Mode
-    };
+};
 
 % Text Properties
 textDefSize     = 26;           % default Text Size

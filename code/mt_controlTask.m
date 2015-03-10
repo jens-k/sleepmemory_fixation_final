@@ -30,6 +30,7 @@ cardShown    	= cardSequence{cfg_dlgs.memvers}{cfg_dlgs.sesstype}{iControlRun}';
 cardClicked 	= zeros(length(cardShown), 1);
 mouseData    	= zeros(length(cardShown), 3);
 nCardsShown     = length(cardShown);
+maxCardsShown   = max(cellfun(@(x) length(x), cardSequence{cfg_dlgs.memvers}{cfg_dlgs.sesstype}));
 
 %% Start the game
 % Get Session Time
@@ -79,7 +80,9 @@ end
 ShowCursor(CursorType, window);
 nControlAnswers     = 4;
 controlAnswers      = round(abs(nCardsShown-nControlAnswers):nCardsShown+nControlAnswers);
-controlAnswers      = controlAnswers(controlAnswers~=nCardsShown & controlAnswers~=0);
+% Delete invalid alternative answers, i.e. the correct answer, the answer
+% 0, and answers that exceed the maximum number of shown cards + 2
+controlAnswers      = controlAnswers(controlAnswers~=nCardsShown & controlAnswers~=0 & controlAnswers<=maxCardsShown+2);
 controlAnswers      = Shuffle([nCardsShown randsample(controlAnswers, 3, 0)]);
 
 controlCardTextSize = 40;
