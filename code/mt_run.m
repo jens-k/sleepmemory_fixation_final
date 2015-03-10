@@ -127,6 +127,7 @@ case cfg_cases.sesstype{3}
 case cfg_cases.sesstype{4}
     % Show introduction screen
     mt_showText(dirRoot, textRecall, window);
+    mt_showText(dirRoot, textRecall2, window);
     mt_showText(dirRoot, textQuestion, window);
     while (iRecall <= nFinalRecall) 
         % Start Experimental Task

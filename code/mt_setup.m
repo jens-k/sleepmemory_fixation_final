@@ -123,12 +123,13 @@ textControl = { ...
     'Zählaufgabe'
     ''
     'Im Folgenden sehen Sie ein Feld voller grauer Karten.'
-    'Von diesen Karten wird eine bestimmte Anzahl nacheinander'
-    'verdunkelt werden.'
+    'Von diesen Karten wird eine bestimmte Anzahl'
+    'nacheinander verdunkelt werden.'
     ''
-    'Ihre Aufgabe: Zählen Sie, wie viele Karten insgesamt dunkler geworden.'
-    'sind. Schauen Sie dabei jeweils ganz entspannt auf das Kreuz in der Mitte'
-    'der momentan verdunkelten Karte.'
+    'Ihre Aufgabe: Zählen Sie, wie viele Karten insgesamt'
+    'dunkler geworden sind. Schauen Sie dabei jeweils ganz'
+    'entspannt auf das Kreuz in der Mitte der momentan' 
+    'verdunkelten Karte.'
     ''
     'Viel Spaß!'
 };
@@ -151,35 +152,38 @@ textLearning = { ...
     'Dann wird darunter die dazu passende Karte aufgedeckt.'
     ''
     'Ihre Aufgabe: '
-    'Fixieren Sie die jeweils aufgedeckte Karte und merken '
-    'Sie sich ihre Position. Nachher werden die Positionen abgefragt.'
+    'Fixieren Sie die jeweils aufgedeckte Karte.'
+    'Merken Sie sich die Position der Karte.'
+    'Nachher werden die Positionen abgefragt.'
 };
 textLearning2 = { ...
-    'Lernen'
+    'Lernen - jetzt geht es wirklich los!'
     ''
-    'Jetzt geht es wirklich los!'
     'Es werden Ihnen nun alle 30 Bilder zwei Mal gezeigt.'
     ''
-    'Ihre Aufgabe: '
-    'Fixieren Sie jeweils ganz entspannt die aufgedeckte Karte und'
-    'merken Sie sich ihre Position.'
+    'Nach dem Lernen folgt eine Abfrage der Positionen.'
+    'Am Ende wir angezeigt, wie viel Prozent Sie richtig hatten.'
+    'Die Abfrage wird so lange wiederholt, bis Sie bei 60% der'
+    'Karten richtig liegen.'
     ''
-    'Nach dem Lernen folgt eine Abfrage der Positionen. Am Ende bekommen Sie'
-    'mitgeteilt, wie viel Prozent Sie richtig hatten. Die Abfrage wird so'
-    'lange wiederholt, bis Sie bei 60% der Karten richtig liegen.'
+    'Ihre Aufgabe: '
+    'Fixieren Sie jeweils ganz entspannt die aufgedeckte Karte'
+    'und merken Sie sich ihre Position.'
     };
 textLearningInterference = { ...
     'Lernen'
     ''
     'Nun machen wir einen weiteren Lerndurchgang.'
-    'Die Karten haben sogar die gleichen Motive wie vor dem Schlafengehen.'
-    'Allerdings befinden sich die Motive nun an anderen Positionen.'
+    'Die Karten haben sogar die gleichen Motive wie vor dem'
+    'Schlafengehen. Allerdings befinden sich die Motive'
+    'nun an anderen Positionen.'
     ''
     'Ihre Aufgabe: '
-    'Fixieren Sie jeweils ganz entspannt die aufgedeckte Karte und'
-    'merken Sie sich ihre Position.'
+    'Fixieren Sie jeweils ganz entspannt die aufgedeckte'
+    'Karte und merken Sie sich ihre Position.'
 };
 textOutro = { ...
+    ''
     'Ende'
     ''
     'Vielen Dank!'
@@ -195,7 +199,6 @@ textPracticeLearn = { ...
 };
 textPracticeRecall = { ...
     'Übungsdurchgang'
-    ''
     'Teil 2 - Abfrage:'
     ''
     'Oben erscheint wieder jeweils ein Bild.'
@@ -212,17 +215,26 @@ textQuestion = { ...
 };
 textRecall = { ...
     'Abfrage:'
-    'Nun möchten wir von Ihnen wissen, wo die Bilder waren, die Sie VOR dem'
-    'Schlafengehen gelernt haben.'
+    'Nun möchten wir von Ihnen wissen, wo die Bilder waren,'
+    'die Sie VOR dem Schlafengehen gelernt haben.'
     ''
-    'Oben erscheint jeweils das Bild. Fixieren Sie das Kreuz auf der'
-    'verdeckten Karte unter der Sie das Bild vermuten.'
     ''
-    'Sobald die Kreuze verschwinden, klicken Sie bitte auf die Karte.'
+    'Oben erscheint jeweils das Bild.'
+    'Fixieren Sie darunter bitte das Kreuz auf der'
+    'verdeckten Karte, unter der Sie dieses Bild vermuten.'
     ''
-    'Ihnen wird diesmal nicht gesagt, ob Sie richtig gelegen haben. Es erscheint'
-    'lediglich ein blauer Punkt auf der geklickten Karte (kein Kreuz oder.'
-    'Häkchen. Am Ende wird Ihnen aber wie bisher gesagt, wie gut sie waren.'
+    'Klicken Sie bitte auf diese Karte, nachdem die Kreuze'
+    'verschwunden sind.'
+    ''
+};
+textRecall2 = { ...
+    ''
+    ''
+    'Ihnen wird diesmal nicht gesagt, ob Sie richtig '
+    'gelegen haben. Es erscheint lediglich ein blauer Punkt'
+    'auf der geklickten Karte (kein Kreuz oder Häkchen).'
+    ''
+    'Am Ende wird Ihnen wie bisher gesagt, wie gut sie waren.'
     ''
 };
 textRecallAgain = { ...
@@ -242,6 +254,7 @@ textRecallDone = { ...
 };
 % TODO: add to program
 textRecallImmediate = { ...
+    ''
     'Oben erscheint wieder jeweils ein Bild.'
     'Fixieren Sie darunter bitte entspannt das Kreuz auf der'
     'verdeckten Karte, unter der Sie dieses Bild vermuten.'
@@ -251,8 +264,9 @@ textRecallImmediate = { ...
 };
 textRecallInterference = textRecall;
 textRecallNoFeedback = { ...
-    'Die Abfrage wird noch einmal wiederholt. Diesmal wird Ihnen nicht'
-    'mehr angezeigt, ob Sie richtig gelegen haben.'
+    ''
+    'Die Abfrage wird noch einmal wiederholt. Diesmal wird'
+    'nicht mehr angezeigt, ob Sie richtig gelegen haben.'
     ''
     'Es erscheint lediglich ein blauer Punkt auf der'
     'geklickten Karte.'
@@ -273,7 +287,7 @@ textSession = {
 };
 
 % Text Properties
-textDefSize     = 26;           % default Text Size
+textDefSize     = 25;           % default Text Size
 textDefFont     = 'Arial';      % default Text Font
 textDefColor    = [0 0 0];      % default Text Color
 textSx          = 'center';     % default Text x-position
