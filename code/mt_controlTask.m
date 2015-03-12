@@ -39,7 +39,7 @@ TrialTime       = cell(length(cardShown),1);
 HideCursor;
 
 % Draw the rects to the screen
-Priority(MaxPriority(window));
+%    Priority(MaxPriority(window)); 
 Screen('FillRect', window, cardColorControl, topCard);
 Screen('FrameRect', window, frameColor, topCard, frameWidth);
 Screen('FillRect', window, cardColors, rects);
@@ -54,7 +54,7 @@ for iCard = 1: nCardsShown
     cardCurrent         = cardShown(iCard);
     
     % Flip the card
-    Priority(MaxPriority(window));
+    %    Priority(MaxPriority(window)); 
     Screen('FillRect', window, cardColorControl, topCard);
     Screen('FrameRect', window, frameColor, topCard, frameWidth);
     % Fill all rects but one
@@ -90,13 +90,16 @@ controlCardHeigth   = 100;
 controlCardWidth    = controlCardHeigth * (4/3);
 controlRects        = zeros(4, nControlAnswers);
 yOffset             = 50;
+cardOffset          = 20;
+topOffset           = round((cfg_window.window43(end) - ((nControlAnswers * controlCardHeigth) + ((nControlAnswers-1) * cardOffset)))/2) + yOffset/2;
 
-for cc = 1 : nControlAnswers
-    controlRects(:, cc) = CenterRectOnPointd([0 0 controlCardWidth controlCardHeigth], cfg_window.center(1), cc*(controlCardHeigth+20)+yOffset);
+controlRects(:, 1) = CenterRectOnPointd([0 0 controlCardWidth controlCardHeigth], cfg_window.center(1), controlCardHeigth/2 + topOffset);
+for cc = 2 : nControlAnswers
+    controlRects(:, cc) = CenterRectOnPointd([0 0 controlCardWidth controlCardHeigth], cfg_window.center(1), (cc-1)*(controlCardHeigth + cardOffset) + controlCardHeigth/2 + topOffset);
 end
 Screen('TextSize', window, 20);               % set text size
 
-Priority(MaxPriority(window));
+%    Priority(MaxPriority(window)); 
 Screen('FillRect', window, cardColors, controlRects);
 Screen('FrameRect', window, frameColor, controlRects, frameWidth);
 DrawFormattedText(window, 'Wie viele Karten wurden dunkler?', 'center', yOffset, textDefColor);
@@ -130,7 +133,7 @@ controlCardCorrect = find(controlAnswers == nCardsShown);
 
 Screen('TextSize', window, 20);               % set text size
 
-Priority(MaxPriority(window));
+%    Priority(MaxPriority(window)); 
 Screen('FillRect', window, cardColors, controlRects);
 Screen('FrameRect', window, frameColor, controlRects, frameWidth);
 DrawFormattedText(window, 'Wie viele Karten wurden dunkler?', 'center', yOffset, textDefColor);

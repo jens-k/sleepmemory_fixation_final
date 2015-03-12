@@ -88,8 +88,10 @@ case cfg_cases.sesstype{2}
     mt_showText(dirRoot, textQuestion, window);
     % Start learning sessions
     for lRun = 1: nLearningSess
+        mt_showText(dirRoot, strrep(textLearning2Next, 'XXX', sprintf('%1.f', (lRun))), window);
         mt_cardGame(dirRoot, cfg_window, lRun);
     end
+    mt_showText(dirRoot, textRecallImmediate, window);
     % Start immediate recall
     while (iRecall <= nMaxRecall) && ((100*perc_correct < RecallThreshold) || (iRecall <= nMinRecall)) 
         % Start Experimental Task
@@ -116,6 +118,7 @@ case cfg_cases.sesstype{3}
     mt_showText(dirRoot, textQuestion, window);
     % Start learning sessions
     for lRun = 1: nLearningSess
+        mt_showText(dirRoot, strrep(textLearning2Next, 'XXX', sprintf('%1.f', (lRun))), window);        
         mt_cardGame(dirRoot, cfg_window, lRun);
     end
     % Start immediate recall

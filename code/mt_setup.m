@@ -77,11 +77,11 @@ imageConfiguration = {
 % Image Sequences for Image Set A
 % Sequence 1: Learning
 imageSequenceMainLearningA = {
-    'starfish', 'pigeon', 'armadillo', 'crocodile', 'raven', 'horse', ...
-	'rooster', 'lioness', 'dragonfly', 'penguin', 'lobster', 'ostrich', ...
-	'fly', 'ant', 'cow', 'barn_owl', 'cat', 'hippopotamus', ...
-	'scorpion', 'whale', 'giraffe', 'hummingbird', 'oyster', 'toucan', ...
-	'goose', 'praying_mantis', 'wasp', 'grasshopper', 'dromedary', 'ray'
+    'starfish', 'crocodile', 'armadillo', 'pigeon', 'raven', 'horse', ...
+	'lioness', 'rooster', 'dragonfly', 'penguin', 'lobster', 'ostrich', ...
+	'fly', 'barn_owl', 'cow', 'ant', 'hummingbird', 'hippopotamus', ...
+	'scorpion', 'giraffe', 'whale', 'dromedary', 'wasp', 'goose', ...
+	'toucan', 'cat', 'praying_mantis', 'oyster', 'grasshopper', 'ray'
     };
 imageSequenceInterferenceLearningA = imageSequenceMainLearningA;
 % Sequence 2: Recall
@@ -98,11 +98,11 @@ imageSequenceMainRecallA = imageSequenceimmediateRecallA;
 % Image Sequence for Image Set B
 % Sequence 1: Learning
 imageSequenceMainLearningB = {
-    'butterfly', 'mussel', 'hen', 'beetle', 'ladybird', 'cheetah', ...
-	'killer_whale', 'owl', 'mosquito', 'duck', 'dolphin', 'manatee' ...
-	'elephant', 'bee', 'pomfret', 'tapir', 'tiger', 'crab', ...
-	'zebra', 'seagull', 'termite', 'rhino', 'turtle', 'partridge', ...
-	'kangaroo', 'kiwi', 'sparrow', 'pelican', 'platypus', 'bat'
+    'butterfly', 'hen', 'mussel', 'beetle', 'ladybird', 'cheetah', ...
+	'killer_whale', 'owl', 'duck', 'mosquito', 'elephant', 'manatee' ...
+	'tiger', 'bee', 'dolphin', 'pomfret', 'tapir', 'zebra', ...
+	'termite', 'crab', 'seagull', 'platypus', 'partridge', 'turtle', ...
+	'kangaroo', 'sparrow', 'rhino', 'bat', 'kiwi', 'pelican'
     };
 imageSequenceInterferenceLearningB = imageSequenceMainLearningB;
 % Sequence 2: Recall
@@ -126,12 +126,11 @@ textControl = { ...
     'Von diesen Karten wird eine bestimmte Anzahl'
     'nacheinander verdunkelt werden.'
     ''
-    'Ihre Aufgabe: Zählen Sie, wie viele Karten insgesamt'
-    'dunkler geworden sind. Schauen Sie dabei jeweils ganz'
-    'entspannt auf das Kreuz in der Mitte der momentan' 
-    'verdunkelten Karte.'
-    ''
-    'Viel Spaß!'
+    'Ihre Aufgabe: '
+    'Zählen Sie, wie viele Karten insgesamt dunkler'
+    'geworden sind.' 
+    'Schauen Sie dabei jeweils ganz entspannt auf das'
+    'Kreuz in der Mitte der momentan verdunkelten Karte.'
 };
 textFixation = { ...
     'Fixation'
@@ -151,38 +150,45 @@ textLearning = { ...
     'Jedes Bild wird zunächst oben angezeigt.'
     'Dann wird darunter die dazu passende Karte aufgedeckt.'
     ''
-    'Ihre Aufgabe: '
-    'Fixieren Sie die jeweils aufgedeckte Karte.'
+    'Ihre Aufgabe:'
     'Merken Sie sich die Position der Karte.'
     'Nachher werden die Positionen abgefragt.'
+    'Wichtig: Bitte fixieren Sie die jeweils aufgedeckte Karte.'
 };
+textLearning2Next = { ...
+    ''
+    ''
+    ''
+    'Nun beginnt der XXX. Lerndurchgang'
+    };
 textLearning2 = { ...
     'Lernen - jetzt geht es wirklich los!'
     ''
     'Es werden Ihnen nun alle 30 Bilder zwei Mal gezeigt.'
     ''
     'Nach dem Lernen folgt eine Abfrage der Positionen.'
-    'Am Ende wir angezeigt, wie viel Prozent Sie richtig hatten.'
+    'Am Ende wird angezeigt, wie viel Prozent Sie richtig hatten.'
     'Die Abfrage wird so lange wiederholt, bis Sie bei 60% der'
     'Karten richtig liegen.'
     ''
     'Ihre Aufgabe: '
-    'Fixieren Sie jeweils ganz entspannt die aufgedeckte Karte'
-    'und merken Sie sich ihre Position.'
+    'Merken Sie sich die Position der Karte. Fixieren Sie dabei'
+    'ganz entspannt die aufgedeckte Karte.'
     };
 textLearningInterference = { ...
     'Lernen'
     ''
-    'Nun machen wir einen weiteren Lerndurchgang.'
+    'Nun folgen erneut zwei Lerndurchgänge.'
     'Die Karten haben sogar die gleichen Motive wie vor dem'
     'Schlafengehen. Allerdings befinden sich die Motive'
     'nun an anderen Positionen.'
     ''
     'Ihre Aufgabe: '
-    'Fixieren Sie jeweils ganz entspannt die aufgedeckte'
-    'Karte und merken Sie sich ihre Position.'
+    'Merken Sie sich die Position der Karte. Fixieren Sie dabei'
+    'ganz entspannt die aufgedeckte Karte.'
 };
 textOutro = { ...
+    ''
     ''
     'Ende'
     ''
@@ -190,16 +196,17 @@ textOutro = { ...
     ''
 };
 textPracticeLearn = { ...
-    'Zunächst ein Übungsdurchgang!'
+    'Übungsdurchgang'
     ''
-    'Teil 1 - Lernen:'
+    'Lernen'
     ''
-    'Fixieren Sie die jeweils aufgedeckte Karte und merken'
-    'Sie sich ihre Position.'
+    'Merken Sie sich die Position der Karte. Fixieren Sie dabei'
+    'ganz entspannt die aufgedeckte Karte.'
 };
 textPracticeRecall = { ...
     'Übungsdurchgang'
-    'Teil 2 - Abfrage:'
+    ''
+    'Abfrage'
     ''
     'Oben erscheint wieder jeweils ein Bild.'
     'Fixieren Sie darunter bitte das Kreuz auf der'
@@ -214,7 +221,7 @@ textQuestion = { ...
     'Haben Sie noch Fragen zum Ablauf?'
 };
 textRecall = { ...
-    'Abfrage:'
+    'Abfrage'
     'Nun möchten wir von Ihnen wissen, wo die Bilder waren,'
     'die Sie VOR dem Schlafengehen gelernt haben.'
     ''
@@ -252,7 +259,6 @@ textRecallDone = { ...
     'Jetzt nur noch ein Durchlauf!'
     ''
 };
-% TODO: add to program
 textRecallImmediate = { ...
     ''
     'Oben erscheint wieder jeweils ein Bild.'
@@ -262,7 +268,7 @@ textRecallImmediate = { ...
     'Sobald die Kreuze verschwinden, '
     'klicken Sie bitte auf diese Karte.'
 };
-textRecallInterference = textRecall;
+textRecallInterference = textRecallImmediate;
 textRecallNoFeedback = { ...
     ''
     'Die Abfrage wird noch einmal wiederholt. Diesmal wird'
@@ -348,11 +354,11 @@ textBgColor         = [1 1 1]; % white background
 
 % Set Timing (seconds)
 topCardDisplay      = .1;    	% Duartion top Card is shown 
-cardDisplay         = .5;     	% Duration memory cards are shown
-cardCrossDisplay    = .5;        % Duration cross is displayed on cards
+cardDisplay         = .15;     	% Duration memory cards are shown
+cardCrossDisplay    = .15;       % Duration cross is displayed on cards
 cardRecallDisplay   = .1;     	% Duration memory cards are shown
-feedbackDisplay     = .1;        % Duration feedback is shown
-responseTime        = 15;       % Duration allowed to respond (click)
+feedbackDisplay     = .1;       % Duration feedback is shown
+responseTime        = .15;      % Duration allowed to respond (click)
 % Fixation Task (mt_fixationTask)
 fixationCrossDisplay = 7.5;     % Duration fixation cross is displayed
 

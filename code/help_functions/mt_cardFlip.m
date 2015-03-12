@@ -52,6 +52,7 @@ if (clickTime < responseTime)
     %% Find out which card was selected and return the card number
     mouseCard           = ((mouseCardY-1) * ncards_x) + mouseCardX;
 else
+    % Timout
     mouseCard           = 0;
 end
 

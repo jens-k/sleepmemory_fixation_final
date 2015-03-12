@@ -25,7 +25,7 @@ load(fullfile(dirRoot,'setup','mt_params.mat'))   % load workspace information a
 imageTop        = Screen('MakeTexture', window, imagesTop{imageCurrent});
 
 % show feedback on the card
-Priority(MaxPriority(window));
+% Priority(MaxPriority(window));
 Screen('DrawTexture', window, imageTop, [], topCard);
 Screen('FrameRect', window, frameColor, topCard, frameWidth);
 Screen('FillRect', window, cardColors, rects);

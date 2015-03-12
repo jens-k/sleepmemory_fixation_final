@@ -46,7 +46,7 @@ else
 end
 if (currSesstype == 4) || (currSesstype == 5)
     showCross = 1;  % show crosses 
-elseif (currSesstype == 2)
+elseif (currSesstype == 2) || (currSesstype == 3)
     HideCursor;     % hide cursor during learning
 end
 
@@ -59,6 +59,9 @@ isinterf        = (cfg_dlgs.sesstype==3) + 1;
 imagesT         = imageConfiguration{cfg_dlgs.memvers}{isinterf}';
 %% Show which session is upcoming
 mt_showText(dirRoot, textSession{currSesstype}, window, 40);
+% Add a short delay to create an interval between mouse click and start of
+% the experiment
+WaitSecs(1);
 
 %% Start the game
 % Get Session Time
@@ -66,6 +69,7 @@ SessionTime         = {datestr(now, 'HH:MM:SS')};
 % In the learning session all pictures are shown in a sequence
 % In the recall sessions mouse interaction is activated
 for iCard = 1: length(cardShown)
+    cardFlip = 0;
     % Get Trial Time
     TrialTime           = {datestr(now, 'HH:MM:SS.FFF')};
     
@@ -74,7 +78,7 @@ for iCard = 1: length(cardShown)
     imageTop        = Screen('MakeTexture', window, imagesTop{imageCurrent});
     
     % Show a picture on top
-    Priority(MaxPriority(window));
+%    Priority(MaxPriority(window)); 
     Screen('DrawTexture', window, imageTop, [], topCard);
     Screen('FrameRect', window, frameColor, topCard, frameWidth);
     Screen('FillRect', window, cardColors, rects);
@@ -82,14 +86,14 @@ for iCard = 1: length(cardShown)
     Screen('Flip', window, flipTime);
     Priority(0);
 
-    % Delay flipping in case of learning for cardDelay
+    % Delay flipping in case of learning for topCardDisplay
     if currSesstype == 2 || currSesstype == 3
         WaitSecs(topCardDisplay);
     % Show fixation crosses
     elseif showCross == 1
         HideCursor;
         imgCrossTex = Screen('MakeTexture', window, imgCross);
-        Priority(MaxPriority(window));
+    %    Priority(MaxPriority(window)); 
         Screen('DrawTexture', window, imageTop, [], topCard);
         Screen('FrameRect', window, frameColor, topCard, frameWidth);
         Screen('FillRect', window, cardColors, rects);
@@ -103,7 +107,7 @@ for iCard = 1: length(cardShown)
         Screen('Close', imgCrossTex);
         Priority(0);
         WaitSecs(cardCrossDisplay);
-        Priority(MaxPriority(window));
+    %    Priority(MaxPriority(window)); 
         Screen('DrawTexture', window, imageTop, [], topCard);
         Screen('FrameRect', window, frameColor, topCard, frameWidth);
         Screen('FillRect', window, cardColors, rects);
@@ -129,12 +133,16 @@ for iCard = 1: length(cardShown)
                 cardClicked(iCard)           	= cardFlip;
                 % Show Feedback
                 cardFlip                        = mt_showFeedback(dirRoot, window, cardFlip, feedbackOn, imageCurrent);
+            else
+                % Timeout
+                cardFlip                        = imageCurrent;
             end
+            
     end
         
     if cardFlip ~= 0 && feedbackOn
         % Flip the card
-        Priority(MaxPriority(window));
+    %    Priority(MaxPriority(window)); 
         Screen('DrawTexture', window, imageTop, [], topCard);
         Screen('FrameRect', window, frameColor, topCard, frameWidth);
 
