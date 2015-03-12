@@ -46,8 +46,6 @@ else
 end
 if (currSesstype == 4) || (currSesstype == 5)
     showCross = 1;  % show crosses 
-elseif (currSesstype == 2) || (currSesstype == 3)
-    HideCursor;     % hide cursor during learning
 end
 
 %% Initialize variables for measured parameters
@@ -57,11 +55,16 @@ mouseData    	= zeros(1, 3);
 
 isinterf        = (cfg_dlgs.sesstype==3) + 1;
 imagesT         = imageConfiguration{cfg_dlgs.memvers}{isinterf}';
+
 %% Show which session is upcoming
 mt_showText(dirRoot, textSession{currSesstype}, window, 40);
-% Add a short delay to create an interval between mouse click and start of
-% the experiment
-WaitSecs(1);
+% Short delay after the mouse click to avoid motor artifacts
+HideCursor;
+Screen('Flip', window, flipTime);
+WaitSecs(whiteScreenDisplay);
+if ~((currSesstype == 2) || (currSesstype == 3))
+    ShowCursor(CursorType, window);     % hide cursor during learning
+end
 
 %% Start the game
 % Get Session Time
@@ -79,6 +82,14 @@ for iCard = 1: length(cardShown)
     
     % Show a picture on top
 %    Priority(MaxPriority(window)); 
+    Screen('FillRect', window, cardColors, topCard);
+    Screen('FrameRect', window, frameColor, topCard, frameWidth);
+    Screen('FillRect', window, cardColors, rects);
+    Screen('FrameRect', window, frameColor, rects, frameWidth);
+    Screen('Flip', window, flipTime);
+    Priority(0);
+    WaitSecs(topCardGreyDisplay);
+    
     Screen('DrawTexture', window, imageTop, [], topCard);
     Screen('FrameRect', window, frameColor, topCard, frameWidth);
     Screen('FillRect', window, cardColors, rects);

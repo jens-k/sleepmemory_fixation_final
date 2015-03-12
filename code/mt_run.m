@@ -106,9 +106,12 @@ case cfg_cases.sesstype{2}
         mt_showText(dirRoot, strrep(textRecallDone, 'XXX', sprintf('%3.f', (100*perc_correct))), window);
         mt_showText(dirRoot, textRecallNoFeedback, window);
         perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 0, 5);
+        mt_showText(dirRoot, strrep(textRecallPerformance, 'XXX', sprintf('%3.f', (100*perc_correct))), window);        
     elseif (iRecall > nMaxRecall)
         sca;
-        error('Maximum number of recall runs reached. Experiment cancelled.')
+        warning(['Maximum number of recall (' num2str(nMaxRecall) ') runs reached. Experiment cancelled.'])
+        % Show final screen
+        mt_showText(dirRoot, textOutro, window);
     end
 
 % INTERFERENCE LEARNING and IMMEDIATE RECALL

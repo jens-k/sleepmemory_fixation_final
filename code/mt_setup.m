@@ -89,7 +89,7 @@ imageSequenceimmediateRecallA = {
     'rooster', 'grasshopper', 'whale', 'crocodile', 'lobster', 'toucan', ...
 	'cat', 'oyster', 'giraffe', 'barn_owl', 'ostrich', 'dromedary', ...
 	'praying_mantis', 'dragonfly', 'penguin', 'starfish', 'lioness', 'scorpion', ...
-	'raven', 'pigeon', 'cow', 'goose', 'hippopotamus', 'horse', ...
+	'raven', 'cow', 'pigeon', 'goose', 'hippopotamus', 'horse', ...
 	'fly', 'hummingbird', 'wasp', 'ray', 'armadillo', 'ant'
     };
 imageSequenceInterferenceRecallA = imageSequenceimmediateRecallA;
@@ -129,7 +129,7 @@ textControl = { ...
     'Ihre Aufgabe: '
     'Zählen Sie, wie viele Karten insgesamt dunkler'
     'geworden sind.' 
-    'Schauen Sie dabei jeweils ganz entspannt auf das'
+    'Schauen Sie dabei stets ganz entspannt auf das'
     'Kreuz in der Mitte der momentan verdunkelten Karte.'
 };
 textFixation = { ...
@@ -153,7 +153,7 @@ textLearning = { ...
     'Ihre Aufgabe:'
     'Merken Sie sich die Position der Karte.'
     'Nachher werden die Positionen abgefragt.'
-    'Wichtig: Bitte fixieren Sie die jeweils aufgedeckte Karte.'
+    'Wichtig: Schauen Sie stets auf die untere aufgedeckte Karte.'
 };
 textLearning2Next = { ...
     ''
@@ -172,8 +172,8 @@ textLearning2 = { ...
     'Karten richtig liegen.'
     ''
     'Ihre Aufgabe: '
-    'Merken Sie sich die Position der Karte. Fixieren Sie dabei'
-    'ganz entspannt die aufgedeckte Karte.'
+    'Merken Sie sich die Position der Karte. Schauen Sie '
+    'dabei stets ganz entspannt auf die aufgedeckte Karte.'
     };
 textLearningInterference = { ...
     'Lernen'
@@ -184,10 +184,11 @@ textLearningInterference = { ...
     'nun an anderen Positionen.'
     ''
     'Ihre Aufgabe: '
-    'Merken Sie sich die Position der Karte. Fixieren Sie dabei'
-    'ganz entspannt die aufgedeckte Karte.'
+    'Merken Sie sich die Position der Karte. Schauen Sie '
+    'dabei stets ganz entspannt auf die aufgedeckte Karte.'
 };
 textOutro = { ...
+    ''
     ''
     ''
     'Ende'
@@ -200,8 +201,8 @@ textPracticeLearn = { ...
     ''
     'Lernen'
     ''
-    'Merken Sie sich die Position der Karte. Fixieren Sie dabei'
-    'ganz entspannt die aufgedeckte Karte.'
+    'Merken Sie sich die Position der Karte. Schauen Sie'
+    'stets ganz entspannt auf die aufgedeckte Karte.'
 };
 textPracticeRecall = { ...
     'Übungsdurchgang'
@@ -209,13 +210,14 @@ textPracticeRecall = { ...
     'Abfrage'
     ''
     'Oben erscheint wieder jeweils ein Bild.'
-    'Fixieren Sie darunter bitte das Kreuz auf der'
+    'Schauen Sie bitte kontinuierlich auf das Kreuz auf der'
     'verdeckten Karte, unter der Sie dieses Bild vermuten.'
     ''
     'Sobald die Kreuze verschwinden, '
     'klicken Sie bitte auf diese Karte.'
 };
 textQuestion = { ...
+    ''
     ''
     ''
     'Haben Sie noch Fragen zum Ablauf?'
@@ -227,7 +229,7 @@ textRecall = { ...
     ''
     ''
     'Oben erscheint jeweils das Bild.'
-    'Fixieren Sie darunter bitte das Kreuz auf der'
+    'Schauen Sie bitte kontinuierlich auf das Kreuz auf der'
     'verdeckten Karte, unter der Sie dieses Bild vermuten.'
     ''
     'Klicken Sie bitte auf diese Karte, nachdem die Kreuze'
@@ -260,13 +262,14 @@ textRecallDone = { ...
     ''
 };
 textRecallImmediate = { ...
+    'Abfrage'
     ''
     'Oben erscheint wieder jeweils ein Bild.'
-    'Fixieren Sie darunter bitte entspannt das Kreuz auf der'
+    'Schauen Sie bitte kontinuierlich auf das Kreuz auf der'
     'verdeckten Karte, unter der Sie dieses Bild vermuten.'
     ''
-    'Sobald die Kreuze verschwinden, '
-    'klicken Sie bitte auf diese Karte.'
+    'Sobald die Kreuze verschwinden, klicken Sie bitte'
+    'auf die Karte, unter der Sie das Bild vermuten.'
 };
 textRecallInterference = textRecallImmediate;
 textRecallNoFeedback = { ...
@@ -279,8 +282,9 @@ textRecallNoFeedback = { ...
 };
 textRecallPerformance = { ...
     ''
-    'Sie hatten XXX Prozent richtig.'
     ''
+    ''
+    'Sie hatten XXX Prozent richtig.'
     ''
 };
 textSession = {
@@ -332,7 +336,7 @@ cardColorControl        = 0.3;          % color of highlighted card
 textColorCorrect        = [0.2 1 0.2];  % text color for correct response
 textColorIncorrect      = [1 0.2 0.2];  % text color for incorrect response
 controlTextMargin       = 200;          % distance in x from text to card
-controlFeedbackDisplay  = 3;            % feedback display duration
+controlFeedbackDisplay  = 2;            % feedback display duration
 
 crossSize               = [0 0 30 30];
 circleSize              = [0 0 50 50];                  
@@ -353,12 +357,14 @@ textBgColor         = [1 1 1]; % white background
 % window              = ;
 
 % Set Timing (seconds)
-topCardDisplay      = .1;    	% Duartion top Card is shown 
-cardDisplay         = .15;     	% Duration memory cards are shown
-cardCrossDisplay    = .15;       % Duration cross is displayed on cards
-cardRecallDisplay   = .1;     	% Duration memory cards are shown
-feedbackDisplay     = .1;       % Duration feedback is shown
-responseTime        = .15;      % Duration allowed to respond (click)
+topCardDisplay      = 2;    	% Duration image is shown on top Card
+topCardGreyDisplay  = 1;        % Duration top Card is shown in grey
+cardDisplay         = 7;     	% Duration memory cards are shown
+cardCrossDisplay    = 7;        % Duration cross is displayed on cards
+cardRecallDisplay   = 1;     	% Duration memory cards are shown
+feedbackDisplay     = 1;        % Duration feedback is shown
+responseTime        = 15;       % Duration allowed to respond (click)
+whiteScreenDisplay  = 2;
 % Fixation Task (mt_fixationTask)
 fixationCrossDisplay = 7.5;     % Duration fixation cross is displayed
 
@@ -417,7 +423,7 @@ imageFilesB         = {
 
 % Practice set settings
 imageFilesP             = {'teapot.jpg', 'guitar.jpg', 'jacket.jpg'};
-imageSequencePractice   = [10, 26, 8];
+imageSequencePractice   = [4, 7, 2];
 imgfolderP              = fullfile(dirRoot, imageFolder{3});
 
 

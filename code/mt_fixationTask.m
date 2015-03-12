@@ -1,5 +1,5 @@
 function mt_fixationTask(dirRoot)
-% ** function mt_controlTask(dirRoot, cfg_window)
+% ** function mt_controlTask(dirRoot)
 % This function initiates the fixation task.
 %
 % USAGE:
@@ -14,6 +14,7 @@ function mt_fixationTask(dirRoot)
 
 %% Load parameters specified in mt_setup.m
 mt_window(dirRoot);
+addpath(genpath(dirRoot));
 load(fullfile(dirRoot, 'setup', 'mt_params.mat'))   % load workspace information and properties
 
 %% Set window parameters
@@ -40,5 +41,6 @@ Screen('Close', imgCrossTex);
     
 WaitSecs(fixationCrossDisplay);
 ShowCursor(CursorType, window);
+sca;
 
 end

@@ -43,6 +43,7 @@ end
 %       window - opened window
 %       windowRect - position array [left top right bottom]
 Screen('Preference', 'VisualDebugLevel', 1);
+Screen('Preference', 'ScreenToHead', 0, 0, 0);
 [window, windowRect] = PsychImaging('OpenWindow', screenNumber, screenBgColor);
 % DEBUG
 % [window, windowRect] = Screen('OpenWindow', screenNumber, [], [30 30 1024 768]);
@@ -75,10 +76,9 @@ ShowCursor(CursorType, window);
 %% 3. Perform Timing tests
 ifi                 = Screen('GetFlipInterval', window);
 waitframes          = 1;
-topPriorityLevel 	= MaxPriority(window);
-Priority(topPriorityLevel);
+% Priority(MaxPriority(window));
 vbl                 = Screen('Flip', window);
-Priority(0);
+% Priority(0);
 flipTime            = vbl + (waitframes - 0.5) * ifi;
 
 %% Save information about display timing in dirRoot

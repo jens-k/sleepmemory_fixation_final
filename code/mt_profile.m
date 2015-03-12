@@ -25,7 +25,7 @@ switch upper(user)
         dirRoot 			= 'C:\Users\Olfactometer\Desktop\Studies\Code\sleepmemory\';
         dirPTB              = 'C:\Users\Olfactometer\Documents\MATLAB\Psychtoolbox\Psychtoolbox\';
     case {'SL3', 'SL4'}
-        dirRoot 			= 'E:\memoryLatest';
+        dirRoot 			= 'D:\SleepConnectivity';
         dirPTB              = 'C:\Users\Doktorand\Toolbox\Psychtoolbox';
     case {'MRI'}
        dirRoot              = 'E:\USERS\veit\memory_psychtoolbox\sleepmemory';

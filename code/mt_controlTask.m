@@ -166,7 +166,11 @@ else
 end
 Screen('Flip', window, flipTime);
 Priority(0);
+HideCursor;
 WaitSecs(controlFeedbackDisplay);
+% Short delay after the mouse click to avoid motor artifacts
+Screen('Flip', window, flipTime);
+WaitSecs(whiteScreenDisplay);
 
 Screen('TextStyle', window, 0);
 

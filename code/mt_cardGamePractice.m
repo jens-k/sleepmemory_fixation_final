@@ -38,12 +38,45 @@ for i = 1: length(imageFilesP)
     imagesTop{imageSequencePractice(i)}	= imread(pic_file);
 end
 
+
+% Calculate coordinates for the ncards_y X ncards_x rectangles
+cardCoordsX     = [cfg_window.center(1)-cardWidth cfg_window.center(1) cfg_window.center(1)+cardWidth];
+cardCoordsY     = [topCardHeigth+cardHeigth topCardHeigth+2*cardHeigth topCardHeigth+3*cardHeigth];
+ncards          = length(cardCoordsX) * length(cardCoordsY);
+
+% The cardsAll vector stores all rectangles that cover the images
+cardsAll        = zeros(length(cardCoordsY), 4, length(cardCoordsX));
+for r = 1: length(cardCoordsY)
+    for iCard = 1: length(cardCoordsX)
+        cardsAll(r,:,iCard) = CenterRectOnPointd(cardSize, cardCoordsX(iCard), cardCoordsY(r));
+    end
+end
+
+% The imagesAll vector stores all rectangles in which images are displayed
+imagesAll        = zeros(length(cardCoordsY), 4, length(cardCoordsX));
+for r = 1: length(cardCoordsY)
+    for iCard = 1: length(cardCoordsX)
+        imagesAll(r,:,iCard)    = CenterRectOnPointd(imagesSize, cardCoordsX(iCard), cardCoordsY(r));
+    end
+end
+
+% The rects/imgs vectors store all rectangles in PTB format
+rects           = zeros(4,ncards);
+imgs            = zeros(4,ncards);
+for r = 1: length(cardCoordsY)
+    rects(:,(r-1)*length(cardCoordsX)+1:r*length(cardCoordsX))  = reshape(cardsAll(r,:,:), 4, length(cardCoordsX));
+    imgs(:,(r-1)*length(cardCoordsX)+1:r*length(cardCoordsX))   = reshape(imagesAll(r,:,:), 4, length(cardCoordsX));
+end
+% Show feedback after card was clicked
 feedbackOn      = 1;
 
 mt_showText(dirRoot, textPracticeLearn, window);
+% Short delay after the mouse click to avoid motor artifacts
+HideCursor;
+Screen('Flip', window, flipTime);
+WaitSecs(whiteScreenDisplay);
 
 %% In the practice learning session all pictures are shown in a sequence
-HideCursor;
 % Get Session Time
 SessionTime         = {datestr(now, 'HH:MM:SS')};
 for iCard = 1: length(cardShown)
@@ -52,6 +85,15 @@ for iCard = 1: length(cardShown)
     imageCurrent    = cardShown(iCard);
     imageTop        = Screen('MakeTexture', window, imagesTop{imageCurrent});
     
+    % Show topCard in Grey
+    Screen('FillRect', window, cardColors, topCard);
+    Screen('FrameRect', window, frameColor, topCard, frameWidth);
+    Screen('FillRect', window, cardColors, rects);
+    Screen('FrameRect', window, frameColor, rects, frameWidth);
+    Screen('Flip', window, flipTime);
+    Priority(0);
+    WaitSecs(topCardGreyDisplay);
+    
     % Show a picture on top
 %    Priority(MaxPriority(window)); 
     Screen('DrawTexture', window, imageTop, [], topCard);
@@ -59,7 +101,7 @@ for iCard = 1: length(cardShown)
     Screen('FillRect', window, cardColors, rects);
     Screen('FrameRect', window, frameColor, rects, frameWidth);
     Screen('Flip', window, flipTime);
-    Priority(0);
+    %    Priority(0);
     WaitSecs(topCardDisplay);
 
     % Flip the card
@@ -74,7 +116,7 @@ for iCard = 1: length(cardShown)
     Screen('FrameRect', window, frameColor, rects, frameWidth);
     Screen('Flip', window, flipTime);
     Screen('Close', imageTop);
-    Priority(0);
+    %    Priority(0);
 
     % Display the card for a time defined by cardDisplay
     WaitSecs(cardDisplay);
@@ -91,6 +133,16 @@ for iCard = 1: length(cardShown)
     imageCurrent    = cardShown(iCard);
     imageTop        = Screen('MakeTexture', window, imagesTop{imageCurrent});
     
+    % Show topCard in Grey
+    Screen('FillRect', window, cardColors, topCard);
+    Screen('FrameRect', window, frameColor, topCard, frameWidth);
+    Screen('FillRect', window, cardColors, rects);
+    Screen('FrameRect', window, frameColor, rects, frameWidth);
+    Screen('Flip', window, flipTime);
+    Priority(0);
+    WaitSecs(topCardGreyDisplay);
+    
+    
     % Show a picture on top
 %    Priority(MaxPriority(window)); 
     Screen('DrawTexture', window, imageTop, [], topCard);
@@ -98,7 +150,7 @@ for iCard = 1: length(cardShown)
     Screen('FillRect', window, cardColors, rects);
     Screen('FrameRect', window, frameColor, rects, frameWidth);
     Screen('Flip', window, flipTime);
-    Priority(0);
+    %    Priority(0);
 
     HideCursor;
     imgCrossTex = Screen('MakeTexture', window, imgCross);
@@ -114,7 +166,7 @@ for iCard = 1: length(cardShown)
     end
     Screen('Flip', window, flipTime);
     Screen('Close', imgCrossTex);
-    Priority(0);
+    %    Priority(0);
     WaitSecs(cardCrossDisplay);
 %    Priority(MaxPriority(window)); 
     Screen('DrawTexture', window, imageTop, [], topCard);
@@ -122,11 +174,34 @@ for iCard = 1: length(cardShown)
     Screen('FillRect', window, cardColors, rects);
     Screen('FrameRect', window, frameColor, rects, frameWidth);
     Screen('Flip', window, flipTime);
-    Priority(0);
+    %    Priority(0);
     ShowCursor(CursorType, window);
     
     % OnMouseClick: flip the card
-    [cardFlip, mouseData(iCard, :)]	= mt_cardFlip(window, screenOff, ncards_x, cardSize+cardMargin, topCardHeigth, responseTime);
+    
+    mouseOnCard = zeros(ncards, 1);
+    while ~(sum(mouseOnCard)==1)
+        tic;
+        % Runs until a mouse button is pressed
+        MousePress      = 0; % initializes flag to indicate no response
+        while    ( MousePress==0 ) 
+            [x, y, buttons]     = GetMouse(window);   % wait for a key-press
+            % stop loop if the first mouse button is pressed
+            if buttons(1)
+                clickTime       = toc;
+                MousePress      = buttons(1); % sets to 1 if a button was pressed
+                WaitSecs(.01);                % put in small interval to allow other system events
+            end
+        end
+
+        for cc = 1 : ncards
+            mouseOnCard(cc) = IsInRect(x, y, rects(:,cc));
+        end
+    end
+    mouseOnCard        = find(mouseOnCard);
+    mouseData(iCard, :) = [x, y, clickTime];
+    
+    cardFlip = mouseOnCard;
     cardClicked(iCard)  = cardFlip;
     
     % Show feedback
@@ -151,7 +226,7 @@ for iCard = 1: length(cardShown)
         end
     Screen('Flip', window, flipTime);
     Screen('Close', imageFeedback);
-    Priority(0);
+    %    Priority(0);
     WaitSecs(feedbackDisplay);
 
     % Flip the card
@@ -165,7 +240,7 @@ for iCard = 1: length(cardShown)
     Screen('Flip', window, flipTime);
     Screen('Close', imageTop);
     Screen('Close', imageFlip);
-    Priority(0);
+    %    Priority(0);
     end
 
     % Display the card for a time defined by cardDisplay
@@ -185,8 +260,8 @@ for iCard = 1: length(cardShown)
         imageClicked    = {'NONE'};
     end
     
-    coordsShown         = {mt_cards1Dto2D(cardShown(iCard), ncards_x, ncards_y)};
-    coordsClicked       = {mt_cards1Dto2D(cardClicked(iCard), ncards_x, ncards_y)};
+    coordsShown         = {mt_cards1Dto2D(cardShown(iCard), length(cardCoordsX), length(cardCoordsY))};
+    coordsClicked       = {mt_cards1Dto2D(cardClicked(iCard), length(cardCoordsX), length(cardCoordsY))};
     mouseData           = mouseData(iCard, :);
     
     performance         = table(SessionTime, TrialTime, session, run, correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
