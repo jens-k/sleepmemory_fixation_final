@@ -29,6 +29,8 @@ function perc_correct = mt_cardGame(dirRoot, cfg_window, iRun, varargin)
 
 %% Load parameters specified in mt_setup.m
 load(fullfile(dirRoot, 'setup', 'mt_params.mat'))   % load workspace information and properties
+% Load port output for triggers
+% loadlibrary('inpout32', 'inpout32.h')
 
 %% Set window parameters
 % Specify the display window 
@@ -72,6 +74,16 @@ SessionTime         = {datestr(now, 'HH:MM:SS')};
 % In the learning session all pictures are shown in a sequence
 % In the recall sessions mouse interaction is activated
 for iCard = 1: length(cardShown)
+    
+%     % Send trigger during learning sessions
+% %     calllib('inpout32', 'Out32', 888, 255)
+%     if (cfg_dlgs.odor == 1) && ((currSesstype == 2) || (currSesstype == 3))
+%         out32(888, triggerOdor)
+%     elseif (cfg_dlgs.odor == 0) && ((currSesstype == 2) || (currSesstype == 3))
+%         out32(888, triggerPlacebo)
+%     end
+%     WaitSecs(0.01)
+    
     cardFlip = 0;
     % Get Trial Time
     TrialTime           = {datestr(now, 'HH:MM:SS.FFF')};
@@ -229,5 +241,8 @@ end
 % Backup
 fName = ['mtp_sub_' cfg_dlgs.subject '_night_' cfg_dlgs.night '_sess_' num2str(cfg_dlgs.sesstype)];
 copyfile(fullfile(dirRoot, 'DATA', [fName '.*']), fullfile(dirRoot, 'BACKUP'), 'f');
+
+% Housekeeping: unload port library
+unloadlibrary('input32')
 
 end

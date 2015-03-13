@@ -30,6 +30,11 @@ nFinalRecall    = 2; % number of runs for final recall (incl. one last session w
 RecallThreshold = 60;% miniumum correct answers in recall (in percent)
 % screenNumber    = 2; % select specific screen
 
+% Trigger
+triggerOdorOn       = {0, 1, 16}; % trigger for MEG, SL3, SL4
+triggerPlaceboOn    = {0, 2, 32}; % trigger for MEG, SL3, SL4
+EEGtrigger          = 0;
+
 %% ======================== IMAGE CONFIGURATION ========================= %
 
 % Use file names without file extension
@@ -168,8 +173,8 @@ textLearning2 = { ...
     ''
     'Nach dem Lernen folgt eine Abfrage der Positionen.'
     'Am Ende wird angezeigt, wie viel Prozent Sie richtig hatten.'
-    'Die Abfrage wird so lange wiederholt, bis Sie bei 60% der'
-    'Karten richtig liegen.'
+    'Die Abfrage wird mindestens zwei Mal wiederholt.'
+    'Sie müssen dann bei 60% der Karten richtig liegen.'
     ''
     'Ihre Aufgabe: '
     'Merken Sie sich die Position der Karte. Schauen Sie '

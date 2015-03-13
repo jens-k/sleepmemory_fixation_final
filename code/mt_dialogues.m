@@ -135,19 +135,22 @@ switch cfg_dlgs.sesstype
 end
 
 % Lab
+triggerOdorOff = 0;
 switch upper(user)
     case 'MEG' 
-        cfg_dlgs.lab = 1;
+        cfg_dlgs.lab    = 1;
         % TODO: set triggers for MEG
         % Parallel port trigger in PTB
         % In the MEG will be the old olfactometer
     case 'SL3'
-        cfg_dlgs.lab = 2;
-        % TODO: set triggers for sleep lab (left)
+        cfg_dlgs.lab    = 2;
+        triggerOdor     = triggerOdorOn{2}      + EEGtrigger;
+        triggerPlacebo  = triggerPlaceboOn{2}   + EEGtrigger;
         % In the sleep lab will be the new olfactometer
     case 'SL4'
-        cfg_dlgs.lab = 3;
-        % TODO: set triggers for sleep lab (right)
+        cfg_dlgs.lab    = 3;
+        triggerOdor     = triggerOdorOn{3}      + EEGtrigger;
+        triggerPlacebo  = triggerPlaceboOn{3}   + EEGtrigger;
         % In the sleep lab will be the new olfactometer
         % Only in this lab one can learn and stimulate with odors
     case 0 

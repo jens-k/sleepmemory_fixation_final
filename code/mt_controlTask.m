@@ -38,20 +38,32 @@ sessTime        = datestr(now, 'HH:MM:SS');
 TrialTime       = cell(length(cardShown),1);
 HideCursor;
 
-% Draw the rects to the screen
-%    Priority(MaxPriority(window)); 
-Screen('FillRect', window, cardColorControl, topCard);
-Screen('FrameRect', window, frameColor, topCard, frameWidth);
-Screen('FillRect', window, cardColors, rects);
-Screen('FrameRect', window, frameColor, rects, frameWidth);
-Screen('Flip', window, flipTime);
-Priority(0);
-WaitSecs(topCardDisplay);
+
+    % Draw the rects to the screen, flip the top card
+%    Priority(MaxPriority(window));
+    Screen('FillRect', window, cardColorControl, topCard);
+    Screen('FrameRect', window, frameColor, topCard, frameWidth);
+    Screen('FillRect', window, cardColors, rects);
+    Screen('FrameRect', window, frameColor, rects, frameWidth);
+    Screen('Flip', window, flipTime);
+    Priority(0);
+    WaitSecs(topCardDisplay);
+
 
 for iCard = 1: nCardsShown 
     % Get Trial Time
     TrialTime{iCard}    = datestr(now, 'HH:MM:SS.FFF');
     cardCurrent         = cardShown(iCard);
+    
+%     % Draw the rects to the screen
+% %    Priority(MaxPriority(window));
+%     Screen('FillRect', window, cardColors, topCard);
+%     Screen('FrameRect', window, frameColor, topCard, frameWidth);
+%     Screen('FillRect', window, cardColors, rects);
+%     Screen('FrameRect', window, frameColor, rects, frameWidth);
+%     Screen('Flip', window, flipTime);
+%     WaitSecs(topCardGreyDisplay);
+    
     
     % Flip the card
     %    Priority(MaxPriority(window)); 
