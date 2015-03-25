@@ -31,6 +31,19 @@ RecallThreshold = 60;% miniumum correct answers in recall (in percent)
 % screenNumber    = 2; % select specific screen
 
 % Trigger
+% SL3:
+% 0: EEG none, OLF V0
+% 1: EEG S1, OLF V1
+% 2: EEG S2, OLF V2
+
+% SL4:
+% 64: EEG none, OLF V0
+% 65: EEG S1, OLF V1
+% 66: EEG S1, OLF V2
+
+% 128: EEG S2, OLF V0
+% 129: EEG S2, OLF V1
+% 130: EEG S2, OLF V2
 triggerOdorOn       = {0, 1, 16}; % trigger for MEG, SL3, SL4
 triggerPlaceboOn    = {0, 2, 32}; % trigger for MEG, SL3, SL4
 EEGtrigger          = 0;
@@ -41,31 +54,31 @@ EEGtrigger          = 0;
 imageConfiguration = {
   {{ % imagesA 	LEARNING
   'ant',            'whale',        'ray',          	'hippopotamus',     'fly'           'crocodile';
-  'wasp',           'toucan',       'raven',            'lobster',          'giraffe',      'cow';
+  'wasp',           'toucan',       'lobster',          'raven',            'giraffe',      'cow';
   'starfish',       'rooster',      'praying_mantis',   'lioness',          'grasshopper',  'cat';
-  'barn_owl',       'pigeon',       'penguin',          'hummingbird',      'goose',        'armadillo';
+  'armadillo',       'pigeon',       'penguin',         'hummingbird',      'goose',        'barn_owl';
   'scorpion',       'oyster',       'ostrich',          'horse',            'dromedary',    'dragonfly'
   }
   { % imagesA 	INTERFERENCE
   'goose',       	'barn_owl', 	'cat',              'starfish',			'rooster', 		'pigeon';
   'dromedary',      'dragonfly',   	'armadillo',        'ostrich',      	'horse',    	'penguin';
   'hummingbird',	'scorpion',  	'whale',            'ray',      		'ant',  		'oyster';
-  'grasshopper', 	'wasp',   		'cow',              'fly',              'crocodile',	'raven';
-  'lioness',		'praying_mantis','lobster',         'giraffe',        	'hippopotamus',  'toucan'
+  'grasshopper', 	'wasp',   		'cow',              'fly',              'crocodile',	'praying_mantis';
+  'lioness',		'raven',        'giraffe',         'lobster',        	'hippopotamus', 'toucan'
   }}
   {{ % imagesB 	LEARNING
-  'sparrow',    'tiger',        'seagull',	'owl',          'partridge',    'cheetah';
-  'zebra',      'pelican',      'dolphin',	'mussel',       'manatee'       'butterfly';
-  'turtle',     'ladybird',     'rhino',	'mosquito',     'tapir',        'beetle';
+  'sparrow',    'tiger',        'seagull',	'turtle',       'partridge',    'cheetah';
+  'zebra',      'termite',      'dolphin',	'mussel',       'manatee'       'butterfly';
+  'owl',        'ladybird',     'rhino',	'mosquito',     'tapir',        'beetle';
   'elephant',   'platypus',     'pomfret',	'kiwi',         'crab',         'bee';
-  'termite',   	'hen',          'kangaroo',	'killer_whale', 'duck',         'bat'
+  'pelican',   	'hen',          'kangaroo',	'killer_whale', 'duck',         'bat'
   }
   { % imagesB 	INTERFERENCE
   'rhino',		'killer_whale',	'duck',     'kangaroo',     'pomfret',		'zebra';
   'beetle',		'crab',			'bat',      'platypus',     'ladybird'      'seagull';
   'manatee',	'butterfly',	'bee',      'sparrow',      'hen',          'termite';
-  'dolphin',	'mussel', 		'cheetah',  'partridge',    'pelican',      'turtle';
-  'kiwi',       'tapir',        'tiger',    'elephant',     'owl',          'mosquito'
+  'dolphin',	'mussel', 		'cheetah',  'tiger',        'pelican',      'turtle';
+  'kiwi',       'tapir',        'partridge','elephant',     'owl',          'mosquito'
   }}
 };
 
@@ -134,19 +147,20 @@ textControl = { ...
     'Ihre Aufgabe: '
     'Zählen Sie, wie viele Karten insgesamt dunkler'
     'geworden sind.' 
-    'Schauen Sie dabei stets ganz entspannt auf das'
-    'Kreuz in der Mitte der momentan verdunkelten Karte.'
+    'Schauen Sie dabei stets ganz entspannt auf den'
+    'Punkt in der Mitte der momentan verdunkelten Karte.'
 };
 textFixation = { ...
     'Fixation'
     ''
-    'Es erscheint nun ein Kreuz in der Mitte'
-    'des Bildschirms. Bitte schauen Sie auf dieses'
-    'Kreuz, solange es angezeigt wird.'
+    'Es erscheint nun ein Punkt in der Mitte'
+    'des Bildschirms. Bitte schauen Sie auf diesen'
+    'Punkt, solange er angezeigt wird.'
     ''
     'Dies wird etwa 6 Minuten dauern.'
 };
-textLearning = { ...
+textLearningIntro = {
+    { ...
     'Willkommen!'
     ''
     'Im Folgenden sehen Sie ein Feld voller verdeckter Karten.'
@@ -155,10 +169,17 @@ textLearning = { ...
     'Jedes Bild wird zunächst oben angezeigt.'
     'Dann wird darunter die dazu passende Karte aufgedeckt.'
     ''
+    }
+    {
+    ''
     'Ihre Aufgabe:'
     'Merken Sie sich die Position der Karte.'
     'Nachher werden die Positionen abgefragt.'
-    'Wichtig: Schauen Sie stets auf die untere aufgedeckte Karte.'
+    'Wichtig: Schauen Sie stets auf den Punkt auf der unteren Karte.'
+    ''
+    'Nach jeder Karte ist der Bildschirm für 2 Sekunden weiß.'
+    'Während dieser Zeit ist blinzeln erlaubt.'
+    }
 };
 textLearning2Next = { ...
     ''
@@ -215,11 +236,11 @@ textPracticeRecall = { ...
     'Abfrage'
     ''
     'Oben erscheint wieder jeweils ein Bild.'
-    'Schauen Sie bitte kontinuierlich auf das Kreuz auf der'
-    'verdeckten Karte, unter der Sie dieses Bild vermuten.'
+    'Schauen Sie bitte kontinuierlich auf den Punkt auf der'
+    'oben angezeigten Karte.'
     ''
-    'Sobald die Kreuze verschwinden, '
-    'klicken Sie bitte auf diese Karte.'
+    'Sobald der Punkt verschwindet, klicken Sie bitte'
+    'auf die untere Karte, unter der sich das Bild befindet.'
 };
 textQuestion = { ...
     ''
@@ -233,12 +254,12 @@ textRecall = { ...
     'die Sie VOR dem Schlafengehen gelernt haben.'
     ''
     ''
-    'Oben erscheint jeweils das Bild.'
-    'Schauen Sie bitte kontinuierlich auf das Kreuz auf der'
-    'verdeckten Karte, unter der Sie dieses Bild vermuten.'
+    'Oben erscheint wieder jeweils ein Bild.'
+    'Schauen Sie bitte kontinuierlich auf den Punkt auf der'
+    'oben angezeigten Karte.'
     ''
-    'Klicken Sie bitte auf diese Karte, nachdem die Kreuze'
-    'verschwunden sind.'
+    'Sobald der Punkt verschwindet, klicken Sie bitte'
+    'auf die untere Karte, unter der sich das Bild befindet.'
     ''
 };
 textRecall2 = { ...
@@ -270,11 +291,11 @@ textRecallImmediate = { ...
     'Abfrage'
     ''
     'Oben erscheint wieder jeweils ein Bild.'
-    'Schauen Sie bitte kontinuierlich auf das Kreuz auf der'
-    'verdeckten Karte, unter der Sie dieses Bild vermuten.'
+    'Schauen Sie bitte kontinuierlich auf den Punkt auf der'
+    'oben angezeigten Karte.'
     ''
-    'Sobald die Kreuze verschwinden, klicken Sie bitte'
-    'auf die Karte, unter der Sie das Bild vermuten.'
+    'Sobald der Punkt verschwindet, klicken Sie bitte'
+    'auf die untere Karte, unter der sich das Bild befindet.'
 };
 textRecallInterference = textRecallImmediate;
 textRecallNoFeedback = { ...
@@ -317,9 +338,10 @@ imageFileExt      = '.jpg';		% image file types
 
 % Feedback images
 feedbackFolder    = 'imagesFeedback';
-imagesFeedback    = {'correct.png', 'incorrect.png', 'nofeedback.png', 'cross.png'};
+imagesFeedback    = {'correct.png', 'incorrect.png', 'nofeedback.png'};
 feedbackMargin    = 10;       	% #pixels the images are smaller than the cards
 
+imagesFixation    = {'cross.png', 'dot.png'};
 
 %% ========================== CARD PROPERTIES =========================== %
 % Number of cards
@@ -328,13 +350,13 @@ ncards_y            = 5;
 
 % Top Card Properties
 topCardHeigth       = 200;          % Size of the top Card
-topCardColor        = [.9; .9; .9];    % Color of the top Card
+topCardColor        = [.9; .9; .9]; % Color of the top Card
 
 % Memory Cards
 cardColors          = [.5; .5; .5]; % Color of cards
 cardMargin          = 5;            % Margin between cards
 frameWidth          = 2;            % Frame/border around cards
-frameColor          = 0;            % Frame color
+frameColor          = cardColors;   % Frame color
 
 % Control Task Card Properties
 cardColorControl        = 0.3;          % color of highlighted card
@@ -345,7 +367,8 @@ controlFeedbackDisplay  = 2;            % feedback display duration
 
 crossSize               = [0 0 30 30];
 circleSize              = [0 0 50 50];                  
-
+topCardDotSize          = [0 0 20 20];
+dotSize                 = [0 0 14 14];
 
 %% ============================== OPTIONAL ============================== %
 % Change Cursor Type
@@ -362,14 +385,15 @@ textBgColor         = [1 1 1]; % white background
 % window              = ;
 
 % Set Timing (seconds)
-topCardDisplay      = 2;    	% Duration image is shown on top Card
-topCardGreyDisplay  = 1;        % Duration top Card is shown in grey
-cardDisplay         = 7;     	% Duration memory cards are shown
-cardCrossDisplay    = 7;        % Duration cross is displayed on cards
-cardRecallDisplay   = 1;     	% Duration memory cards are shown
-feedbackDisplay     = 1;        % Duration feedback is shown
-responseTime        = 15;       % Duration allowed to respond (click)
-whiteScreenDisplay  = 2;
+topCardDisplay      = .2;    	% Duration image is shown on top Card
+topCardGreyDisplay  = .1;        % Duration top Card is shown in grey
+cardDisplay         = .7;     	% Duration memory cards are shown
+cardCrossDisplay    = .7;        % Duration cross is displayed on cards
+cardRecallDisplay   = .1;     	% Duration memory cards are shown
+feedbackDisplay     = .1;        % Duration feedback is shown
+whiteScreenDisplay  = .2;       % Delay after text screen
+responseTime        = .15;       % Duration allowed to respond (click)
+interTrialInterval  = .2;
 % Fixation Task (mt_fixationTask)
 fixationCrossDisplay = 7.5;     % Duration fixation cross is displayed
 
@@ -400,9 +424,12 @@ imgCorrect(:,:,4)           = alpha;
 imgIncorrect(:,:,4)         = alpha;
 [imgNoFeedback, ~, alpha]   = imread(fullfile(imgfolderFeedback, imagesFeedback{3}));
 imgNoFeedback(:,:,4)        = alpha;
-[imgCross, ~, alpha]        = imread(fullfile(imgfolderFeedback, imagesFeedback{4}));
-imgCross(:,:,4)             = alpha;
 
+% Read in fixation images
+[imgCross, ~, alpha]        = imread(fullfile(imgfolderFeedback, imagesFixation{1}));
+imgCross(:,:,4)             = alpha;
+[imgDot, ~, alpha]          = imread(fullfile(imgfolderFeedback, imagesFixation{2}));
+imgDot(:,:,4)               = alpha;
 
 % Size of Memory Cards
 topCardWidth        = topCardHeigth * (4/3);
@@ -428,7 +455,7 @@ imageFilesB         = {
 
 % Practice set settings
 imageFilesP             = {'teapot.jpg', 'guitar.jpg', 'jacket.jpg'};
-imageSequencePractice   = [4, 7, 2];
+imageSequencePractice   = [4, 9, 2];
 imgfolderP              = fullfile(dirRoot, imageFolder{3});
 
 

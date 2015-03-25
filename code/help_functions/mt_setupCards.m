@@ -37,6 +37,7 @@ Screen('FillRect', window, screenBgColor);
 %% Create variables for the cards
 % Create top card
 topCard         = CenterRectOnPointd([0 0 topCardWidth topCardHeigth], screenSize43(1)/2+screenOff(1), topCardHeigth/2);
+topCardDot      = CenterRectOnPointd(topCardDotSize, screenSize43(1)/2+screenOff(1), topCardHeigth/2);
 
 % Calculate coordinates for the ncards_y X ncards_x rectangles
 cardCoordsX     = linspace(1,screenSize43(1),ncards_x+1)+screenOff(1);
@@ -94,6 +95,6 @@ end
 
 %% Save configuration in setupdir
 save(fullfile(setupdir ,'mt_params.mat'), '-append', ...
-    'screenOff', 'topCard', 'rects', 'imgs', 'images', 'imagesTop')
+    'screenOff', 'topCard', 'topCardDot', 'rects', 'imgs', 'images', 'imagesTop')
 
 end

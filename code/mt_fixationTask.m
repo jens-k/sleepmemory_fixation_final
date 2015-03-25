@@ -32,9 +32,9 @@ HideCursor;
 fixRect = CenterRectOnPointd(crossSize, cfg_window.center(1), cfg_window.center(2));
 
 % Draw the cross
-imgCrossTex = Screen('MakeTexture', window, imgCross);
+imageDot        = Screen('MakeTexture', window, imgDot);
 fixRect = reshape(fixRect, 4, 1);
-Screen('DrawTexture', window, imgCrossTex, [], fixRect);
+Screen('DrawTexture', window, imageDot, [], fixRect);
 Screen('Flip', window, flipTime);
 Screen('Close', imgCrossTex);
 

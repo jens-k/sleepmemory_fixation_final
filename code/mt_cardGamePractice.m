@@ -76,10 +76,15 @@ HideCursor;
 Screen('Flip', window, flipTime);
 WaitSecs(whiteScreenDisplay);
 
+
 %% In the practice learning session all pictures are shown in a sequence
 % Get Session Time
 SessionTime         = {datestr(now, 'HH:MM:SS')};
+% Make texture for fixation image
+imageDot        = Screen('MakeTexture', window, imgDot);
 for iCard = 1: length(cardShown)
+    % Get Trial Time
+    TrialTime           = {datestr(now, 'HH:MM:SS.FFF')};
     
     % Get current picture
     imageCurrent    = cardShown(iCard);
@@ -100,6 +105,7 @@ for iCard = 1: length(cardShown)
     Screen('FrameRect', window, frameColor, topCard, frameWidth);
     Screen('FillRect', window, cardColors, rects);
     Screen('FrameRect', window, frameColor, rects, frameWidth);
+    Screen('DrawTexture', window, imageDot, [], topCardDot);
     Screen('Flip', window, flipTime);
     %    Priority(0);
     WaitSecs(topCardDisplay);
@@ -114,12 +120,42 @@ for iCard = 1: length(cardShown)
     imageCard = Screen('MakeTexture', window, images{imageCurrent});
     Screen('DrawTexture', window, imageCard, [], imgs(:, imageCurrent));
     Screen('FrameRect', window, frameColor, rects, frameWidth);
+    tmp = CenterRectOnPointd(dotSize, rects(1, imageCurrent)+cardSize(3)/2, rects(2, imageCurrent)+cardSize(4)/2);
+    tmp = reshape(tmp, 4, 1);
+    Screen('DrawTexture', window, imageDot, [], tmp);
     Screen('Flip', window, flipTime);
     Screen('Close', imageTop);
     %    Priority(0);
 
     % Display the card for a time defined by cardDisplay
     WaitSecs(cardDisplay);
+    
+    
+    tic
+    % Compute trial performance
+    cardFlip            = imageCurrent;
+    cardClicked(iCard)  = cardFlip;
+    correct             = (cardShown(iCard) - cardClicked(iCard)) + 1;
+    correct(correct~=1) = 0;
+    session             = {'Practice'};
+    run                 = {1};
+    
+    imageShown          = imageFilesP(iCard);
+    imageClicked        = imageFilesP(iCard);
+    
+    coordsShown         = {mt_cards1Dto2D(cardShown(iCard), length(cardCoordsX), length(cardCoordsY))};
+    coordsClicked       = {mt_cards1Dto2D(cardClicked(iCard), length(cardCoordsX), length(cardCoordsY))};
+    mouseData           = [0, 0, 0];
+    
+    performance         = table(SessionTime, TrialTime, session, run, correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
+
+    % Save trial performance
+    mt_saveTable(dirRoot, performance)
+    saveTime = toc;
+    
+    % Time while subjects are allowed to blink
+    Screen('Flip', window, flipTime);
+    WaitSecs(interTrialInterval-saveTime);
 end
 
 mt_showText(dirRoot, textPracticeRecall, window);
@@ -149,24 +185,26 @@ for iCard = 1: length(cardShown)
     Screen('FrameRect', window, frameColor, topCard, frameWidth);
     Screen('FillRect', window, cardColors, rects);
     Screen('FrameRect', window, frameColor, rects, frameWidth);
+    Screen('DrawTexture', window, imageDot, [], topCardDot);
     Screen('Flip', window, flipTime);
     %    Priority(0);
 
-    HideCursor;
-    imgCrossTex = Screen('MakeTexture', window, imgCross);
-%    Priority(MaxPriority(window)); 
-    Screen('DrawTexture', window, imageTop, [], topCard);
-    Screen('FrameRect', window, frameColor, topCard, frameWidth);
-    Screen('FillRect', window, cardColors, rects);
-    Screen('FrameRect', window, frameColor, rects, frameWidth);
-    for iImage = 1:size(imgs, 2)
-        tmp = CenterRectOnPointd(crossSize, rects(1, iImage)+cardSize(3)/2, rects(2, iImage)+cardSize(4)/2);
-        tmp = reshape(tmp, 4, 1);
-        Screen('DrawTexture', window, imgCrossTex, [], tmp);
-    end
-    Screen('Flip', window, flipTime);
-    Screen('Close', imgCrossTex);
-    %    Priority(0);
+%     % Show fixation crosses on the cards
+%     HideCursor;
+%     imgCrossTex = Screen('MakeTexture', window, imgCross);
+% %    Priority(MaxPriority(window)); 
+%     Screen('DrawTexture', window, imageTop, [], topCard);
+%     Screen('FrameRect', window, frameColor, topCard, frameWidth);
+%     Screen('FillRect', window, cardColors, rects);
+%     Screen('FrameRect', window, frameColor, rects, frameWidth);
+%     for iImage = 1:size(imgs, 2)
+%         tmp = CenterRectOnPointd(dotSize, rects(1, iImage)+cardSize(3)/2, rects(2, iImage)+cardSize(4)/2);
+%         tmp = reshape(tmp, 4, 1);
+%         Screen('DrawTexture', window, imgCrossTex, [], tmp);
+%     end
+%     Screen('Flip', window, flipTime);
+%     Screen('Close', imgCrossTex);
+%     %    Priority(0);
     WaitSecs(cardCrossDisplay);
 %    Priority(MaxPriority(window)); 
     Screen('DrawTexture', window, imageTop, [], topCard);
@@ -203,6 +241,7 @@ for iCard = 1: length(cardShown)
     
     cardFlip = mouseOnCard;
     cardClicked(iCard)  = cardFlip;
+    HideCursor;
     
     % Show feedback
 %    Priority(MaxPriority(window)); 
@@ -240,13 +279,14 @@ for iCard = 1: length(cardShown)
     Screen('Flip', window, flipTime);
     Screen('Close', imageTop);
     Screen('Close', imageFlip);
+    
     %    Priority(0);
     end
 
     % Display the card for a time defined by cardDisplay
     WaitSecs(cardRecallDisplay);
     
-    
+    tic
     % Compute trial performance
     correct             = (cardShown(iCard) - cardClicked(iCard)) + 1;
     correct(correct~=1) = 0;
@@ -268,7 +308,14 @@ for iCard = 1: length(cardShown)
 
     % Save trial performance
     mt_saveTable(dirRoot, performance)
+    saveTime = toc;
+    
+    
+    % Time while subjects are allowed to blink
+    Screen('Flip', window, flipTime);
+    WaitSecs(interTrialInterval-saveTime);
 end
+Screen('Close', imageDot);
 
 
 %% Performance    
