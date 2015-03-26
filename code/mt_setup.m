@@ -145,7 +145,7 @@ textControl = { ...
     'nacheinander verdunkelt werden.'
     ''
     'Ihre Aufgabe: '
-    'Zählen Sie, wie viele Karten insgesamt dunkler'
+    'Zählen Sie, wie viele der kleinen Karten dunkler'
     'geworden sind.' 
     'Schauen Sie dabei stets ganz entspannt auf den'
     'Punkt in der Mitte der momentan verdunkelten Karte.'

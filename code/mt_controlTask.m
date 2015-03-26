@@ -37,7 +37,18 @@ maxCardsShown   = max(cellfun(@(x) length(x), cardSequence{cfg_dlgs.memvers}{cfg
 sessTime        = datestr(now, 'HH:MM:SS');
 TrialTime       = cell(length(cardShown),1);
 HideCursor;
+imageDot        = Screen('MakeTexture', window, imgDot);
 
+
+    % Show a picture on top
+%    Priority(MaxPriority(window)); 
+    Screen('FillRect', window, cardColors, topCard);
+    Screen('FrameRect', window, frameColor, topCard, frameWidth);
+    Screen('FillRect', window, cardColors, rects);
+    Screen('FrameRect', window, frameColor, rects, frameWidth);
+    Screen('Flip', window, flipTime);
+    Priority(0);
+    WaitSecs(topCardGreyDisplay);
 
     % Draw the rects to the screen, flip the top card
 %    Priority(MaxPriority(window));
@@ -45,6 +56,7 @@ HideCursor;
     Screen('FrameRect', window, frameColor, topCard, frameWidth);
     Screen('FillRect', window, cardColors, rects);
     Screen('FrameRect', window, frameColor, rects, frameWidth);
+    Screen('DrawTexture', window, imageDot, [], topCardDot);
     Screen('Flip', window, flipTime);
     Priority(0);
     WaitSecs(topCardDisplay);
@@ -73,20 +85,21 @@ for iCard = 1: nCardsShown
     Screen('FillRect', window, cardColors, rects(:, (1:ncards ~= cardCurrent)));
     Screen('FillRect', window, cardColorControl, rects(:, cardCurrent));
     % Show fixation cross
-    imageDot        = Screen('MakeTexture', window, imgDot);
-    tmp = CenterRectOnPointd(crossSize, rects(1, cardCurrent)+cardSize(3)/2, rects(2, cardCurrent)+cardSize(4)/2);
+    tmp = CenterRectOnPointd(dotSize, rects(1, cardCurrent)+cardSize(3)/2, rects(2, cardCurrent)+cardSize(4)/2);
     tmp = reshape(tmp, 4, 1);
     Screen('DrawTexture', window, imageDot, [], tmp);
     % Show frames
     Screen('FrameRect', window, frameColor, rects, frameWidth);
     Screen('Flip', window, flipTime);
-    Screen('Close', imgCrossTex);
     Priority(0);
 
     % Display the card for a time defined by cardDisplay
     WaitSecs(cardDisplay);
     
 end
+
+Screen('Close', imageDot);
+
 
 %% Ask how many cards changed their color up to now
 ShowCursor(CursorType, window);
