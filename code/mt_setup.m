@@ -30,20 +30,6 @@ nFinalRecall    = 2; % number of runs for final recall (incl. one last session w
 RecallThreshold = 60;% miniumum correct answers in recall (in percent)
 % screenNumber    = 2; % select specific screen
 
-% Trigger
-% SL3:
-% 0: EEG none, OLF V0
-% 1: EEG S1, OLF V1
-% 2: EEG S2, OLF V2
-
-% SL4:
-% 64: EEG none, OLF V0
-% 65: EEG S1, OLF V1
-% 66: EEG S1, OLF V2
-
-% 128: EEG S2, OLF V0
-% 129: EEG S2, OLF V1
-% 130: EEG S2, OLF V2
 triggerOdorOn       = {0, 1, 16}; % trigger for MEG, SL3, SL4
 triggerPlaceboOn    = {0, 2, 32}; % trigger for MEG, SL3, SL4
 EEGtrigger          = 0;
@@ -341,7 +327,7 @@ feedbackFolder    = 'imagesFeedback';
 imagesFeedback    = {'correct.png', 'incorrect.png', 'nofeedback.png'};
 feedbackMargin    = 10;       	% #pixels the images are smaller than the cards
 
-imagesFixation    = {'cross.png', 'dot.png'};
+imagesFixation    = {'dot.png', 'dot.png'};
 
 %% ========================== CARD PROPERTIES =========================== %
 % Number of cards
@@ -365,18 +351,14 @@ textColorIncorrect      = [1 0.2 0.2];  % text color for incorrect response
 controlTextMargin       = 200;          % distance in x from text to card
 controlFeedbackDisplay  = 2;            % feedback display duration
 
-crossSize               = [0 0 30 30];
-circleSize              = [0 0 50 50];                  
-topCardDotSize          = [0 0 20 20];
-dotSize                 = [0 0 14 14];
-
 %% ============================== OPTIONAL ============================== %
 % Change Cursor Type
 CursorType          = 'Arrow';
 
 % Set Display properties
 % Define which window size is used as reference to display the cards
-windowSize          = [1024 768];
+windowSize          = get(0, 'MonitorPositions'); % [1024 768];
+windowSize          = windowSize(end-1:end);
 screenBgColor       = [1 1 1]; % white background
 textBgColor         = [1 1 1]; % white background
 
@@ -385,17 +367,17 @@ textBgColor         = [1 1 1]; % white background
 % window              = ;
 
 % Set Timing (seconds)
-topCardDisplay      = .2;    	% Duration image is shown on top Card
-topCardGreyDisplay  = .1;        % Duration top Card is shown in grey
-cardDisplay         = .7;     	% Duration memory cards are shown
-cardCrossDisplay    = .7;        % Duration cross is displayed on cards
-cardRecallDisplay   = .1;     	% Duration memory cards are shown
-feedbackDisplay     = .1;        % Duration feedback is shown
-whiteScreenDisplay  = .2;       % Delay after text screen
-responseTime        = .15;       % Duration allowed to respond (click)
-interTrialInterval  = .2;
+topCardDisplay      = 2;    	% Duration image is shown on top Card
+topCardGreyDisplay  = 1;        % Duration top Card is shown in grey
+cardDisplay         = 7;     	% Duration memory cards are shown
+cardCrossDisplay    = 7;        % Duration cross is displayed on cards
+cardRecallDisplay   = 1;     	% Duration memory cards are shown
+feedbackDisplay     = 1;        % Duration feedback is shown
+whiteScreenDisplay  = 2;       % Delay after text screen
+responseTime        = 15;       % Duration allowed to respond (click)
+interTrialInterval  = 2;
 % Fixation Task (mt_fixationTask)
-fixationCrossDisplay = 7.5;     % Duration fixation cross is displayed
+fixationDisplay     = 6 * 60;     % Duration of fixation task
 
 
 %% ======================= DO NOT CHANGE FROM HERE ====================== %
@@ -426,10 +408,10 @@ imgIncorrect(:,:,4)         = alpha;
 imgNoFeedback(:,:,4)        = alpha;
 
 % Read in fixation images
-[imgCross, ~, alpha]        = imread(fullfile(imgfolderFeedback, imagesFixation{1}));
-imgCross(:,:,4)             = alpha;
-[imgDot, ~, alpha]          = imread(fullfile(imgfolderFeedback, imagesFixation{2}));
+[imgDot, ~, alpha]          = imread(fullfile(imgfolderFeedback, imagesFixation{1}));
 imgDot(:,:,4)               = alpha;
+[imgDotSmall, ~, alpha]     = imread(fullfile(imgfolderFeedback, imagesFixation{2}));
+imgDotSmall(:,:,4)          = alpha;
 
 % Size of Memory Cards
 topCardWidth        = topCardHeigth * (4/3);
@@ -438,6 +420,15 @@ cardWidth           = round(windowSize(1)/ncards_x);
 cardSize            = [0 0 cardWidth cardHeigth]; % size to fill screen
 cardSize(3:4)       = cardSize(end-1:end)-cardMargin;
 ncards              = ncards_x * ncards_y;
+
+% Size of elements shown on the card
+crossSize               = [0 0 30 30];
+circleSize              = [0 0 50 50];
+dotFactor               = 0.08; % percent of card height
+topCardDotSize          = [0 0 dotFactor*topCardHeigth dotFactor*topCardHeigth];
+dotSize                 = [0 0 dotFactor*cardHeigth dotFactor*cardHeigth];
+fixDotSize              = topCardDotSize;
+
 
 % Size of images hidden under the cards
 imagesSize          = [0 0 cardHeigth*(4/3) cardHeigth]; % assure 4:3

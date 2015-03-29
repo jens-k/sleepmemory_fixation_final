@@ -34,7 +34,7 @@ PsychDefaultSetup(2);
 % Get screens connected
 screens = Screen('Screens');
 
-% If no screen is pre-specified display on external screen if available
+% If no screen is pre-specified, display on external screen if available
 if ~exist('screenNumber', 'var')
     screenNumber = max(screens);
 end
@@ -48,6 +48,7 @@ Screen('Preference', 'ScreenToHead', 0, 0, 0);
 % DEBUG
 % [window, windowRect] = Screen('OpenWindow', screenNumber, [], [30 30 1024 768]);
 
+windowRect  = get(0, 'MonitorPositions');
 % Get the window center coordinates
 [xCenter, yCenter] = RectCenter(windowRect);
 
@@ -56,8 +57,8 @@ cfg_window.screen = [screens, screenNumber];
 cfg_window.window = [window, windowRect];
 
 % Assure 4:3 format
-cfg_window.window43 = cfg_window.window;
-cfg_window.window43(end-1:end) = windowSize;
+cfg_window.window43 = windowSize;
+% cfg_window.window43(end-1:end) = windowSize;
 cfg_window.center = [xCenter, yCenter];
 
 %% 2. Set global screen properties

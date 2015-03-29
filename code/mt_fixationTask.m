@@ -1,18 +1,20 @@
-function mt_fixationTask(dirRoot)
-% ** function mt_controlTask(dirRoot)
+function mt_fixationTask(user)
+% ** function mt_controlTask(user)
 % This function initiates the fixation task.
 %
 % USAGE:
-%     mt_fixationTask(dirRoot)
+%     mt_fixationTask(user)
 %
 % >>> INPUT VARIABLES >>>
 % NAME              TYPE        DESCRIPTION
-% dirRoot           char        path to root working directory
+% user              char       	pre-defined user name (see mt_loadUser.m)
 %
 %
 % AUTHOR: Marco Rüth, contact@marcorueth.com
 
 %% Load parameters specified in mt_setup.m
+[dirRoot, dirPTB]   = mt_profile(user);
+
 mt_window(dirRoot);
 addpath(genpath(dirRoot));
 load(fullfile(dirRoot, 'setup', 'mt_params.mat'))   % load workspace information and properties
@@ -29,17 +31,17 @@ mt_showText(dirRoot, textQuestion, window);
 HideCursor;
 
 % Compute rectangle
-fixRect = CenterRectOnPointd(crossSize, cfg_window.center(1), cfg_window.center(2));
+fixRect = CenterRectOnPointd(dotSize, cfg_window.center(1), cfg_window.center(2));
 
 % Draw the cross
-imageDot        = Screen('MakeTexture', window, imgDot);
-fixRect = reshape(fixRect, 4, 1);
+imageDot	= Screen('MakeTexture', window, imgDot);
+fixRect     = reshape(fixRect, 4, 1);
 Screen('DrawTexture', window, imageDot, [], fixRect);
 Screen('Flip', window, flipTime);
-Screen('Close', imgCrossTex);
+Screen('Close', imageDot);
 
     
-WaitSecs(fixationCrossDisplay);
+WaitSecs(fixationDisplay);
 ShowCursor(CursorType, window);
 sca;
 

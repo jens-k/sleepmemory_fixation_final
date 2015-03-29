@@ -87,7 +87,7 @@ case cfg_cases.sesstype{2}
     mt_cardGamePractice(dirRoot, cfg_window);
     mt_showText(dirRoot, textLearning2, window);
     mt_showText(dirRoot, textQuestion, window);
-    % Start learning sessions
+    Start learning sessions
     for lRun = 1: nLearningSess
         mt_cardGame(dirRoot, cfg_window, lRun);
         mt_showText(dirRoot, strrep(textLearning2Next, 'XXX', sprintf('%1.f', (lRun+1))), window);

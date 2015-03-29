@@ -135,7 +135,6 @@ switch cfg_dlgs.sesstype
 end
 
 % Lab
-triggerOdorOff = 0;
 switch upper(user)
     case 'MEG' 
         cfg_dlgs.lab    = 1;
@@ -155,9 +154,15 @@ switch upper(user)
         % Only in this lab one can learn and stimulate with odors
     case 0 
         % development mode
-        cfg_dlgs.lab = 4;
+        cfg_dlgs.lab = 1;
     otherwise
         error('Invalid Lab')
+end
+
+if strcmp(cfg_dlgs.odor, '1')
+    cfg_dlgs.odor = 1;
+else
+    cfg_dlgs.odor = 0;
 end
 
 % Choose a control list based on the subject id

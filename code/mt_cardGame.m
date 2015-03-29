@@ -76,18 +76,9 @@ SessionTime         = {datestr(now, 'HH:MM:SS')};
 % In the recall sessions mouse interaction is activated
 % Make texture for fixation image
 imageDot        = Screen('MakeTexture', window, imgDot);
+imageDotSmall   = Screen('MakeTexture', window, imgDotSmall);
 for iCard = 1: length(cardShown) 
-    
-    % Send trigger during learning sessions
-    calllib('inpoutx64', 'Out32', port, 1)
-    if (cfg_dlgs.odor == 1) && ((currSesstype == 2) || (currSesstype == 3))
-        calllib('inpoutx64', 'Out32', port, triggerOdorOn{cfg_dlgs.lab})
-    elseif (cfg_dlgs.odor == 0) && ((currSesstype == 2) || (currSesstype == 3))
-        calllib('inpoutx64', 'Out32', port, triggerPlaceboOn{cfg_dlgs.lab})
-    end
-    WaitSecs(0.01)  % wait for execution time needed by target system
-    calllib('inpoutx64', 'Out32', port, 0)   % reset the port to 0 
-    
+   
     cardFlip = 0;
     % Get Trial Time
     TrialTime           = {datestr(now, 'HH:MM:SS.FFF')};
@@ -117,37 +108,21 @@ for iCard = 1: length(cardShown)
     [mouseX, mouseY] = GetMouse(window);
     % Delay flipping in case of learning for topCardDisplay
     if currSesstype == 2 || currSesstype == 3
+        
+		% Send trigger during learning sessions
+		calllib('inpoutx64', 'Out32', port, 1)
+		if (cfg_dlgs.odor == 1)
+			calllib('inpoutx64', 'Out32', port, triggerOdorOn{cfg_dlgs.lab})
+		elseif (cfg_dlgs.odor == 0)
+			calllib('inpoutx64', 'Out32', port, triggerPlaceboOn{cfg_dlgs.lab})
+		end
+        
         WaitSecs(topCardDisplay);
-    % Show fixation crosses
-    elseif showCross == 1
-%         HideCursor;
-%         imgCrossTex = Screen('MakeTexture', window, imgCross);
-%     %    Priority(MaxPriority(window)); 
-%         Screen('DrawTexture', window, imageTop, [], topCard);
-%         Screen('FrameRect', window, frameColor, topCard, frameWidth);
-%         Screen('FillRect', window, cardColors, rects);
-%         Screen('FrameRect', window, frameColor, rects, frameWidth);
-%         for iImage = 1:size(imgs, 2)
-%             tmp = CenterRectOnPointd(crossSize, rects(1, iImage)+cardSize(3)/2, rects(2, iImage)+cardSize(4)/2);
-%             tmp = reshape(tmp, 4, 1);
-%             Screen('DrawTexture', window, imgCrossTex, [], tmp);
-%         end
-%         Screen('Flip', window, flipTime);
-%         Screen('Close', imgCrossTex);
-%         Priority(0);
-%         WaitSecs(cardCrossDisplay);
-%     %    Priority(MaxPriority(window)); 
-%         Screen('DrawTexture', window, imageTop, [], topCard);
-%         Screen('FrameRect', window, frameColor, topCard, frameWidth);
-%         Screen('FillRect', window, cardColors, rects);
-%         Screen('FrameRect', window, frameColor, rects, frameWidth);
-%         Screen('Flip', window, flipTime);
-%         Priority(0);
-%         ShowCursor(CursorType, window);
     else
         ShowCursor(CursorType, window);
     end
     SetMouse(mouseX, mouseY)
+    
     
     % Define which card will be flipped
     switch currSesstype
@@ -188,7 +163,7 @@ for iCard = 1: length(cardShown)
         Screen('FrameRect', window, frameColor, rects, frameWidth);
         tmp = CenterRectOnPointd(dotSize, rects(1, imageCurrent)+cardSize(3)/2, rects(2, imageCurrent)+cardSize(4)/2);
         tmp = reshape(tmp, 4, 1);
-        Screen('DrawTexture', window, imageDot, [], tmp);
+        Screen('DrawTexture', window, imageDotSmall, [], tmp);
         Screen('Flip', window, flipTime);
         Screen('Close', imageTop);
         Screen('Close', imageFlip);
@@ -198,7 +173,9 @@ for iCard = 1: length(cardShown)
         if (currSesstype == 4) || (currSesstype == 5)
             WaitSecs(cardRecallDisplay);
         else
-            WaitSecs(cardDisplay);
+            WaitSecs(cardDisplay-1);
+            calllib('inpoutx64', 'Out32', port, 0)   % reset the port to 0 
+            WaitSecs(1);
         end
     end
   
@@ -228,7 +205,11 @@ for iCard = 1: length(cardShown)
     % Time while subjects are allowed to blink
     Screen('Flip', window, flipTime);
     WaitSecs(interTrialInterval-saveTime);
+    
 end
+Screen('Close', imageDot);
+Screen('Close', imageDotSmall);
+
 
 %% Performance    
 

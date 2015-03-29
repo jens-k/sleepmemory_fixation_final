@@ -19,13 +19,13 @@ function [dirRoot, dirPTB] = mt_profile(user)
 
 switch upper(user)
     case 0
-        dirRoot             = 'D:\Master Thesis\00 - Program\';
+        dirRoot             = 'C:\Users\t3ch\Documents\GitHub\sleepmemory\';
         dirPTB              = 'D:\AnalysisSoftware\PTB\Psychtoolbox\';
     case {'MEG'}
         dirRoot 			= 'C:\Users\Olfactometer\Desktop\Studies\GitHub\sleepmemory\';
         dirPTB              = 'C:\Users\Olfactometer\Documents\MATLAB\Psychtoolbox\Psychtoolbox\';
     case {'SL3', 'SL4'}
-        dirRoot 			= 'D:\SleepConnectivity';
+        dirRoot 			= 'D:\SleepConnectivity\';
         dirPTB              = 'C:\Users\Doktorand\Toolbox\Psychtoolbox';
     case {'MRI'}
        dirRoot              = 'E:\USERS\veit\memory_psychtoolbox\sleepmemory';

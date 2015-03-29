@@ -82,6 +82,7 @@ WaitSecs(whiteScreenDisplay);
 SessionTime         = {datestr(now, 'HH:MM:SS')};
 % Make texture for fixation image
 imageDot        = Screen('MakeTexture', window, imgDot);
+imageDotSmall   = Screen('MakeTexture', window, imgDotSmall);
 for iCard = 1: length(cardShown)
     % Get Trial Time
     TrialTime           = {datestr(now, 'HH:MM:SS.FFF')};
@@ -122,7 +123,7 @@ for iCard = 1: length(cardShown)
     Screen('FrameRect', window, frameColor, rects, frameWidth);
     tmp = CenterRectOnPointd(dotSize, rects(1, imageCurrent)+cardSize(3)/2, rects(2, imageCurrent)+cardSize(4)/2);
     tmp = reshape(tmp, 4, 1);
-    Screen('DrawTexture', window, imageDot, [], tmp);
+    Screen('DrawTexture', window, imageDotSmall, [], tmp);
     Screen('Flip', window, flipTime);
     Screen('Close', imageTop);
     %    Priority(0);
@@ -189,22 +190,6 @@ for iCard = 1: length(cardShown)
     Screen('Flip', window, flipTime);
     %    Priority(0);
 
-%     % Show fixation crosses on the cards
-%     HideCursor;
-%     imgCrossTex = Screen('MakeTexture', window, imgCross);
-% %    Priority(MaxPriority(window)); 
-%     Screen('DrawTexture', window, imageTop, [], topCard);
-%     Screen('FrameRect', window, frameColor, topCard, frameWidth);
-%     Screen('FillRect', window, cardColors, rects);
-%     Screen('FrameRect', window, frameColor, rects, frameWidth);
-%     for iImage = 1:size(imgs, 2)
-%         tmp = CenterRectOnPointd(dotSize, rects(1, iImage)+cardSize(3)/2, rects(2, iImage)+cardSize(4)/2);
-%         tmp = reshape(tmp, 4, 1);
-%         Screen('DrawTexture', window, imgCrossTex, [], tmp);
-%     end
-%     Screen('Flip', window, flipTime);
-%     Screen('Close', imgCrossTex);
-%     %    Priority(0);
     WaitSecs(cardCrossDisplay);
 %    Priority(MaxPriority(window)); 
     Screen('DrawTexture', window, imageTop, [], topCard);
@@ -216,7 +201,6 @@ for iCard = 1: length(cardShown)
     ShowCursor(CursorType, window);
     
     % OnMouseClick: flip the card
-    
     mouseOnCard = zeros(ncards, 1);
     while ~(sum(mouseOnCard)==1)
         tic;
@@ -316,6 +300,7 @@ for iCard = 1: length(cardShown)
     WaitSecs(interTrialInterval-saveTime);
 end
 Screen('Close', imageDot);
+Screen('Close', imageDotSmall);
 
 
 %% Performance    

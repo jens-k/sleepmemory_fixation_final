@@ -38,6 +38,7 @@ sessTime        = datestr(now, 'HH:MM:SS');
 TrialTime       = cell(length(cardShown),1);
 HideCursor;
 imageDot        = Screen('MakeTexture', window, imgDot);
+imageDotSmall   = Screen('MakeTexture', window, imgDotSmall);
 
 
     % Show a picture on top
@@ -67,14 +68,26 @@ for iCard = 1: nCardsShown
     TrialTime{iCard}    = datestr(now, 'HH:MM:SS.FFF');
     cardCurrent         = cardShown(iCard);
     
-%     % Draw the rects to the screen
-% %    Priority(MaxPriority(window));
+%     % Show a picture on top
+% %    Priority(MaxPriority(window)); 
 %     Screen('FillRect', window, cardColors, topCard);
 %     Screen('FrameRect', window, frameColor, topCard, frameWidth);
 %     Screen('FillRect', window, cardColors, rects);
 %     Screen('FrameRect', window, frameColor, rects, frameWidth);
 %     Screen('Flip', window, flipTime);
+%     Priority(0);
 %     WaitSecs(topCardGreyDisplay);
+
+%     % Draw the rects to the screen, flip the top card
+% %    Priority(MaxPriority(window));
+%     Screen('FillRect', window, cardColorControl, topCard);
+%     Screen('FrameRect', window, frameColor, topCard, frameWidth);
+%     Screen('FillRect', window, cardColors, rects);
+%     Screen('FrameRect', window, frameColor, rects, frameWidth);
+%     Screen('DrawTexture', window, imageDot, [], topCardDot);
+%     Screen('Flip', window, flipTime);
+%     Priority(0);
+%     WaitSecs(topCardDisplay);
     
     
     % Flip the card
@@ -87,7 +100,7 @@ for iCard = 1: nCardsShown
     % Show fixation cross
     tmp = CenterRectOnPointd(dotSize, rects(1, cardCurrent)+cardSize(3)/2, rects(2, cardCurrent)+cardSize(4)/2);
     tmp = reshape(tmp, 4, 1);
-    Screen('DrawTexture', window, imageDot, [], tmp);
+    Screen('DrawTexture', window, imageDotSmall, [], tmp);
     % Show frames
     Screen('FrameRect', window, frameColor, rects, frameWidth);
     Screen('Flip', window, flipTime);
@@ -96,9 +109,13 @@ for iCard = 1: nCardsShown
     % Display the card for a time defined by cardDisplay
     WaitSecs(cardDisplay);
     
+%     % Time while subjects are allowed to blink
+%     Screen('Flip', window, flipTime);
+%     WaitSecs(interTrialInterval);
+    
 end
-
 Screen('Close', imageDot);
+Screen('Close', imageDotSmall);
 
 
 %% Ask how many cards changed their color up to now
