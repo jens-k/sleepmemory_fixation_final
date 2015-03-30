@@ -87,10 +87,12 @@ case cfg_cases.sesstype{2}
     mt_cardGamePractice(dirRoot, cfg_window);
     mt_showText(dirRoot, textLearning2, window);
     mt_showText(dirRoot, textQuestion, window);
-    Start learning sessions
+    % Start learning sessions
     for lRun = 1: nLearningSess
         mt_cardGame(dirRoot, cfg_window, lRun);
-        mt_showText(dirRoot, strrep(textLearning2Next, 'XXX', sprintf('%1.f', (lRun+1))), window);
+        if lRun < nLearningSess
+            mt_showText(dirRoot, strrep(textLearning2Next, 'XXX', sprintf('%1.f', (lRun+1))), window);
+        end
     end
     mt_showText(dirRoot, textRecallImmediate, window);
     % Start immediate recall
@@ -109,10 +111,10 @@ case cfg_cases.sesstype{2}
         perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 0, 5);
         mt_showText(dirRoot, strrep(textRecallPerformance, 'XXX', sprintf('%3.f', (100*perc_correct))), window);        
     elseif (iRecall > nMaxRecall)
-        sca;
         warning(['Maximum number of recall (' num2str(nMaxRecall) ') runs reached. Experiment cancelled.'])
         % Show final screen
         mt_showText(dirRoot, textOutro, window);
+        sca;
     end
 
 % INTERFERENCE LEARNING and IMMEDIATE RECALL
@@ -123,7 +125,9 @@ case cfg_cases.sesstype{3}
     % Start learning sessions
     for lRun = 1: nLearningSess
         mt_cardGame(dirRoot, cfg_window, lRun);
-        mt_showText(dirRoot, strrep(textLearning2Next, 'XXX', sprintf('%1.f', (lRun+1))), window);        
+        if lRun < nLearningSess
+            mt_showText(dirRoot, strrep(textLearning2Next, 'XXX', sprintf('%1.f', (lRun+1))), window);
+        end        
     end
     % Start immediate recall
     mt_showText(dirRoot, textRecallInterference, window);
