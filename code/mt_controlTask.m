@@ -41,6 +41,11 @@ imageDot        = Screen('MakeTexture', window, imgDot);
 imageDotSmall   = Screen('MakeTexture', window, imgDotSmall);
 
 
+for iCard = 1: nCardsShown 
+    % Get Trial Time
+    TrialTime{iCard}    = datestr(now, 'HH:MM:SS.FFF');
+    cardCurrent         = cardShown(iCard);
+    
     % Show a picture on top
 %    Priority(MaxPriority(window)); 
     Screen('FillRect', window, cardColors, topCard);
@@ -61,33 +66,6 @@ imageDotSmall   = Screen('MakeTexture', window, imgDotSmall);
     Screen('Flip', window, flipTime);
     Priority(0);
     WaitSecs(topCardDisplay);
-
-
-for iCard = 1: nCardsShown 
-    % Get Trial Time
-    TrialTime{iCard}    = datestr(now, 'HH:MM:SS.FFF');
-    cardCurrent         = cardShown(iCard);
-    
-%     % Show a picture on top
-% %    Priority(MaxPriority(window)); 
-%     Screen('FillRect', window, cardColors, topCard);
-%     Screen('FrameRect', window, frameColor, topCard, frameWidth);
-%     Screen('FillRect', window, cardColors, rects);
-%     Screen('FrameRect', window, frameColor, rects, frameWidth);
-%     Screen('Flip', window, flipTime);
-%     Priority(0);
-%     WaitSecs(topCardGreyDisplay);
-
-%     % Draw the rects to the screen, flip the top card
-% %    Priority(MaxPriority(window));
-%     Screen('FillRect', window, cardColorControl, topCard);
-%     Screen('FrameRect', window, frameColor, topCard, frameWidth);
-%     Screen('FillRect', window, cardColors, rects);
-%     Screen('FrameRect', window, frameColor, rects, frameWidth);
-%     Screen('DrawTexture', window, imageDot, [], topCardDot);
-%     Screen('Flip', window, flipTime);
-%     Priority(0);
-%     WaitSecs(topCardDisplay);
     
     
     % Flip the card
@@ -109,9 +87,9 @@ for iCard = 1: nCardsShown
     % Display the card for a time defined by cardDisplay
     WaitSecs(cardDisplay);
     
-%     % Time while subjects are allowed to blink
-%     Screen('Flip', window, flipTime);
-%     WaitSecs(interTrialInterval);
+    % Time while subjects are allowed to blink
+    Screen('Flip', window, flipTime);
+    WaitSecs(interTrialInterval);
     
 end
 Screen('Close', imageDot);

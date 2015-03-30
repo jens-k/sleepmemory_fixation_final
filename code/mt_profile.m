@@ -20,7 +20,7 @@ function [dirRoot, dirPTB] = mt_profile(user)
 switch upper(user)
     case 0
         dirRoot             = 'C:\Users\t3ch\Documents\GitHub\sleepmemory\';
-        dirPTB              = 'D:\AnalysisSoftware\PTB\Psychtoolbox\';
+        dirPTB              = 'D:\Software\AnalysisSoftware\PTB\Psychtoolbox\';
     case {'MEG'}
         dirRoot 			= 'C:\Users\Olfactometer\Desktop\Studies\GitHub\sleepmemory\';
         dirPTB              = 'C:\Users\Olfactometer\Documents\MATLAB\Psychtoolbox\Psychtoolbox\';
