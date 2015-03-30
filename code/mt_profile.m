@@ -22,8 +22,8 @@ switch upper(user)
         dirRoot             = 'C:\Users\t3ch\Documents\GitHub\sleepmemory\';
         dirPTB              = 'D:\Software\AnalysisSoftware\PTB\Psychtoolbox\';
     case {'MEG'}
-        dirRoot 			= 'C:\Users\Olfactometer\Desktop\Studies\GitHub\sleepmemory\';
-        dirPTB              = 'C:\Users\Olfactometer\Documents\MATLAB\Psychtoolbox\Psychtoolbox\';
+        dirRoot 			= 'C:\Users\Doktorand\Desktop\Studies\GitHub\sleepmemory\';
+        dirPTB              = 'C:\Users\Doktorand\Desktop\Studies\Psychtoolbox\';
     case {'SL3', 'SL4'}
         dirRoot 			= 'D:\SleepConnectivity\';
         dirPTB              = 'C:\Users\Doktorand\Toolbox\Psychtoolbox';
