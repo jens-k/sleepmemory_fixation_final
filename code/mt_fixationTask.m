@@ -1,4 +1,4 @@
-function mt_fixationTask(user)
+function mt_fixationTask(dirRoot, fixRun)
 % ** function mt_controlTask(user)
 % This function initiates the fixation task.
 %
@@ -13,9 +13,6 @@ function mt_fixationTask(user)
 % AUTHOR: Marco Rüth, contact@marcorueth.com
 
 %% Load parameters specified in mt_setup.m
-[dirRoot, dirPTB]   = mt_profile(user);
-
-mt_window(dirRoot);
 addpath(genpath(dirRoot));
 load(fullfile(dirRoot, 'setup', 'mt_params.mat'))   % load workspace information and properties
 
@@ -28,10 +25,25 @@ mt_showText(dirRoot, textFixation, window);
 mt_showText(dirRoot, textQuestion, window);
 
 %% Show fixation cross 
-HideCursor;
+HideCursor(window);
 
 % Compute rectangle
 fixRect = CenterRectOnPointd(dotSize, cfg_window.center(1), cfg_window.center(2));
+
+% Save start time of fixation task
+SessionTime         = {datestr(now, 'HH:MM:SS')};
+TrialTime           = {datestr(now, 'HH:MM:SS.FFF')};
+run                 = fixRun;
+% dummies
+correct             = {''};
+imageShown          = {''};
+imageClicked        = {''};
+mouseData           = [0, 0, 0];
+coordsShown         = {''};
+coordsClicked       = {''};
+performance         = table(SessionTime, TrialTime, run, correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
+
+mt_saveTable(dirRoot, performance)
 
 % Draw the cross
 imageDot	= Screen('MakeTexture', window, imgDot);
@@ -40,9 +52,14 @@ Screen('DrawTexture', window, imageDot, [], fixRect);
 Screen('Flip', window, flipTime);
 Screen('Close', imageDot);
 
-    
-WaitSecs(fixationDisplay);
-ShowCursor(CursorType, window);
-sca;
+pause(fixationDisplay);
+
+
+% Save end time of fixation task
+SessionTime         = {datestr(now, 'HH:MM:SS')};
+TrialTime           = {datestr(now, 'HH:MM:SS.FFF')};
+performance         = table(SessionTime, TrialTime, run, correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
+mt_saveTable(dirRoot, performance)
+
 
 end

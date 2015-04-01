@@ -38,7 +38,7 @@ else
     DrawFormattedText(window, text, 'center', 'center', textDefColor);
 end
 Screen('TextSize', window, textDefSize);
-DrawFormattedText(window, 'Beliebige Taste drücken...', textSx, windowSize(2)-2*textDefSize, textDefColor);
+DrawFormattedText(window, 'Weiter mit Mausklick...', textSx, windowSize(2)-2*textDefSize, textDefColor);
 
 % Display the text
 Screen('Flip', window); 

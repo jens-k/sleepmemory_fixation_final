@@ -54,6 +54,8 @@ else
         Session         = {cfg_dlgs.sessName};
         SessionTime         = performance.SessionTime(1);
         TrialTime           = performance.TrialTime(1);
+    elseif strcmp(cfg_dlgs.sessName, 'Fixation')
+        Session         = {'FixationTask'};
     elseif strcmp(performance.session, 'Practice')
         Session         = {'Practice'};
     else

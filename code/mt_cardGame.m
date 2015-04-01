@@ -47,9 +47,6 @@ elseif length(varargin) == 2
 else
     currSesstype = cfg_dlgs.sesstype;
 end
-if (currSesstype == 4) || (currSesstype == 5)
-    showCross = 1;  % show crosses 
-end
 
 %% Initialize variables for measured parameters
 cardShown     	= cardSequence{cfg_dlgs.memvers}{currSesstype}';
@@ -62,7 +59,7 @@ imagesT         = imageConfiguration{cfg_dlgs.memvers}{isinterf}';
 %% Show which session is upcoming
 mt_showText(dirRoot, textSession{currSesstype}, window, 40);
 % Short delay after the mouse click to avoid motor artifacts
-HideCursor;
+HideCursor(window);
 Screen('Flip', window, flipTime);
 WaitSecs(whiteScreenDisplay);
 if ~((currSesstype == 2) || (currSesstype == 3))
@@ -85,7 +82,7 @@ for iCard = 1: length(cardShown)
     
     % Get current picture
     imageCurrent    = cardShown(iCard);
-    imageTop        = Screen('MakeTexture', window, imagesTop{imageCurrent});
+    imageTop        = Screen('MakeTexture', window, images{imageCurrent});
     
     % Show a picture on top
 %    Priority(MaxPriority(window)); 
@@ -101,16 +98,15 @@ for iCard = 1: length(cardShown)
     Screen('FrameRect', window, frameColor, topCard, frameWidth);
     Screen('FillRect', window, cardColors, rects);
     Screen('FrameRect', window, frameColor, rects, frameWidth);
-    Screen('DrawTexture', window, imageDot, [], topCardDot);
+%     Screen('DrawTexture', window, imageDot, [], topCardDot);
     Screen('Flip', window, flipTime);
     Priority(0);
 
     [mouseX, mouseY] = GetMouse(window);
-    % Delay flipping in case of learning for topCardDisplay
-    if currSesstype == 2 || currSesstype == 3
+    % Delay flipping in case of learning and immediate recall for topCardDisplay
+    if ismember(currSesstype, 2:4)
         
-		% Send trigger during learning sessions
-		calllib('inpoutx64', 'Out32', port, 1)
+		% Send trigger during learning and immediate recall sessions
 		if (cfg_dlgs.odor == 1)
 			calllib('inpoutx64', 'Out32', port, triggerOdorOn{cfg_dlgs.lab})
 		elseif (cfg_dlgs.odor == 0)
@@ -141,9 +137,11 @@ for iCard = 1: length(cardShown)
             else
                 % Timeout
                 cardFlip                        = imageCurrent;
-            end 
+            end
+        % Stop odor here in immediate recall sessions
+        calllib('inpoutx64', 'Out32', port, 0)   % reset the port to 0 
     end
-    HideCursor;
+    HideCursor(window);
         
     if cardFlip ~= 0 && feedbackOn
         % Flip the card
@@ -161,9 +159,12 @@ for iCard = 1: length(cardShown)
             Screen('FillRect', window, cardColors, rects);
         end
         Screen('FrameRect', window, frameColor, rects, frameWidth);
-        tmp = CenterRectOnPointd(dotSize, rects(1, imageCurrent)+cardSize(3)/2, rects(2, imageCurrent)+cardSize(4)/2);
-        tmp = reshape(tmp, 4, 1);
-        Screen('DrawTexture', window, imageDotSmall, [], tmp);
+        % Show fixation dots on cards only in learning sessions
+        if ismember(currSesstype, 2:3)
+            tmp = CenterRectOnPointd(dotSize, rects(1, imageCurrent)+cardSize(3)/2, rects(2, imageCurrent)+cardSize(4)/2);
+            tmp = reshape(tmp, 4, 1);
+            Screen('DrawTexture', window, imageDotSmall, [], tmp);
+        end
         Screen('Flip', window, flipTime);
         Screen('Close', imageTop);
         Screen('Close', imageFlip);
@@ -173,12 +174,16 @@ for iCard = 1: length(cardShown)
         if (currSesstype == 4) || (currSesstype == 5)
             WaitSecs(cardRecallDisplay);
         else
-            WaitSecs(cardDisplay-1);
-            calllib('inpoutx64', 'Out32', port, 0)   % reset the port to 0 
-            WaitSecs(1);
+            WaitSecs(cardDisplay);
         end
     end
   
+    % If in learning sessions
+    if ismember(currSesstype, 2:3)
+        % Stop Odor here
+        calllib('inpoutx64', 'Out32', port, 0)   % reset the port to 0 
+    end
+    
     tic;
     % Compute trial performance
     correct             = (cardShown(iCard) - cardClicked(iCard)) + 1;
@@ -212,7 +217,6 @@ Screen('Close', imageDotSmall);
 
 
 %% Performance    
-
 % Save session performance
 % Compute performance
 correct             = (cardShown - cardClicked) + 1;
@@ -221,11 +225,6 @@ correct(correct~=1) = 0; % set others incorrect
 accuracy            = 100 * mean(correct);
 % save session data
 mt_saveTable(dirRoot, performance, feedbackOn, accuracy)
-
-% % Show performance for recall session
-% if (currSesstype == 4) || (currSesstype == 5)
-%     mt_showText(dirRoot, [sprintf('%.f', 100*mean(correct)) '% (' sprintf('%.f', sum(correct)) ' von ' sprintf('%.f', length(correct)) ') waren korrekt!'], window);
-% end
 
 % Return performance for recall session
 if (currSesstype == 4) || (currSesstype == 5)

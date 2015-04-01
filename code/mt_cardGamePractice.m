@@ -34,8 +34,6 @@ mouseData    	= zeros(length(cardShown), 3);
 for i = 1: length(imageFilesP)
     pic_file = fullfile(imgfolderP, imageFilesP{i});
     images{imageSequencePractice(i)}	= imread(pic_file);
-    pic_file = fullfile(imgfolderP, 'top', imageFilesP{i});
-    imagesTop{imageSequencePractice(i)}	= imread(pic_file);
 end
 
 
@@ -72,7 +70,7 @@ feedbackOn      = 1;
 
 mt_showText(dirRoot, textPracticeLearn, window);
 % Short delay after the mouse click to avoid motor artifacts
-HideCursor;
+HideCursor(window);
 Screen('Flip', window, flipTime);
 WaitSecs(whiteScreenDisplay);
 
@@ -89,7 +87,7 @@ for iCard = 1: length(cardShown)
     
     % Get current picture
     imageCurrent    = cardShown(iCard);
-    imageTop        = Screen('MakeTexture', window, imagesTop{imageCurrent});
+    imageTop        = Screen('MakeTexture', window, images{imageCurrent});
     
     % Show topCard in Grey
     Screen('FillRect', window, cardColors, topCard);
@@ -168,7 +166,7 @@ for iCard = 1: length(cardShown)
     
     % Get current picture
     imageCurrent    = cardShown(iCard);
-    imageTop        = Screen('MakeTexture', window, imagesTop{imageCurrent});
+    imageTop        = Screen('MakeTexture', window, images{imageCurrent});
     
     % Show topCard in Grey
     Screen('FillRect', window, cardColors, topCard);
@@ -225,7 +223,7 @@ for iCard = 1: length(cardShown)
     
     cardFlip = mouseOnCard;
     cardClicked(iCard)  = cardFlip;
-    HideCursor;
+    HideCursor(window);
     
     % Show feedback
 %    Priority(MaxPriority(window)); 
