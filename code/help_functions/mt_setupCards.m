@@ -95,6 +95,6 @@ end
 
 %% Save configuration in setupdir
 save(fullfile(setupdir ,'mt_params.mat'), '-append', ...
-    'screenOff', 'topCard', 'topCardDot', 'rects', 'imgs', 'images', 'imagesTop', 'controlImages', 'controlImagesTop')
+    'screenOff', 'topCard', 'topCardDot', 'rects', 'imgs', 'images', 'controlImages')
 
 end

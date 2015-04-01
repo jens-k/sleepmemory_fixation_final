@@ -42,7 +42,7 @@ imageConfiguration = {
   'ant',            'whale',        'ray',          	'hippopotamus',     'fly'           'crocodile';
   'wasp',           'toucan',       'lobster',          'raven',            'giraffe',      'cow';
   'starfish',       'rooster',      'praying_mantis',   'lioness',          'grasshopper',  'cat';
-  'armadillo',       'pigeon',       'penguin',         'hummingbird',      'goose',        'barn_owl';
+  'armadillo',      'pigeon',       'penguin',          'hummingbird',      'goose',        'barn_owl';
   'scorpion',       'oyster',       'ostrich',          'horse',            'dromedary',    'dragonfly'
   }
   { % imagesA 	INTERFERENCE
@@ -50,7 +50,7 @@ imageConfiguration = {
   'dromedary',      'dragonfly',   	'armadillo',        'ostrich',      	'horse',    	'penguin';
   'hummingbird',	'scorpion',  	'whale',            'ray',      		'ant',  		'oyster';
   'grasshopper', 	'wasp',   		'cow',              'fly',              'crocodile',	'praying_mantis';
-  'lioness',		'raven',        'giraffe',         'lobster',        	'hippopotamus', 'toucan'
+  'lioness',		'raven',        'giraffe',          'lobster',        	'hippopotamus', 'toucan'
   }}
   {{ % imagesB 	LEARNING
   'sparrow',    'tiger',        'seagull',	'turtle',       'partridge',    'cheetah';
@@ -105,16 +105,16 @@ imageSequenceMainLearningB = {
     'owl', 'kangaroo', 'butterfly', 'turtle', 'pomfret', 'cheetah', ...
 	'killer_whale', 'seagull', 'duck', 'mosquito', 'bat', 'manatee' ...
 	'tiger', 'crab', 'dolphin', 'bee', 'zebra', 'tapir', ...
-	'hen', 'rhino', 'elephant', 'termite', 'kiwi', 'ladybird'
+	'hen', 'rhino', 'elephant', 'termite', 'kiwi', 'ladybird', ...
     'mussel', 'platypus', 'partridge', 'pelican', 'beetle', 'sparrow'
     };
 imageSequenceInterferenceLearningB = imageSequenceMainLearningB;
 % Sequence 2: Recall
 imageSequenceimmediateRecallB = {
-    'pomfret', 'beetle', 'termite', 'partridge', 'zebra', 'kiwi', 'butterfly', ...
-    'mosquito', 'duck', 'mussel', 'platypus', 'tapir', 'pelican', ...
-    'crab', 'sparrow', 'turtle', 'kangaroo', 'owl', 'seagull', ...
-    'elephant', 'bat', 'rhino', 'cheetah', 'hen', ...
+    'pomfret', 'beetle', 'termite', 'partridge', 'zebra', 'kiwi',  ...
+    'butterfly', 'mosquito', 'duck', 'mussel', 'platypus', 'tapir', ...
+    'pelican', 'crab', 'sparrow', 'turtle', 'kangaroo', 'owl', ...
+    'seagull', 'elephant', 'bat', 'rhino', 'cheetah', 'hen', ...
     'dolphin', 'bee', 'killer_whale', 'tiger', 'manatee', 'ladybird' 
     };
 imageSequenceInterferenceRecallB = imageSequenceimmediateRecallB;
@@ -335,7 +335,7 @@ textVSpacing    = 2;            % default Text vertical line spacing
 stimulusFolder  = 'stimuli';
 imageFolder     = {'imagesA', 'imagesB', 'imagesPractice'};
 controlFolder   = {'controlImagesA', 'controlImagesB'};    
-imageFileExt    = '.jpg';		% image file types
+imageFileExt    = '.png';		% image file types
 
 % Feedback images
 feedbackFolder  = 'imagesFeedback';
@@ -382,15 +382,15 @@ textBgColor         = [1 1 1]*0.9; % greyish background
 % window              = ;
 
 % Set Timing (seconds)
-topCardDisplay      = .3;       % Duration image is shown on top Card
-topCardGreyDisplay  = .1;       % Duration top Card is shown in grey
-cardDisplay         = .6;       % Duration memory cards are shown
-cardCrossDisplay    = .6;       % Duration cross is displayed on cards
-cardRecallDisplay   = .1;       % Duration memory cards are shown
-feedbackDisplay     = .1;       % Duration feedback is shown
-whiteScreenDisplay  = .1;       % Delay after text screen
-responseTime        = .15;      % Duration allowed to respond (click)
-interTrialInterval  = .4;
+topCardDisplay      = 3;       % Duration image is shown on top Card
+topCardGreyDisplay  = 1;       % Duration top Card is shown in grey
+cardDisplay         = 6;       % Duration memory cards are shown
+cardCrossDisplay    = 6;       % Duration cross is displayed on cards
+cardRecallDisplay   = 1;       % Duration memory cards are shown
+feedbackDisplay     = 1;       % Duration feedback is shown
+whiteScreenDisplay  = 1;       % Delay after text screen
+responseTime        = 15;      % Duration allowed to respond (click)
+interTrialInterval  = 4;
 % Fixation Task (mt_fixationTask)
 fixationDisplay     = 6 * 60;     % Duration of fixation task
 

@@ -114,6 +114,9 @@ for iCard = 1: length(cardShown)
 		end
         
         WaitSecs(topCardDisplay);
+        if currSesstype == 4
+            ShowCursor(CursorType, window);
+        end
     else
         ShowCursor(CursorType, window);
     end
@@ -179,7 +182,7 @@ for iCard = 1: length(cardShown)
     end
   
     % If in learning sessions
-    if ismember(currSesstype, 2:3)
+    if ismember(currSesstype, 2:4)
         % Stop Odor here
         calllib('inpoutx64', 'Out32', port, 0)   % reset the port to 0 
     end
