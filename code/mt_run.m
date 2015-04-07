@@ -40,9 +40,10 @@ function mt_run(user)
 % 
 % AUTHOR: Marco Rüth, contact@marcorueth.com
 
-% FIXME
-% Screen('Preference', 'SkipSyncTests', 1);
-
+% The MEG laptop does not pass the sync test (yet)
+if strcmp(user, 'MEG')
+    Screen('Preference', 'SkipSyncTests', 1);
+end
 %% PREPARE WORKSPACE & REQUEST USER INPUT
 close all;                  % Close all figures
 clearvars -except user;     % Clear all variables in the workspace
