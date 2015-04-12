@@ -92,6 +92,7 @@ for iCard = 1: nCardsShown
     %    Priority(MaxPriority(window)); 
     Screen('FillRect', window, cardColorControl, topCard);
     Screen('FrameRect', window, frameColor, topCard, frameWidth);
+    Screen('DrawTexture', window, imageTop, [], topCard);
     % Fill all rects but one
     Screen('FillRect', window, cardColors, rects(:, (1:ncards ~= cardCurrent)));
     Screen('DrawTexture', window, imageFlip, [], imgs(:, cardCurrent));
@@ -177,7 +178,7 @@ Screen('TextSize', window, 20);               % set text size
 %    Priority(MaxPriority(window)); 
 Screen('FillRect', window, cardColors, controlRects);
 Screen('FrameRect', window, frameColor, controlRects, frameWidth);
-DrawFormattedText(window, 'Wie viele Karten wurden dunkler?', 'center', yOffset, textDefColor);
+DrawFormattedText(window, 'Wie viele Durchläufe haben Sie gezählt?', 'center', yOffset, textDefColor);
 Screen('TextSize', window, controlCardTextSize);
 if mouseOnCard == controlCardCorrect
     % Correct

@@ -127,8 +127,8 @@ textControl = { ...
     'Zählaufgabe'
     ''
     'Im Folgenden sehen Sie ein Feld voller grauer Karten.'
-    'In einem "Durchgang" verdunkelt sich immer zuerst die'
-    'obere Karte. Dann verdunkelt sich die untere Karte.'
+    'In einem "Durchgang" verändert sich immer zuerst die'
+    'obere Karte. Dann verändert sich die untere Karte.'
     ''
     'Ihre Aufgabe: '
     'Zählen Sie, wie viele Durchgänge durchlaufen werden.' 
@@ -399,8 +399,24 @@ fixationDisplay     = 6 * 60;     % Duration of fixation task
 % Unless you know what you are doing...
 % !!!!! Changes need further adjustments in other files and scripts !!!!! %
 
+% Folder for configurations
+setupdir            = fullfile(dirRoot, 'setup');
+if ~exist(setupdir, 'dir')
+    mkdir(setupdir) % create folder in first run
+end
+
+% Folder for data
+if ~exist(fullfile(dirRoot, 'DATA'), 'dir')
+    mkdir(fullfile(dirRoot, 'DATA')) % create folder in first run
+    mkdir(fullfile(dirRoot, 'BACKUP'))
+end
+
+odorTable = load(fullfile(setupdir, 'mt_odor_rand'));
+odorTable = odorTable.odor_rand;
+maxSubjectNr = size(odorTable, 1);
+
 % Changing the accepted cases also requires to change mt_dialogues.m
-cfg_cases.subjects  = 0:1000;                           % 0 is debug
+cfg_cases.subjects  = 0:maxSubjectNr;                   % 0 is debug
 cfg_cases.nights    = {'1', '2'};                       % Night 1 or 2
 cfg_cases.memvers   = {'A', 'B'};                       % Memory version
 cfg_cases.sesstype  = {'C', 'L', 'I', 'R', 'F'};        % Session Type
@@ -552,17 +568,6 @@ cardSequence 	= {...
 %     cardSequence{r} = cellfun(@(x) mt_cards2Dto1D(x, ncards_x, ncards_y), imageSequence2D{r});
 % end
 
-% Folder for configurations
-setupdir            = fullfile(dirRoot, 'setup');
-if ~exist(setupdir, 'dir')
-    mkdir(setupdir) % create folder in first run
-end
-
-% Folder for data
-if ~exist(fullfile(dirRoot, 'DATA'), 'dir')
-    mkdir(fullfile(dirRoot, 'DATA')) % create folder in first run
-    mkdir(fullfile(dirRoot, 'BACKUP'))
-end
 
 % Save configuration in workdir
 cd(dirRoot)

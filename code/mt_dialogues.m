@@ -36,6 +36,7 @@ fclose(fid);
 fid                 = fopen(fullfile(dirRoot,'code','defaults.txt'));
 defaults            = textscan(fid,'%s','Delimiter','\n');
 defaults            = defaults{1};
+defaults{1}         = ['(1 - ' num2str(maxSubjectNr) ')'];
 fclose(fid);
 
 % Pre-allocation of cell array for answer strings
@@ -165,11 +166,10 @@ switch upper(user)
         error('Invalid Lab')
 end
 
-cfg_dlgs.odor = load(fullfile(setupdir, 'mt_odor_rand'));
-cfg_dlgs.odor = cfg_dlgs.odor.odor_rand;
+cfg_dlgs.odor = odorTable;
 if strcmp(cfg_dlgs.night, '1')
     cfg_dlgs.odor = cfg_dlgs.odor{str2double(cfg_dlgs.subject), 'OdorN1'};
-elseif strcmp(cfg_dlgs.night, '0')
+elseif strcmp(cfg_dlgs.night, '2')
     cfg_dlgs.odor = cfg_dlgs.odor{str2double(cfg_dlgs.subject), 'OdorN2'};
 end
 

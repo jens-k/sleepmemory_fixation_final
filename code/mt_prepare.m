@@ -26,6 +26,7 @@ catch ME
         'Type "help mt_dialogues" and follow the instructions for configuration.\n'])
     error(ME.message)
 end
+
 % Include Psychtoolbox to the path and open a fullscreen window
 % TODO: Window management: do we want two screens to show different information (experimenter vs. subject)?
 try
