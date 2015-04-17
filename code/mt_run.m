@@ -81,13 +81,13 @@ case cfg_cases.sesstype{1}
     
 % MAIN LEARNING and IMMEDIATE RECALL
 case cfg_cases.sesstype{2}
-%     % Show introduction screen
-%     mt_showText(dirRoot, textLearningIntro{1}, window);
-%     mt_showText(dirRoot, textLearningIntro{2}, window);
-%     % Start practice session
-%     mt_cardGamePractice(dirRoot, cfg_window);
-%     mt_showText(dirRoot, textLearning2, window);
-%     mt_showText(dirRoot, textQuestion, window);
+    % Show introduction screen
+    mt_showText(dirRoot, textLearningIntro{1}, window);
+    mt_showText(dirRoot, textLearningIntro{2}, window);
+    % Start practice session
+    mt_cardGamePractice(dirRoot, cfg_window);
+    mt_showText(dirRoot, textLearning2, window);
+    mt_showText(dirRoot, textQuestion, window);
     % Start learning sessions
     for lRun = 1: nLearningSess
         mt_cardGame(dirRoot, cfg_window, lRun);

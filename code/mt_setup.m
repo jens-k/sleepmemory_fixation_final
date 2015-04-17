@@ -387,19 +387,19 @@ textBgColor         = [1 1 1]*0.9; % greyish background
 % window              = ;
 
 % Set Timing (seconds)
-topCardDisplay      = .3;       % Duration image is shown on top Card
-topCardGreyDisplay  = .1;       % Duration top Card is shown in grey
-cardDisplay         = .6;       % Duration memory cards are shown
-cardCrossDisplay    = .6;       % Duration cross is displayed on cards
-cardRecallDisplay   = .1;       % Duration memory cards are shown
-feedbackDisplay     = .1;       % Duration feedback is shown
-whiteScreenDisplay  = .1;       % Delay after text screen
-responseTime        = .15;      % Duration allowed to respond (click)
+topCardDisplay      = 3;       % Duration image is shown on top Card
+topCardGreyDisplay  = 1;       % Duration top Card is shown in grey
+cardDisplay         = 6;       % Duration memory cards are shown
+cardCrossDisplay    = 6;       % Duration cross is displayed on cards
+cardRecallDisplay   = 1;       % Duration memory cards are shown
+feedbackDisplay     = 1;       % Duration feedback is shown
+whiteScreenDisplay  = 1;       % Delay after text screen
+responseTime        = 15;      % Duration allowed to respond (click)
 
 if isMRI
-	interTrialInterval  = .4; 	% [0,5 2]
+	interTrialInterval  = 4; 	% [0,5 2]
 else
-	interTrialInterval  = .4;        
+	interTrialInterval  = 4;        
 end
 % Fixation Task (mt_fixationTask)
 fixationDisplay     = 6 * 60;     % Duration of fixation task
