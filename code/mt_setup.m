@@ -9,7 +9,7 @@ function dirRoot = mt_setup(user)
 % >>> INPUT VARIABLES >>>
 % NAME              TYPE        DESCRIPTION
 % user              char       	pre-defined user name (see mt_loadUser.m)
-%
+
 % <<< OUTPUT VARIABLES <<<
 % NAME              TYPE        DESCRIPTION
 % dirRoot           char        path to root working directory
@@ -21,14 +21,19 @@ function dirRoot = mt_setup(user)
 % IMPORTANT: add your user profile in mt_loadUser
 [dirRoot, dirPTB]   = mt_profile(user);
 
+isMRI 			= 0; % 1 or 0
+
 % Expermimental Details
 experimentName  = 'Sleep Connectivity'; % name of your study
 nLearningSess   = 3; % number of runs for learning
-nMinRecall      = 1; % minimum runs for immediate recall (with feedback)
-nMaxRecall      = 5; % maximum runs for immediate recall (to exclude if too poor performance)
+nMinRecall      = 2; % minimum runs for immediate recall (with feedback)
+nMaxRecall      = 4; % maximum runs for immediate recall (to exclude if too poor performance)
 nFinalRecall    = 2; % number of runs for final recall (incl. one last session w/o feedback)
 RecallThreshold = 60;% miniumum correct answers in recall (in percent)
+
+% System
 % screenNumber    = 2; % select specific screen
+priority_level        = 0; % 'max' or number, put 0 if you don't have privileged rights
 
 triggerOdorOn       = {0, 1, 16}; % trigger for MEG, SL3, SL4
 triggerPlaceboOn    = {0, 2, 32}; % trigger for MEG, SL3, SL4
@@ -373,7 +378,7 @@ CursorType          = 'Arrow';
 % Set Display properties
 % Define which window size is used as reference to display the cards
 windowSize          = get(0, 'MonitorPositions'); % [1024 768];
-windowSize          = windowSize(end-1:end);
+windowSize          = [(4/3 * windowSize(end)) windowSize(end)];
 screenBgColor       = [1 1 1]*0.9; % greyish background
 textBgColor         = [1 1 1]*0.9; % greyish background
 
@@ -382,15 +387,20 @@ textBgColor         = [1 1 1]*0.9; % greyish background
 % window              = ;
 
 % Set Timing (seconds)
-topCardDisplay      = 3;       % Duration image is shown on top Card
-topCardGreyDisplay  = 1;       % Duration top Card is shown in grey
-cardDisplay         = 6;       % Duration memory cards are shown
-cardCrossDisplay    = 6;       % Duration cross is displayed on cards
-cardRecallDisplay   = 1;       % Duration memory cards are shown
-feedbackDisplay     = 1;       % Duration feedback is shown
-whiteScreenDisplay  = 1;       % Delay after text screen
-responseTime        = 15;      % Duration allowed to respond (click)
-interTrialInterval  = 4;
+topCardDisplay      = .3;       % Duration image is shown on top Card
+topCardGreyDisplay  = .1;       % Duration top Card is shown in grey
+cardDisplay         = .6;       % Duration memory cards are shown
+cardCrossDisplay    = .6;       % Duration cross is displayed on cards
+cardRecallDisplay   = .1;       % Duration memory cards are shown
+feedbackDisplay     = .1;       % Duration feedback is shown
+whiteScreenDisplay  = .1;       % Delay after text screen
+responseTime        = .15;      % Duration allowed to respond (click)
+
+if isMRI
+	interTrialInterval  = .4; 	% [0,5 2]
+else
+	interTrialInterval  = .4;        
+end
 % Fixation Task (mt_fixationTask)
 fixationDisplay     = 6 * 60;     % Duration of fixation task
 
@@ -480,7 +490,7 @@ imageFilesB         = {
     };
 
 % Practice set settings
-imageFilesP             = {'teapot.jpg', 'guitar.jpg', 'jacket.jpg'};
+imageFilesP             = {'teapot.png', 'guitar.png', 'jacket.png'};
 imageSequencePractice   = [4, 9, 2];
 imgfolderP              = fullfile(dirRoot, stimulusFolder, imageFolder{3});
 
@@ -529,6 +539,9 @@ catch
     fprintf('Control Lists missing: run mt_controlList.m\n')
     error(ME.message)
 end
+
+% Load values of inter trial interval (ITI) for MRI
+ITImri 			= load(fullfile(setupdir, 'mt_ITImri.mat'));
 
 % Store 2D coordinates for cards to be flipped
 cardSequence 	= {...

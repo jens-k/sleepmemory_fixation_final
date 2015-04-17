@@ -28,7 +28,7 @@ else
     tableOld = table();
 end
 
-%% Contruct output table
+%% Construct output table
 nRuns = length(performance.correct);
 if (nargin == 3 && varargin{1} == 1) || (nargin == 4 && varargin{1} == 1)
     feedbackOn	= 1;
@@ -37,16 +37,16 @@ else
 end
 
 if nargin == 4 && isnumeric(varargin{2})
-    sessLength  = length(tableOld.SessionTime(strcmp(tableOld.SessionTime, tableOld.SessionTime(end))));
-    subjectData = tableOld;
-    Accuracy    = cell(sessLength, 1);
-    Accuracy(:)	= varargin(2);
-    subjectData.Accuracy(end-sessLength+1:end) = Accuracy;
-else
+%     sessLength  = length(tableOld.SessionTime(strcmp(tableOld.SessionTime, tableOld.SessionTime(end))));
+%     subjectData = tableOld;
+%     Accuracy    = cell(sessLength, 1);
+%     Accuracy(:)	= varargin(2);
+%     subjectData.Accuracy(end-sessLength+1:end) = Accuracy;
+% else
+    ntrials = length(performance.SessionTime);
     % Constant variables
     SessionDate         = {datestr(now, 'yyyy/mm/dd')};
-    SessionTime         = performance.SessionTime;
-    TrialTime           = performance.TrialTime;
+    SessionTime         = performance.SessionTime(1);
     Lab                 = cfg_cases.lab(cfg_dlgs.lab);
     ExperimentName      = {experimentName};
     Subject             = {cfg_dlgs.subject};
@@ -64,14 +64,14 @@ else
     Feedback            = {feedbackOn};
     MemoryVersion       = cfg_cases.memvers(cfg_dlgs.memvers);
     Odor                = {cfg_dlgs.odor};
-    Accuracy            = {0};
-
-    tableLeft   = table(SessionDate, SessionTime, TrialTime, Lab, ExperimentName, Subject, Session, ...
+    Accuracy            = varargin(2);
+    
+    tableLeft   = table(SessionDate, SessionTime, Lab, ExperimentName, Subject, Session, ...
         Feedback, MemoryVersion, Odor, Accuracy);
     tableLeft   = repmat(tableLeft, nRuns, 1);
-    tableLeft.TrialTime = performance.TrialTime;
 
     % Changing variables
+    TrialTime           = performance.TrialTime;
     Block               = performance.run;
     Correct             = performance.correct;
     Stimulus            = performance.imageShown;

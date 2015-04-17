@@ -57,7 +57,7 @@ for iCard = 1: nCardsShown
 
     
     % Show a picture on top
-%    Priority(MaxPriority(window)); 
+    Priority(priority_level); 
     Screen('FillRect', window, cardColors, topCard);
     Screen('FrameRect', window, frameColor, topCard, frameWidth);
     Screen('FillRect', window, cardColors, rects);
@@ -76,7 +76,7 @@ for iCard = 1: nCardsShown
     
     
     % Draw the rects to the screen, flip the top card
-%    Priority(MaxPriority(window));
+    Priority(priority_level);
     Screen('FillRect', window, cardColorControl, topCard);
     Screen('FrameRect', window, frameColor, topCard, frameWidth);
     Screen('FillRect', window, cardColors, rects);
@@ -89,7 +89,7 @@ for iCard = 1: nCardsShown
     
     
     % Flip the card
-    %    Priority(MaxPriority(window)); 
+    Priority(priority_level); 
     Screen('FillRect', window, cardColorControl, topCard);
     Screen('FrameRect', window, frameColor, topCard, frameWidth);
     Screen('DrawTexture', window, imageTop, [], topCard);
@@ -141,7 +141,7 @@ for cc = 2 : nControlAnswers
 end
 Screen('TextSize', window, 20);               % set text size
 
-%    Priority(MaxPriority(window)); 
+    Priority(priority_level); 
 Screen('FillRect', window, cardColors, controlRects);
 Screen('FrameRect', window, frameColor, controlRects, frameWidth);
 DrawFormattedText(window, 'Wie viele Durchläufe haben Sie gezählt?', 'center', yOffset, textDefColor);
@@ -175,7 +175,7 @@ controlCardCorrect = find(controlAnswers == nCardsShown);
 
 Screen('TextSize', window, 20);               % set text size
 
-%    Priority(MaxPriority(window)); 
+    Priority(priority_level); 
 Screen('FillRect', window, cardColors, controlRects);
 Screen('FrameRect', window, frameColor, controlRects, frameWidth);
 DrawFormattedText(window, 'Wie viele Durchläufe haben Sie gezählt?', 'center', yOffset, textDefColor);
@@ -203,7 +203,6 @@ else
         (controlRects(4, controlCardCorrect)-(controlCardHeigth/2)-(controlCardTextSize*0.8)), textColorCorrect);
     DrawFormattedText(window, num2str(controlAnswers(mouseOnCard)), 'center', ...
         (controlRects(4, mouseOnCard)-(controlCardHeigth/2)-(controlCardTextSize*0.8)), textColorIncorrect);
-%     DrawFormattedText(window, 'Richtig', controlRects(1,1)+controlTextMargin, (controlRects(4, controlCardCorrect)-(controlCardHeigth/2)-(controlCardTextSize*0.8)), textColorCorrect);
     DrawFormattedText(window, 'Falsch', controlRects(1,1)+controlTextMargin, (controlRects(4, mouseOnCard)-(controlCardHeigth/2)-(controlCardTextSize*0.8)), textColorIncorrect);
 end
 Screen('Flip', window, flipTime);

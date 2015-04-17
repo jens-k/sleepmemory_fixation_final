@@ -45,7 +45,7 @@ end
 Screen('Preference', 'VisualDebugLevel', 1);
 Screen('Preference', 'ScreenToHead', 0, 0, 0);
 [window, windowRect] = PsychImaging('OpenWindow', screenNumber, screenBgColor);
-% DEBUG
+% DEBUG MODE
 % [window, windowRect] = Screen('OpenWindow', screenNumber, [], [30 30 1024 768]);
 
 windowRect  = get(0, 'MonitorPositions');
@@ -62,10 +62,7 @@ cfg_window.window43 = windowSize;
 cfg_window.center = [xCenter, yCenter];
 
 %% 2. Set global screen properties
-% Activate alpha channel for transparency
-Screen('BlendFunction', window, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-% Set up alpha-blending for smooth (anti-aliased) lines
+% Activate alpha channel for transparency & smooth (anti-aliased) lines
 Screen('BlendFunction', window, 'GL_SRC_ALPHA', 'GL_ONE_MINUS_SRC_ALPHA');
 
 % Set Text Font
@@ -74,12 +71,19 @@ Screen('TextFont', window, textDefFont);
 % Set Cursor
 ShowCursor(CursorType, window);
 
+% % Set Priority
+% if strcmp(priority_level, 'max')
+%     priority_level = MaxPriority(window);
+% else
+%     priority_level = priority;
+% end
+
 %% 3. Perform Timing tests
 ifi                 = Screen('GetFlipInterval', window);
 waitframes          = 1;
-% Priority(MaxPriority(window));
+Priority(priority_level);
 vbl                 = Screen('Flip', window);
-% Priority(0);
+Priority(0);
 flipTime            = vbl + (waitframes - 0.5) * ifi;
 
 %% Save information about display timing in dirRoot

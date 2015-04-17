@@ -50,8 +50,15 @@ end
 
 %% Initialize variables for measured parameters
 cardShown     	= cardSequence{cfg_dlgs.memvers}{currSesstype}';
-cardClicked  	= zeros(length(cardShown), 1);
-mouseData    	= zeros(1, 3);
+ntrials 		= length(cardShown);
+cardClicked  	= zeros(ntrials, 1);
+mouseData    	= zeros(ntrials, 3);
+imageShown 		= cell(ntrials, 1);
+imageClicked 	= cell(ntrials, 1);
+coordsShown 	= cell(ntrials, 1);
+coordsClicked 	= cell(ntrials, 1);
+TrialTime 		= cell(ntrials, 1);
+
 
 isinterf        = (cfg_dlgs.sesstype==3) + 1;
 imagesT         = imageConfiguration{cfg_dlgs.memvers}{isinterf}';
@@ -67,8 +74,17 @@ if ~((currSesstype == 2) || (currSesstype == 3))
 end
 
 %% Start the game
+% MRI: wait for MRI trigger (5), then start the program
+if isMRI
+	triggerIn = [];
+	while isempty(triggerIn)
+		calllib('inpoutx64', 'Inp32', port)
+	end 
+end
+
 % Get Session Time
 SessionTime         = {datestr(now, 'HH:MM:SS')};
+SessionTime(1:ntrials, 1) = SessionTime;
 % In the learning session all pictures are shown in a sequence
 % In the recall sessions mouse interaction is activated
 % Make texture for fixation image
@@ -78,14 +94,14 @@ for iCard = 1: length(cardShown)
    
     cardFlip = 0;
     % Get Trial Time
-    TrialTime           = {datestr(now, 'HH:MM:SS.FFF')};
+    TrialTime(iCard) 	= {datestr(now, 'HH:MM:SS.FFF')};
     
     % Get current picture
     imageCurrent    = cardShown(iCard);
     imageTop        = Screen('MakeTexture', window, images{imageCurrent});
     
     % Show a picture on top
-%    Priority(MaxPriority(window)); 
+	Priority(priority_level); 
     Screen('FillRect', window, cardColors, topCard);
     Screen('FrameRect', window, frameColor, topCard, frameWidth);
     Screen('FillRect', window, cardColors, rects);
@@ -98,13 +114,12 @@ for iCard = 1: length(cardShown)
     Screen('FrameRect', window, frameColor, topCard, frameWidth);
     Screen('FillRect', window, cardColors, rects);
     Screen('FrameRect', window, frameColor, rects, frameWidth);
-%     Screen('DrawTexture', window, imageDot, [], topCardDot);
     Screen('Flip', window, flipTime);
     Priority(0);
 
     [mouseX, mouseY] = GetMouse(window);
     % Delay flipping in case of learning and immediate recall for topCardDisplay
-    if ismember(currSesstype, 2:4)
+    if ismember(currSesstype, 2:4) && ~isMRI
         
 		% Send trigger during learning and immediate recall sessions
 		if (cfg_dlgs.odor == 1)
@@ -131,7 +146,7 @@ for iCard = 1: length(cardShown)
             cardClicked(iCard)  = cardFlip; % dummy
         case {4, 5} % (Immediate) Recall
             % OnMouseClick: flip the card
-            [cardFlip, mouseData]	= mt_cardFlip(window, screenOff, ncards_x, cardSize+cardMargin, topCardHeigth, responseTime);
+            [cardFlip, mouseData(iCard,:)]	= mt_cardFlip(window, screenOff, ncards_x, cardSize+cardMargin, topCardHeigth, responseTime);
             if cardFlip ~= 0
                 % Save which card was clicked
                 cardClicked(iCard)           	= cardFlip;
@@ -144,11 +159,12 @@ for iCard = 1: length(cardShown)
         % Stop odor here in immediate recall sessions
         calllib('inpoutx64', 'Out32', port, 0)   % reset the port to 0 
     end
+	reactionTime = mouseData(iCard, 3);
     HideCursor(window);
         
     if cardFlip ~= 0 && feedbackOn
         % Flip the card
-    %    Priority(MaxPriority(window)); 
+		Priority(priority_level); 
         Screen('DrawTexture', window, imageTop, [], topCard);
         Screen('FrameRect', window, frameColor, topCard, frameWidth);
 
@@ -176,57 +192,58 @@ for iCard = 1: length(cardShown)
         % Display the card for a pre-defined time
         if (currSesstype == 4) || (currSesstype == 5)
             WaitSecs(cardRecallDisplay);
-        else
+        elseif isMRI 
+			% Display time of lower card in recall session
+			if MRIiti(iCard) - reactionTime < 0
+				WaitSecs(reactionTime)
+			else
+				WaitSecs(0.5)
+            end
+		else
             WaitSecs(cardDisplay);
         end
     end
   
     % If in learning sessions
-    if ismember(currSesstype, 2:4)
+    if ismember(currSesstype, 2:4) && ~isMRI
         % Stop Odor here
         calllib('inpoutx64', 'Out32', port, 0)   % reset the port to 0 
     end
-    
-    tic;
-    % Compute trial performance
-    correct             = (cardShown(iCard) - cardClicked(iCard)) + 1;
-    correct(correct~=1) = 0;
-    session             = currSesstype;
-    run                 = iRun;
-    
-    imageShown          = imagesT(iCard);
+
+    imageShown(iCard) 	= imagesT(iCard);
     if cardClicked(iCard)~=0
-        imageClicked   	= imagesT(cardClicked(iCard));
+        imageClicked(iCard) 	= imagesT(cardClicked(iCard));
     else
-        imageClicked    = {'NONE'};
+        imageClicked(iCard) 	= {'NONE'};
     end
     
-    coordsShown         = {mt_cards1Dto2D(cardShown(iCard), ncards_x, ncards_y)};
-    coordsClicked       = {mt_cards1Dto2D(cardClicked(iCard), ncards_x, ncards_y)};
-
-    performance         = table(SessionTime, TrialTime, session, run, correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
-
-    % Save trial performance
-    mt_saveTable(dirRoot, performance, feedbackOn)
-    saveTime = toc;
+    coordsShown(iCard)       = {mt_cards1Dto2D(cardShown(iCard), ncards_x, ncards_y)};
+    coordsClicked(iCard)	 = {mt_cards1Dto2D(cardClicked(iCard), ncards_x, ncards_y)};
     
     % Time while subjects are allowed to blink
     Screen('Flip', window, flipTime);
-    WaitSecs(interTrialInterval-saveTime);
+    WaitSecs(interTrialInterval);
     
 end
 Screen('Close', imageDot);
 Screen('Close', imageDotSmall);
 
 
+% imageShown, imageClicked, coordsShown, coordsClicked
+
 %% Performance    
 % Save session performance
+session             = zeros(ntrials, 1);
+run                 = zeros(ntrials, 1);
+session(1:ntrials, 1) = currSesstype;
+run(1:ntrials, 1)   = iRun;
 % Compute performance
 correct             = (cardShown - cardClicked) + 1;
 correct(correct~=1) = 0; % set others incorrect
 % save cards shown, cards clicked, mouse click x/y coordinates, reaction time
 accuracy            = 100 * mean(correct);
 % save session data
+performance         = table(SessionTime, TrialTime, session, run, correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
 mt_saveTable(dirRoot, performance, feedbackOn, accuracy)
 
 % Return performance for recall session
