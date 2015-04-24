@@ -33,10 +33,12 @@ for c = 2: sum(controlList)
     end
     neighbourhood = neighbourhood(neighbourhood>0 & neighbourhood<=30);
     if c <= 2
+        % avoid subsequent adjacent positions
         while ismember(source(seed), neighbourhood)
             seed = randi(length(source), 1);
         end
     else
+        % avoid direct repetitions (ABA)
         while ismember(source(seed), neighbourhood) || source(seed) == controlLocations(c-2)
             seed = randi(length(source), 1);
         end
