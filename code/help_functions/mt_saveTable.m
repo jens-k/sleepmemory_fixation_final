@@ -36,58 +36,54 @@ else
     feedbackOn	= 0;    
 end
 
-if nargin == 4 && isnumeric(varargin{2})
-%     sessLength  = length(tableOld.SessionTime(strcmp(tableOld.SessionTime, tableOld.SessionTime(end))));
-%     subjectData = tableOld;
-%     Accuracy    = cell(sessLength, 1);
-%     Accuracy(:)	= varargin(2);
-%     subjectData.Accuracy(end-sessLength+1:end) = Accuracy;
-% else
-    ntrials = length(performance.SessionTime);
-    % Constant variables
-    SessionDate         = {datestr(now, 'yyyy/mm/dd')};
+ntrials = length(performance.SessionTime);
+% Constant variables
+SessionDate         = {datestr(now, 'yyyy/mm/dd')};
+SessionTime         = performance.SessionTime(1);
+Lab                 = cfg_cases.lab(cfg_dlgs.lab);
+ExperimentName      = {experimentName};
+Subject             = {cfg_dlgs.subject};
+if strcmp(cfg_dlgs.sessName, 'Control')
+    Session         = {cfg_dlgs.sessName};
     SessionTime         = performance.SessionTime(1);
-    Lab                 = cfg_cases.lab(cfg_dlgs.lab);
-    ExperimentName      = {experimentName};
-    Subject             = {cfg_dlgs.subject};
-    if strcmp(cfg_dlgs.sessName, 'Control')
-        Session         = {cfg_dlgs.sessName};
-        SessionTime         = performance.SessionTime(1);
-        TrialTime           = performance.TrialTime(1);
-    elseif strcmp(cfg_dlgs.sessName, 'Fixation')
-        Session         = {'FixationTask'};
-    elseif strcmp(performance.session, 'Practice')
-        Session         = {'Practice'};
-    else
-        Session         = {[cfg_dlgs.sessName '-' cfg_cases.sessNames{performance.session}]};
-    end
-    Feedback            = {feedbackOn};
-    MemoryVersion       = cfg_cases.memvers(cfg_dlgs.memvers);
-    Odor                = {cfg_dlgs.odor};
-    Accuracy            = varargin(2);
-    
-    tableLeft   = table(SessionDate, SessionTime, Lab, ExperimentName, Subject, Session, ...
-        Feedback, MemoryVersion, Odor, Accuracy);
-    tableLeft   = repmat(tableLeft, nRuns, 1);
-
-    % Changing variables
-    TrialTime           = performance.TrialTime;
-    Block               = performance.run;
-    Correct             = performance.correct;
-    Stimulus            = performance.imageShown;
-    Response            = performance.imageClicked;
-    ReactionTime        = performance.mouseData(:, 3);
-    MouseX              = performance.mouseData(:, 1);
-    MouseY              = performance.mouseData(:, 2);
-    CardShownCoords     = performance.coordsShown;
-    CardClickedCoords   = performance.coordsClicked;
-
-    tableRight  = table(Block, Correct, Stimulus, Response, ReactionTime, MouseX, ...
-        MouseY, CardShownCoords, CardClickedCoords);
-
-    tableSave   = [tableLeft tableRight];
-    subjectData = [tableOld; tableSave];
+elseif strcmp(cfg_dlgs.sessName, 'Fixation')
+    Session         = {'FixationTask'};
+elseif strcmp(performance.session, 'Practice')
+    Session         = {'Practice'};
+else
+    Session         = {[cfg_dlgs.sessName '-' cfg_cases.sessNames{performance.session}]};
 end
+if nargin == 4 && isnumeric(varargin{2})
+    Accuracy            = varargin{2};
+else
+    Accuracy            = 100 * mean(performance.correct);
+end
+
+Feedback            = {feedbackOn};
+MemoryVersion       = cfg_cases.memvers(cfg_dlgs.memvers);
+Odor                = {cfg_dlgs.odor};
+
+tableLeft   = table(SessionDate, SessionTime, Lab, ExperimentName, Subject, Session, ...
+    Feedback, MemoryVersion, Odor, Accuracy);
+tableLeft   = repmat(tableLeft, nRuns, 1);
+
+% Changing variables
+TrialTime           = performance.TrialTime;
+Block               = performance.run;
+Correct             = performance.correct;
+Stimulus            = performance.imageShown;
+Response            = performance.imageClicked;
+ReactionTime        = performance.mouseData(:, 3);
+MouseX              = performance.mouseData(:, 1);
+MouseY              = performance.mouseData(:, 2);
+CardShownCoords     = performance.coordsShown;
+CardClickedCoords   = performance.coordsClicked;
+
+tableRight  = table(TrialTime, Block, Correct, Stimulus, Response, ReactionTime, MouseX, ...
+    MouseY, CardShownCoords, CardClickedCoords);
+
+tableSave   = [tableLeft tableRight];
+subjectData = [tableOld; tableSave];
 
 %% Update & Save the table that contains subject data
 

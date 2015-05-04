@@ -74,13 +74,6 @@ if ~((currSesstype == 2) || (currSesstype == 3))
 end
 
 %% Start the game
-% MRI: wait for MRI trigger (5), then start the program
-if isMRI
-	triggerIn = [];
-	while isempty(triggerIn)
-		calllib('inpoutx64', 'Inp32', port)
-	end 
-end
 
 % Get Session Time
 SessionTime         = {datestr(now, 'HH:MM:SS')};
@@ -119,7 +112,7 @@ for iCard = 1: length(cardShown)
 
     [mouseX, mouseY] = GetMouse(window);
     % Delay flipping in case of learning and immediate recall for topCardDisplay
-    if ismember(currSesstype, 2:4) && ~isMRI
+    if ismember(currSesstype, 2:4)
         
 		% Send trigger during learning and immediate recall sessions
 		if (cfg_dlgs.odor == 1)
@@ -192,20 +185,13 @@ for iCard = 1: length(cardShown)
         % Display the card for a pre-defined time
         if (currSesstype == 4) || (currSesstype == 5)
             WaitSecs(cardRecallDisplay);
-        elseif isMRI 
-			% Display time of lower card in recall session
-			if MRIiti(iCard) - reactionTime < 0
-				WaitSecs(reactionTime)
-			else
-				WaitSecs(0.5)
-            end
 		else
             WaitSecs(cardDisplay);
         end
     end
   
     % If in learning sessions
-    if ismember(currSesstype, 2:4) && ~isMRI
+    if ismember(currSesstype, 2:4)
         % Stop Odor here
         calllib('inpoutx64', 'Out32', port, 0)   % reset the port to 0 
     end

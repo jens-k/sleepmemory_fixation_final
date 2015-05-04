@@ -81,7 +81,7 @@ case cfg_cases.sesstype{1}
     
 % MAIN LEARNING and IMMEDIATE RECALL
 case cfg_cases.sesstype{2}
-    Show introduction screen
+    % Show introduction screen
     mt_showText(dirRoot, textLearningIntro{1}, window);
     mt_showText(dirRoot, textLearningIntro{2}, window);
     % Start practice session
@@ -100,7 +100,7 @@ case cfg_cases.sesstype{2}
     while (iRecall <= nMaxRecall) && ((100*perc_correct < RecallThreshold) || (iRecall <= nMinRecall)) 
         % Start Experimental Task
         perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 1, 5);
-        if ((100*perc_correct < RecallThreshold) || (iRecall < nMinRecall))
+        if (iRecall < nMaxRecall) && (((100*perc_correct < RecallThreshold) || (iRecall < nMinRecall)))
             mt_showText(dirRoot, strrep(textRecallAgain, 'XXX', sprintf('%3.f', (100*perc_correct))), window);
         end
         iRecall = iRecall + 1;

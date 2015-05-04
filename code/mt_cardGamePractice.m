@@ -27,8 +27,14 @@ window      	= cfg_window.window(1);
 
 %% Initialize variables for measured parameters
 cardShown     	= imageSequencePractice';
+ntrials 		= length(cardShown);
 cardClicked  	= zeros(length(cardShown), 1);
 mouseData    	= zeros(length(cardShown), 3);
+imageShown 		= cell(ntrials, 1);
+imageClicked 	= cell(ntrials, 1);
+coordsShown 	= cell(ntrials, 1);
+coordsClicked 	= cell(ntrials, 1);
+TrialTime 		= cell(ntrials, 1);
 
 % Practice set
 for i = 1: length(imageFilesP)
@@ -78,12 +84,13 @@ WaitSecs(whiteScreenDisplay);
 %% In the practice learning session all pictures are shown in a sequence
 % Get Session Time
 SessionTime         = {datestr(now, 'HH:MM:SS')};
+SessionTime(1:ntrials, 1) = SessionTime;
 % Make texture for fixation image
 imageDot        = Screen('MakeTexture', window, imgDot);
 imageDotSmall   = Screen('MakeTexture', window, imgDotSmall);
 for iCard = 1: length(cardShown)
     % Get Trial Time
-    TrialTime           = {datestr(now, 'HH:MM:SS.FFF')};
+    TrialTime(iCard) 	= {datestr(now, 'HH:MM:SS.FFF')};
     
     % Get current picture
     imageCurrent    = cardShown(iCard);
@@ -104,7 +111,6 @@ for iCard = 1: length(cardShown)
     Screen('FrameRect', window, frameColor, topCard, frameWidth);
     Screen('FillRect', window, cardColors, rects);
     Screen('FrameRect', window, frameColor, rects, frameWidth);
-    Screen('DrawTexture', window, imageDot, [], topCardDot);
     Screen('Flip', window, flipTime);
     %    Priority(0);
     WaitSecs(topCardDisplay);
@@ -136,33 +142,38 @@ for iCard = 1: length(cardShown)
     cardClicked(iCard)  = cardFlip;
     correct             = (cardShown(iCard) - cardClicked(iCard)) + 1;
     correct(correct~=1) = 0;
-    session             = {'Practice'};
-    run                 = {1};
     
-    imageShown          = imageFilesP(iCard);
-    imageClicked        = imageFilesP(iCard);
+    imageShown(iCard)   = imageFilesP(iCard);
+    imageClicked(iCard) = imageFilesP(iCard);
     
-    coordsShown         = {mt_cards1Dto2D(cardShown(iCard), length(cardCoordsX), length(cardCoordsY))};
-    coordsClicked       = {mt_cards1Dto2D(cardClicked(iCard), length(cardCoordsX), length(cardCoordsY))};
-    mouseData           = [0, 0, 0];
-    
-    performance         = table(SessionTime, TrialTime, session, run, correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
-
-    % Save trial performance
-    mt_saveTable(dirRoot, performance)
-    saveTime = toc;
-    
+    coordsShown(iCard)  = {mt_cards1Dto2D(cardShown(iCard), length(cardCoordsX), length(cardCoordsY))};
+    coordsClicked(iCard)= {mt_cards1Dto2D(cardClicked(iCard), length(cardCoordsX), length(cardCoordsY))};
+    mouseData(iCard,:)  = [0, 0, 0];
+        
     % Time while subjects are allowed to blink
     Screen('Flip', window, flipTime);
-    WaitSecs(interTrialInterval-saveTime);
+    WaitSecs(interTrialInterval);
 end
+    % Save session performance
+    session                 = cell(ntrials, 1);
+    run                     = zeros(ntrials, 1);
+    session(1:ntrials, 1)   = {'Practice'};
+    run(1:ntrials, 1)       = 1;
+    % Compute performance
+    correct             = (cardShown - cardClicked) + 1;
+    correct(correct~=1) = 0; % set others incorrect
+    performance_learn         = table(SessionTime, TrialTime, session, run, correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
+
+
 
 mt_showText(dirRoot, textPracticeRecall, window);
 
+SessionTime         = {datestr(now, 'HH:MM:SS')};
+SessionTime(1:ntrials, 1) = SessionTime;
 % In the recall sessions mouse interaction is activated
 for iCard = 1: length(cardShown)
     % Get Trial Time
-    TrialTime           = {datestr(now, 'HH:MM:SS.FFF')};
+    TrialTime(iCard) 	= {datestr(now, 'HH:MM:SS.FFF')};
     
     % Get current picture
     imageCurrent    = cardShown(iCard);
@@ -184,11 +195,10 @@ for iCard = 1: length(cardShown)
     Screen('FrameRect', window, frameColor, topCard, frameWidth);
     Screen('FillRect', window, cardColors, rects);
     Screen('FrameRect', window, frameColor, rects, frameWidth);
-    Screen('DrawTexture', window, imageDot, [], topCardDot);
     Screen('Flip', window, flipTime);
     %    Priority(0);
 
-    WaitSecs(cardCrossDisplay);
+    WaitSecs(topCardDisplay);
 %    Priority(MaxPriority(window)); 
     Screen('DrawTexture', window, imageTop, [], topCard);
     Screen('FrameRect', window, frameColor, topCard, frameWidth);
@@ -261,41 +271,25 @@ for iCard = 1: length(cardShown)
     Screen('Flip', window, flipTime);
     Screen('Close', imageTop);
     Screen('Close', imageFlip);
-    
     %    Priority(0);
     end
 
     % Display the card for a time defined by cardDisplay
     WaitSecs(cardRecallDisplay);
     
-    tic
-    % Compute trial performance
-    correct             = (cardShown(iCard) - cardClicked(iCard)) + 1;
-    correct(correct~=1) = 0;
-    session             = {'Practice'};
-    run                 = {1};
-    
-    imageShown          = imageFilesP(iCard);
+    imageShown(iCard)          = imageFilesP(iCard);
     if cardClicked(iCard)~=0
-        imageClicked   	= imageFilesP(iCard);
+        imageClicked(iCard)   	= imageFilesP(iCard);
     else
-        imageClicked    = {'NONE'};
+        imageClicked(iCard)  = {'NONE'};
     end
     
-    coordsShown         = {mt_cards1Dto2D(cardShown(iCard), length(cardCoordsX), length(cardCoordsY))};
-    coordsClicked       = {mt_cards1Dto2D(cardClicked(iCard), length(cardCoordsX), length(cardCoordsY))};
-    mouseData           = mouseData(iCard, :);
-    
-    performance         = table(SessionTime, TrialTime, session, run, correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
-
-    % Save trial performance
-    mt_saveTable(dirRoot, performance)
-    saveTime = toc;
-    
+    coordsShown(iCard)       = {mt_cards1Dto2D(cardShown(iCard), ncards_x, ncards_y)};
+    coordsClicked(iCard)	 = {mt_cards1Dto2D(cardClicked(iCard), ncards_x, ncards_y)};
     
     % Time while subjects are allowed to blink
     Screen('Flip', window, flipTime);
-    WaitSecs(interTrialInterval-saveTime);
+    WaitSecs(interTrialInterval);
 end
 Screen('Close', imageDot);
 Screen('Close', imageDotSmall);
@@ -304,9 +298,18 @@ Screen('Close', imageDotSmall);
 %% Performance    
 
 % Save session performance
+session                 = cell(ntrials, 1);
+run                     = zeros(ntrials, 1);
+session(1:ntrials, 1)   = {'Practice'};
+run(1:ntrials, 1)       = 1;
 % Compute performance
 correct             = (cardShown - cardClicked) + 1;
 correct(correct~=1) = 0; % set others incorrect
+
+performance_recall         = table(SessionTime, TrialTime, session, run, correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
+
+performance = [performance_learn; performance_recall];
+
 % save cards shown, cards clicked, mouse click x/y coordinates, reaction time
 accuracy            = 100 * mean(correct);
 % save session data

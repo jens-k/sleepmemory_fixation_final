@@ -21,8 +21,6 @@ function dirRoot = mt_setup(user)
 % IMPORTANT: add your user profile in mt_loadUser
 [dirRoot, dirPTB]   = mt_profile(user);
 
-isMRI 			= 0; % 1 or 0
-
 % Expermimental Details
 experimentName  = 'Sleep Connectivity'; % name of your study
 nLearningSess   = 3; % number of runs for learning
@@ -385,20 +383,15 @@ textBgColor         = [1 1 1]*0.9; % greyish background
 % window              = ;
 
 % Set Timing (seconds)
-topCardDisplay      = 3;       % Duration image is shown on top Card
-topCardGreyDisplay  = 1;       % Duration top Card is shown in grey
-cardDisplay         = 6;       % Duration memory cards are shown
-cardCrossDisplay    = 6;       % Duration cross is displayed on cards
-cardRecallDisplay   = 1;       % Duration memory cards are shown
-feedbackDisplay     = 1;       % Duration feedback is shown
-whiteScreenDisplay  = 1;       % Delay after text screen
-responseTime        = 15;      % Duration allowed to respond (click)
+topCardDisplay      = .3;       % Duration image is shown on top Card
+topCardGreyDisplay  = .1;       % Duration top Card is shown in grey
+cardDisplay         = .6;       % Duration memory cards are shown
+cardRecallDisplay   = .1;       % Duration memory cards are shown
+feedbackDisplay     = .1;       % Duration feedback is shown
+whiteScreenDisplay  = .1;       % Delay after text screen
+responseTime        = .15;      % Duration allowed to respond (click)
+interTrialInterval  = .4;     
 
-if isMRI
-	interTrialInterval  = 4; 	% [0,5 2]
-else
-	interTrialInterval  = 4;        
-end
 % Fixation Task (mt_fixationTask)
 fixationDisplay     = 6 * 60;     % Duration of fixation task
 
@@ -537,9 +530,6 @@ catch
     fprintf('Control Lists missing: run mt_controlList.m\n')
     error(ME.message)
 end
-
-% Load values of inter trial interval (ITI) for MRI
-ITImri 			= load(fullfile(setupdir, 'mt_ITImri.mat'));
 
 % Store 2D coordinates for cards to be flipped
 cardSequence 	= {...
