@@ -20,8 +20,14 @@ function mt_showText(dirRoot, text, window, varargin)
 load(fullfile(dirRoot,'setup','mt_params.mat'), 'textDefSize', 'textBgColor', ...
      'textSx', 'textSy', 'textVSpacing', 'textDefColor', 'windowSize')
 
+delayContinue = 0;
+
+ 
 if length(varargin) == 1
     textSize = varargin{1};
+elseif length(varargin) == 2 && varargin{2} == 0
+    textSize = varargin{1};
+    delayContinue = 2;
 else
     textSize = textDefSize;
 end
@@ -38,21 +44,27 @@ else
     DrawFormattedText(window, text, 'center', 'center', textDefColor);
 end
 Screen('TextSize', window, textDefSize);
-DrawFormattedText(window, 'Weiter mit Mausklick...', textSx, windowSize(2)-2*textDefSize, textDefColor);
+if delayContinue == 0
+    DrawFormattedText(window, 'Weiter mit Mausklick...', textSx, windowSize(2)-2*textDefSize, textDefColor);
+end
 
 % Display the text
 Screen('Flip', window); 
 
-% Wait until mouse click
-isClick = 0;
-while isClick == 0
-    [~, ~, isClick]   = GetMouse(window);
-    WaitSecs(.01);
-end
-% Wait until mouse released
-while sum(isClick) > 0 
-    [~, ~, isClick]   = GetMouse(window);
-    WaitSecs(.01);
+if delayContinue ~= 0
+    WaitSecs(delayContinue);
+else
+    % Wait until mouse click
+    isClick = 0;
+    while isClick == 0
+        [~, ~, isClick]   = GetMouse(window);
+        WaitSecs(.01);
+    end
+    % Wait until mouse released
+    while sum(isClick) > 0 
+        [~, ~, isClick]   = GetMouse(window);
+        WaitSecs(.01);
+    end
 end
 
 

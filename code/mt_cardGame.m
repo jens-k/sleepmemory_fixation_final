@@ -64,7 +64,7 @@ isinterf        = (cfg_dlgs.sesstype==3) + 1;
 imagesT         = imageConfiguration{cfg_dlgs.memvers}{isinterf}';
 
 %% Show which session is upcoming
-mt_showText(dirRoot, textSession{currSesstype}, window, 40);
+mt_showText(dirRoot, textSession{currSesstype}, window, 40, 0);
 % Short delay after the mouse click to avoid motor artifacts
 HideCursor(window);
 Screen('Flip', window, flipTime);

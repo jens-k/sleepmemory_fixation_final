@@ -114,8 +114,7 @@ case cfg_cases.sesstype{2}
     elseif (iRecall > nMaxRecall)
         warning(['Maximum number of recall (' num2str(nMaxRecall) ') runs reached. Experiment cancelled.'])
         % Show final screen
-        mt_showText(dirRoot, textOutro, window);
-        break;
+        mt_showText(dirRoot, textOutro, window, [], 0);
     end
 
 % INTERFERENCE LEARNING and IMMEDIATE RECALL
@@ -159,6 +158,6 @@ end
 
 % Show final screen
 ShowCursor(CursorType, window);
-mt_showText(dirRoot, textOutro, window);
+mt_showText(dirRoot, textOutro, window, [], 0);
 sca;
 end
