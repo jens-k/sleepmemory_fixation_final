@@ -73,7 +73,8 @@ switch upper(cfg_cases.sesstype{cfg_dlgs.sesstype})
 case cfg_cases.sesstype{1}
     % Show introduction screen
     mt_showText(dirRoot, textControl, window);
-    mt_showText(dirRoot, textQuestion, window);
+    mt_showText(dirRoot, textControl2, window);
+    mt_showText(dirRoot, textControl3, window);
     % Start Control Task
     for cRun = 1: length(controlList)
         mt_controlTask(dirRoot, cfg_window, cRun);
