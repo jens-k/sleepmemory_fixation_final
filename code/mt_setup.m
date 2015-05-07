@@ -24,7 +24,7 @@ function dirRoot = mt_setup(user)
 % Expermimental Details
 experimentName  = 'Sleep Connectivity'; % name of your study
 nLearningSess   = 3; % number of runs for learning
-nMinRecall      = 2; % minimum runs for immediate recall (with feedback)
+nMinRecall      = 1; % minimum runs for immediate recall (with feedback)
 nMaxRecall      = 4; % maximum runs for immediate recall (to exclude if too poor performance)
 nFinalRecall    = 1; % number of runs for final recall (incl. one last session w/o feedback)
 RecallThreshold = 60;% miniumum correct answers in recall (in percent)
