@@ -26,7 +26,7 @@ experimentName  = 'Sleep Connectivity'; % name of your study
 nLearningSess   = 3; % number of runs for learning
 nMinRecall      = 2; % minimum runs for immediate recall (with feedback)
 nMaxRecall      = 4; % maximum runs for immediate recall (to exclude if too poor performance)
-nFinalRecall    = 2; % number of runs for final recall (incl. one last session w/o feedback)
+nFinalRecall    = 1; % number of runs for final recall (incl. one last session w/o feedback)
 RecallThreshold = 60;% miniumum correct answers in recall (in percent)
 
 % System
@@ -383,17 +383,17 @@ textBgColor         = [1 1 1]*0.9; % greyish background
 % window              = ;
 
 % Set Timing (seconds)
-topCardDisplay      = .3;       % Duration image is shown on top Card
-topCardGreyDisplay  = .1;       % Duration top Card is shown in grey
-cardDisplay         = .6;       % Duration memory cards are shown
-cardRecallDisplay   = .1;       % Duration memory cards are shown
-feedbackDisplay     = .1;       % Duration feedback is shown
-whiteScreenDisplay  = .1;       % Delay after text screen
-responseTime        = .15;      % Duration allowed to respond (click)
-interTrialInterval  = .4;     
+topCardDisplay      = 3;       % Duration image is shown on top Card
+topCardGreyDisplay  = 1;       % Duration top Card is shown in grey
+cardDisplay         = 6;       % Duration memory cards are shown
+cardRecallDisplay   = 1;       % Duration memory cards are shown
+feedbackDisplay     = 1;       % Duration feedback is shown
+whiteScreenDisplay  = 1;       % Delay after text screen
+responseTime        = 15;      % Duration allowed to respond (click)
+interTrialInterval  = 4;     
 
 % Fixation Task (mt_fixationTask)
-fixationDisplay     = 6 * 60;     % Duration of fixation task
+fixationDisplay     = (6 * 60);     % Duration of fixation task
 
 
 %% ======================= DO NOT CHANGE FROM HERE ====================== %

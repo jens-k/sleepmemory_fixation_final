@@ -43,7 +43,7 @@ coordsShown         = {''};
 coordsClicked       = {''};
 performance         = table(SessionTime, TrialTime, run, correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
 
-mt_saveTable(dirRoot, performance)
+mt_saveTable(dirRoot, performance, 0, 0)
 
 % Draw the cross
 imageDot	= Screen('MakeTexture', window, imgDot);
@@ -59,7 +59,7 @@ pause(fixationDisplay);
 SessionTime         = {datestr(now, 'HH:MM:SS')};
 TrialTime           = {datestr(now, 'HH:MM:SS.FFF')};
 performance         = table(SessionTime, TrialTime, run, correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
-mt_saveTable(dirRoot, performance)
+mt_saveTable(dirRoot, performance, 0, 0)
 
 
 end
