@@ -22,7 +22,7 @@ window             = cfg_window.window(1);
 
 %% Show instructions
 mt_showText(dirRoot, textFixation, window);
-mt_showText(dirRoot, textQuestion, window);
+mt_showText(dirRoot, textFixation2, window);
 
 %% Show fixation cross 
 HideCursor(window);

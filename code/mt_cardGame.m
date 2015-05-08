@@ -32,6 +32,7 @@ load(fullfile(dirRoot, 'setup', 'mt_params.mat'))   % load workspace information
 % Load port output for triggers
 loadlibrary('trigger/inpoutx64', 'trigger/inpout32.h')
 port = hex2dec('0378'); % LPT1: 0378 - 037F, 0778 - 077F
+calllib('inpoutx64', 'Out32', port, 0)
 
 %% Set window parameters
 % Specify the display window 

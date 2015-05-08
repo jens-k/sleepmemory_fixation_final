@@ -124,9 +124,9 @@ case cfg_cases.sesstype{3}
     mt_showText(dirRoot, textLearningInterference, window);
     mt_showText(dirRoot, textQuestion, window);
     % Start learning sessions
-    for lRun = 1: nLearningSess
+    for lRun = 1:nInterferenceSess
         mt_cardGame(dirRoot, cfg_window, lRun);
-        if lRun < nLearningSess
+        if lRun < nInterferenceSess
             mt_showText(dirRoot, strrep(textLearning2Next, 'XXX', sprintf('%1.f', (lRun+1))), window);
         end        
     end
@@ -140,7 +140,6 @@ case cfg_cases.sesstype{4}
     % Show introduction screen
     mt_showText(dirRoot, textRecall, window);
     mt_showText(dirRoot, textRecall2, window);
-    mt_showText(dirRoot, textQuestion, window);
     while (iRecall <= nFinalRecall) 
         % Start Experimental Task
         perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 0, 5);

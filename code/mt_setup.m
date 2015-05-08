@@ -22,12 +22,13 @@ function dirRoot = mt_setup(user)
 [dirRoot, dirPTB]   = mt_profile(user);
 
 % Expermimental Details
-experimentName  = 'Sleep Connectivity'; % name of your study
-nLearningSess   = 3; % number of runs for learning
-nMinRecall      = 1; % minimum runs for immediate recall (with feedback)
-nMaxRecall      = 4; % maximum runs for immediate recall (to exclude if too poor performance)
-nFinalRecall    = 1; % number of runs for final recall (incl. one last session w/o feedback)
-RecallThreshold = 60;% miniumum correct answers in recall (in percent)
+experimentName      = 'Sleep Connectivity'; % name of your study
+nLearningSess       = 3; % number of learning runs for learning
+nInterferenceSess   = 2; % number of learning runs for interference
+nMinRecall          = 1; % minimum runs for immediate recall (with feedback)
+nMaxRecall          = 4; % maximum runs for immediate recall (to exclude if too poor performance)
+nFinalRecall        = 1; % number of runs for final recall (incl. one last session w/o feedback)
+RecallThreshold     = 60;% miniumum correct answers in recall (in percent)
 
 % System
 % screenNumber    = 2; % select specific screen
@@ -152,7 +153,6 @@ textControl2 = { ...
     'und die Augen zu entspannen.'
     ''
 };
-
 textControl3 = { ...
     ''
     'Nicht vergessen:'
@@ -162,6 +162,24 @@ textControl3 = { ...
     ''
     'Haben Sie noch Fragen zum Ablauf?'
     ''
+};
+textFixation = { ...
+    'Fixation'
+    ''
+    'Es erscheint nun ein Punkt in der Mitte'
+    'des Bildschirms. Bitte schauen Sie auf diesen'
+    'Punkt, solange er angezeigt wird.'
+    ''
+    'Dies wird etwa 6 Minuten dauern.'
+};
+textFixation2 = { ...
+    ''
+    ''
+    ''
+    'Legen Sie Ihre H‰nde bitte locker in den Schoﬂ.'
+    ''
+    ''
+    'Haben Sie noch Fragen zum Ablauf?'
 };
 textLearningIntro = {
     { ...
@@ -285,7 +303,9 @@ textRecall2 = { ...
     'gelegen haben. Es erscheint lediglich ein blauer Punkt'
     'auf der geklickten Karte (kein Kreuz oder H‰kchen).'
     ''
-    'Am Ende wird Ihnen wie bisher angezeigt, wie gut sie waren.'
+    'Sie erfahren ganz am Ende, wie gut Sie waren.'
+    ''
+    'Haben Sie noch Fragen zum Ablauf?'
     ''
 };
 textRecallAgain = { ...
@@ -415,12 +435,12 @@ textBgColor         = [1 1 1]*0.9; % greyish background
 % Set Timing (seconds)
 topCardDisplay      = 3;       % Duration image is shown on top Card
 topCardGreyDisplay  = 1;       % Duration top Card is shown in grey
-cardDisplay         = 6;       % Duration memory cards are shown
+cardDisplay         = 5;       % Duration memory cards are shown
 cardRecallDisplay   = 1;       % Duration memory cards are shown
 feedbackDisplay     = 1;       % Duration feedback is shown
 whiteScreenDisplay  = 1;       % Delay after text screen
 responseTime        = 15;      % Duration allowed to respond (click)
-interTrialInterval  = 4;     
+interTrialInterval  = 3;     
 
 % Fixation Task (mt_fixationTask)
 fixationDisplay     = (6 * 60);     % Duration of fixation task

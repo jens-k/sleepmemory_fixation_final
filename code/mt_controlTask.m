@@ -35,6 +35,8 @@ mouseData    	= zeros(length(cardShown), 3);
 nCardsShown     = length(cardShown);
 maxCardsShown   = max(cellfun(@(x) length(x), cardSequence{cfg_dlgs.memvers}{cfg_dlgs.sesstype}));
 
+calllib('inpoutx64', 'Out32', port, 0)
+
 %% Start the game
 % Get Session Time
 sessTime        = datestr(now, 'HH:MM:SS');
@@ -105,9 +107,13 @@ for iCard = 1: nCardsShown
     Screen('FrameRect', window, frameColor, rects, frameWidth);
     Screen('Flip', window, flipTime);
     Priority(0);
-
+    
     % Display the card for a time defined by cardDisplay
     WaitSecs(cardDisplay);
+    
+    % Stop odor here
+    calllib('inpoutx64', 'Out32', port, 0)
+
     
     % Time while subjects are allowed to blink
     Screen('Flip', window, flipTime);

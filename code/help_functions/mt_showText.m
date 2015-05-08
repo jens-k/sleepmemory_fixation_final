@@ -26,7 +26,7 @@ delayContinue = 0;
 if length(varargin) == 1
     textSize = varargin{1};
 elseif length(varargin) == 2 && varargin{2} == 0
-    textSize = varargin{1};
+    textSize = textDefSize;
     delayContinue = 2;
 else
     textSize = textDefSize;
