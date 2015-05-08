@@ -16,13 +16,13 @@ function mt_saveTable(dirRoot, performance, varargin)
 % AUTHOR: Marco Rüth, contact@marcorueth.com
 
 %% Load parameters specified in mt_setup.m
-load(fullfile(dirRoot, 'setup', 'mt_params.mat'), 'cfg_dlgs', 'cfg_cases', 'experimentName')   % load workspace information and properties
+load(fullfile(dirRoot, 'setup', 'mt_params.mat'), 'cfg_dlgs', 'cfg_cases', 'experimentName', 'dirData')   % load workspace information and properties
 
 %% Load table if already exists
 fName = ['mtp_sub_' cfg_dlgs.subject '_night_' cfg_dlgs.night '_sess_' num2str(cfg_dlgs.sesstype)];
 % save performance of subject for each run with recall 
-if exist(fullfile(dirRoot, 'DATA', strcat(fName, '.mat')), 'file')
-    tableOld = load(fullfile(dirRoot, 'DATA', strcat(fName, '.mat')));
+if exist(fullfile(dirData, 'DATA', strcat(fName, '.mat')), 'file')
+    tableOld = load(fullfile(dirData, 'DATA', strcat(fName, '.mat')));
     tableOld = tableOld.subjectData;
 else
     tableOld = table();
@@ -88,6 +88,6 @@ subjectData = [tableOld; tableSave];
 %% Update & Save the table that contains subject data
 
 % Save updated table 
-save(fullfile(dirRoot, 'DATA', strcat(fName, '.mat')), 'subjectData')
+save(fullfile(dirData, 'DATA', strcat(fName, '.mat')), 'subjectData')
 
 end

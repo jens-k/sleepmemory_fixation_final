@@ -120,11 +120,12 @@ for iCard = 1: length(cardShown)
 			calllib('inpoutx64', 'Out32', port, triggerOdorOn{cfg_dlgs.lab})
 		elseif (cfg_dlgs.odor == 0)
 			calllib('inpoutx64', 'Out32', port, triggerPlaceboOn{cfg_dlgs.lab})
-		end
+        end
         
-        WaitSecs(topCardDisplay);
         if currSesstype == 4
             ShowCursor(CursorType, window);
+        else
+            WaitSecs(topCardDisplay);
         end
     else
         ShowCursor(CursorType, window);

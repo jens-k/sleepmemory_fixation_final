@@ -28,6 +28,9 @@ if length(varargin) == 1
 elseif length(varargin) == 2 && varargin{2} == 0
     textSize = textDefSize;
     delayContinue = 2;
+elseif length(varargin) == 2 && varargin{2} == 1
+    textSize = textDefSize;
+    delayContinue = 'click';
 else
     textSize = textDefSize;
 end
@@ -51,9 +54,12 @@ end
 % Display the text
 Screen('Flip', window); 
 
-if delayContinue ~= 0
+if isnumeric(delayContinue) && delayContinue ~= 0
     WaitSecs(delayContinue);
-else
+    Screen('Flip', window);
+end
+
+if (isnumeric(delayContinue) && delayContinue == 0) || (ischar(delayContinue) && strcmp(delayContinue, 'click'))
     % Wait until mouse click
     isClick = 0;
     while isClick == 0

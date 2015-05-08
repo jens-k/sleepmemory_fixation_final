@@ -198,7 +198,7 @@ for iCard = 1: length(cardShown)
     Screen('Flip', window, flipTime);
     %    Priority(0);
 
-    WaitSecs(topCardDisplay);
+    ShowCursor(CursorType, window);
 %    Priority(MaxPriority(window)); 
     Screen('DrawTexture', window, imageTop, [], topCard);
     Screen('FrameRect', window, frameColor, topCard, frameWidth);
@@ -206,7 +206,7 @@ for iCard = 1: length(cardShown)
     Screen('FrameRect', window, frameColor, rects, frameWidth);
     Screen('Flip', window, flipTime);
     %    Priority(0);
-    ShowCursor(CursorType, window);
+    
     
     % OnMouseClick: flip the card
     mouseOnCard = zeros(ncards, 1);

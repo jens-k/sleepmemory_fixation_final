@@ -456,10 +456,19 @@ if ~exist(setupdir, 'dir')
     mkdir(setupdir) % create folder in first run
 end
 
+dirData = dirRoot;
+dirSplit = strsplit(dirRoot,'\');
+if strcmp(dirSplit(end), '')
+    dirData = dirRoot(1:end-1);
+    dirData = strrep(dirData, dirSplit(end-1), '');
+else
+    dirData = strrep(dirData, dirSplit(end), '');
+end
+dirData = dirData{:};
 % Folder for data
-if ~exist(fullfile(dirRoot, 'DATA'), 'dir')
-    mkdir(fullfile(dirRoot, 'DATA')) % create folder in first run
-    mkdir(fullfile(dirRoot, 'BACKUP'))
+if ~exist(fullfile(dirData, 'DATA'), 'dir')
+    mkdir(fullfile(dirData, 'DATA')) % create folder in first run
+    mkdir(fullfile(dirData, 'BACKUP'))
 end
 
 odorTable = load(fullfile(setupdir, 'mt_odor_rand'));
