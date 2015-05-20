@@ -34,15 +34,21 @@ PsychDefaultSetup(2);
 % Get screens connected
 screens = Screen('Screens');
 
-% Display on external screen if available
-screenNumber = max(screens);
+% If no screen is pre-specified, display on external screen if available
+if ~exist('screenNumber', 'var')
+    screenNumber = max(screens);
+end
 
 %% 1. Get Window Properties
 %       window - opened window
 %       windowRect - position array [left top right bottom]
 Screen('Preference', 'VisualDebugLevel', 1);
+Screen('Preference', 'ScreenToHead', 0, 0, 0);
 [window, windowRect] = PsychImaging('OpenWindow', screenNumber, screenBgColor);
+% DEBUG MODE
+% [window, windowRect] = Screen('OpenWindow', screenNumber, [], [30 30 1024 768]);
 
+windowRect  = get(0, 'MonitorPositions');
 % Get the window center coordinates
 [xCenter, yCenter] = RectCenter(windowRect);
 
@@ -51,15 +57,12 @@ cfg_window.screen = [screens, screenNumber];
 cfg_window.window = [window, windowRect];
 
 % Assure 4:3 format
-cfg_window.window43 = cfg_window.window;
-cfg_window.window43(end-1:end) = windowSize;
+cfg_window.window43 = windowSize;
+% cfg_window.window43(end-1:end) = windowSize;
 cfg_window.center = [xCenter, yCenter];
 
 %% 2. Set global screen properties
-% Activate alpha channel for transparency
-Screen('BlendFunction', window, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-% Set up alpha-blending for smooth (anti-aliased) lines
+% Activate alpha channel for transparency & smooth (anti-aliased) lines
 Screen('BlendFunction', window, 'GL_SRC_ALPHA', 'GL_ONE_MINUS_SRC_ALPHA');
 
 % Set Text Font
@@ -68,11 +71,17 @@ Screen('TextFont', window, textDefFont);
 % Set Cursor
 ShowCursor(CursorType, window);
 
+% % Set Priority
+% if strcmp(priority_level, 'max')
+%     priority_level = MaxPriority(window);
+% else
+%     priority_level = priority;
+% end
+
 %% 3. Perform Timing tests
 ifi                 = Screen('GetFlipInterval', window);
 waitframes          = 1;
-topPriorityLevel 	= MaxPriority(window);
-Priority(topPriorityLevel);
+Priority(priority_level);
 vbl                 = Screen('Flip', window);
 Priority(0);
 flipTime            = vbl + (waitframes - 0.5) * ifi;

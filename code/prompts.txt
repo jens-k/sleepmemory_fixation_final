@@ -1,5 +1,5 @@
 Enter subject number: 
 Enter night number:
-Session Type: control (C), learning (L), interference (I), retrieval (R)
+Session Type: control (C), learning (L), interference (I), retrieval (R), fixation (F)
 Enter memory version:
 Enter if odor is on (1) or off (0):

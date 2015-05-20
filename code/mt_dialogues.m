@@ -36,6 +36,7 @@ fclose(fid);
 fid                 = fopen(fullfile(dirRoot,'code','defaults.txt'));
 defaults            = textscan(fid,'%s','Delimiter','\n');
 defaults            = defaults{1};
+defaults{1}         = ['(1 - ' num2str(maxSubjectNr) ')'];
 fclose(fid);
 
 % Pre-allocation of cell array for answer strings
@@ -43,6 +44,7 @@ fclose(fid);
 for r = 1:size(answers,2)
     answers{1, r}{:} = '';
 end
+fixRun = '';
 
 %% Show dialogue windows and save the answers
 dlgBackground = figure('name', 'dlgBackground', 'units', 'normalized', 'outerposition', [0 0 1 1] , 'Color', [1 1 1], ...
@@ -53,9 +55,9 @@ for p = 1 : length(prompts)
     while (p == 1 && ~ismember(str2double(answers{p}), cfg_cases.subjects)) || ...
         (p == 2 && ~ismember(answers{2}(:), cfg_cases.nights))  || ...
         (p == 3 && ~ismember(answers{3}(:), cfg_cases.sesstype) || ...
-        (p == 4 && ~ismember(answers{4}(:), cfg_cases.memvers)))|| ...
-        (p == 5 && ~ismember(answers{5}(:), cfg_cases.odor))  
-        if p == 5 && strcmpi(char(answers{3}(:)), cfg_cases.sesstype{1})
+        (p == 4 && ~ismember(answers{4}(:), cfg_cases.memvers)))
+        if p == 4 && (strcmpi(char(answers{3}(:)), cfg_cases.sesstype{1}) || ...
+                strcmpi(char(answers{3}(:)), cfg_cases.sesstype{5}))
             break;
         end
             answers{p} 	= upper(newid(prompts(p), '', [1 70], defaults(p), options));
@@ -68,17 +70,21 @@ for p = 1 : length(prompts)
         load(fullfile(setupdir, 'mt_debug.mat'))
         break;
     end
+    % End loop if fixation task is selected, since no memory version
+    if p == 4 && strcmpi(char(answers{3}(:)), cfg_cases.sesstype{5})
+        fixRun 	= upper(newid({'Enter run number of fixation task'}, '', [1 70], {'1 or 2'}, options));
+        break;
+    end
 end
 close('dlgBackground')
 
 % Store answers in struct fields
 % Questions can be found in prompts.txt, defaults in defaults.txt
 if ~exist('cfg_dlgs', 'var')
-    cfg_dlgs.subject 	= char(answers{1}); % Subject ID
-    cfg_dlgs.night      = char(answers{2}); % Night number
-    cfg_dlgs.sesstype 	= char(answers{3}); % Session type
-    cfg_dlgs.memvers    = char(answers{4}); % Memory version
-    cfg_dlgs.odor       = char(answers{5}); % Odor on or off
+    cfg_dlgs.subject 	= char(answers{1});     % Subject ID
+    cfg_dlgs.night      = char(answers{2});     % Night number
+    cfg_dlgs.sesstype 	= char(answers{3});     % Session type
+    cfg_dlgs.memvers    = char(answers{4});     % Memory version
 end
 
 % save(fullfile(setupdir, 'mt_debug.mat'), 'cfg_dlgs') % uncomment for new debug mat-file
@@ -90,13 +96,18 @@ end
 %         strcat('Night_', cfg_dlgs.night))
 
 % Memory version
-switch cfg_dlgs.memvers
-    case cfg_cases.memvers{1} 
-        cfg_dlgs.memvers = 1; % Version A of memory
-    case cfg_cases.memvers{2}
-        cfg_dlgs.memvers = 2; % Version B of memory
-    otherwise
-        error('Invalid Memory Version')
+if ~isempty(cfg_dlgs.memvers)
+    switch cfg_dlgs.memvers
+        case cfg_cases.memvers{1} 
+            cfg_dlgs.memvers = 1; % Version A of memory
+        case cfg_cases.memvers{2}
+            cfg_dlgs.memvers = 2; % Version B of memory
+        otherwise
+            error('Invalid Memory Version')
+    
+    end
+else
+    cfg_dlgs.memvers = 1;
 end
 
 % Session type: defines cardSequence
@@ -114,14 +125,18 @@ switch cfg_dlgs.sesstype
         cfg_dlgs.sessName = cfg_cases.sessNames{4};
         cfg_dlgs.sesstype = 4;
     case cfg_cases.sesstype{5}    
+         % gray background and no images are shown
+        cfg_dlgs.sessName = cfg_cases.sessNames{6};
+        cfg_dlgs.sesstype = 5;
+    case cfg_cases.sesstype{6}
         % gray background and no images are shown
-        cfg_dlgs.sessName = cfg_cases.sessNames{5};
+        cfg_dlgs.sessName = cfg_cases.sessNames{7};
         screenBgColor   = 0.5;
         topCardColor    = 0.5;
         frameWidth      = 0;
         save(fullfile(dirRoot,'setup','mt_params.mat'), '-append', ...
             'screenBgColor', 'topCardColor', 'frameWidth')
-        cfg_dlgs.sesstype = 5; 
+        cfg_dlgs.sesstype = 6;
     otherwise
         error('Invalid Session Type')
 end
@@ -129,24 +144,33 @@ end
 % Lab
 switch upper(user)
     case 'MEG' 
-        cfg_dlgs.lab = 1;
+        cfg_dlgs.lab    = 1;
         % TODO: set triggers for MEG
         % Parallel port trigger in PTB
         % In the MEG will be the old olfactometer
     case 'SL3'
-        cfg_dlgs.lab = 2;
-        % TODO: set triggers for sleep lab (left)
+        cfg_dlgs.lab    = 2;
+        triggerOdor     = triggerOdorOn{2}      + EEGtrigger;
+        triggerPlacebo  = triggerPlaceboOn{2}   + EEGtrigger;
         % In the sleep lab will be the new olfactometer
     case 'SL4'
-        cfg_dlgs.lab = 3;
-        % TODO: set triggers for sleep lab (right)
+        cfg_dlgs.lab    = 3;
+        triggerOdor     = triggerOdorOn{3}      + EEGtrigger;
+        triggerPlacebo  = triggerPlaceboOn{3}   + EEGtrigger;
         % In the sleep lab will be the new olfactometer
         % Only in this lab one can learn and stimulate with odors
     case 0 
         % development mode
-        cfg_dlgs.lab = 4;
+        cfg_dlgs.lab = 1;
     otherwise
         error('Invalid Lab')
+end
+
+cfg_dlgs.odor = odorTable;
+if strcmp(cfg_dlgs.night, '1')
+    cfg_dlgs.odor = cfg_dlgs.odor{str2double(cfg_dlgs.subject), 'OdorN1'};
+elseif strcmp(cfg_dlgs.night, '2')
+    cfg_dlgs.odor = cfg_dlgs.odor{str2double(cfg_dlgs.subject), 'OdorN2'};
 end
 
 % Choose a control list based on the subject id
@@ -154,6 +178,6 @@ end
 % controlList             = controlList.controlList(nControlList, :);
 
 %% Save configuration in dirRoot
-save(fullfile(setupdir,'mt_params.mat'), '-append', 'cfg_dlgs')
+save(fullfile(setupdir, 'mt_params.mat'), '-append', 'cfg_dlgs', 'fixRun')
 
 end

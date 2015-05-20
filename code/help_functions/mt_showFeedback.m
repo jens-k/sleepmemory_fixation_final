@@ -22,10 +22,10 @@ function cardFlip = mt_showFeedback(dirRoot, window, cardFlip, feedbackOn, image
 load(fullfile(dirRoot,'setup','mt_params.mat'))   % load workspace information and properties
 
 %% Set parameters
-imageTop        = Screen('MakeTexture', window, imagesTop{imageCurrent});
+imageTop        = Screen('MakeTexture', window, images{imageCurrent});
 
 % show feedback on the card
-Priority(MaxPriority(window));
+Priority(priority_level);
 Screen('DrawTexture', window, imageTop, [], topCard);
 Screen('FrameRect', window, frameColor, topCard, frameWidth);
 Screen('FillRect', window, cardColors, rects);

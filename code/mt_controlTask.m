@@ -20,6 +20,9 @@ function mt_controlTask(dirRoot, cfg_window, iControlRun)
 
 %% Load parameters specified in mt_setup.m
 load(fullfile(dirRoot,'setup','mt_params.mat'))   % load workspace information and properties
+% Load port output for triggers
+loadlibrary('trigger/inpoutx64', 'trigger/inpout32.h')
+port = hex2dec('0378'); % LPT1: 0378 - 037F, 0778 - 077F
 
 %% Set window parameters
 % Specify the display window 
@@ -30,56 +33,104 @@ cardShown    	= cardSequence{cfg_dlgs.memvers}{cfg_dlgs.sesstype}{iControlRun}';
 cardClicked 	= zeros(length(cardShown), 1);
 mouseData    	= zeros(length(cardShown), 3);
 nCardsShown     = length(cardShown);
+maxCardsShown   = max(cellfun(@(x) length(x), cardSequence{cfg_dlgs.memvers}{cfg_dlgs.sesstype}));
+
+calllib('inpoutx64', 'Out32', port, 0)
 
 %% Start the game
 % Get Session Time
 sessTime        = datestr(now, 'HH:MM:SS');
 TrialTime       = cell(length(cardShown),1);
-HideCursor;
+HideCursor(window);
+imageDot        = Screen('MakeTexture', window, imgDot);
+imageDotSmall   = Screen('MakeTexture', window, imgDotSmall);
 
-% Draw the rects to the screen
-Priority(MaxPriority(window));
-Screen('FillRect', window, cardColorControl, topCard);
-Screen('FrameRect', window, frameColor, topCard, frameWidth);
-Screen('FillRect', window, cardColors, rects);
-Screen('FrameRect', window, frameColor, rects, frameWidth);
+% Show blank screen for baseline following reading/clicking
 Screen('Flip', window, flipTime);
-Priority(0);
-WaitSecs(topCardDisplay);
+pause(2);
 
 for iCard = 1: nCardsShown 
     % Get Trial Time
     TrialTime{iCard}    = datestr(now, 'HH:MM:SS.FFF');
     cardCurrent         = cardShown(iCard);
     
-    % Flip the card
-    Priority(MaxPriority(window));
+    imageTop            = Screen('MakeTexture', window, controlImages{cardCurrent});
+    imageFlip           = Screen('MakeTexture', window, controlImages{cardCurrent});
+
+    
+    % Show a picture on top
+    Priority(priority_level); 
+    Screen('FillRect', window, cardColors, topCard);
+    Screen('FrameRect', window, frameColor, topCard, frameWidth);
+    Screen('FillRect', window, cardColors, rects);
+    Screen('FrameRect', window, frameColor, rects, frameWidth);
+    Screen('Flip', window, flipTime);
+    Priority(0);
+    WaitSecs(topCardGreyDisplay);
+
+    
+    % Send odor trigger
+    if (cfg_dlgs.odor == 1)
+        calllib('inpoutx64', 'Out32', port, triggerOdorOn{cfg_dlgs.lab})
+    elseif (cfg_dlgs.odor == 0)
+        calllib('inpoutx64', 'Out32', port, triggerPlaceboOn{cfg_dlgs.lab})
+    end
+    
+    
+    % Draw the rects to the screen, flip the top card
+    Priority(priority_level);
     Screen('FillRect', window, cardColorControl, topCard);
     Screen('FrameRect', window, frameColor, topCard, frameWidth);
+    Screen('FillRect', window, cardColors, rects);
+    Screen('DrawTexture', window, imageTop, [], topCard);
+    Screen('FrameRect', window, frameColor, rects, frameWidth);
+%     Screen('DrawTexture', window, imageDot, [], topCardDot);
+    Screen('Flip', window, flipTime);
+    Priority(0);
+    WaitSecs(topCardDisplay);
+    
+    
+    % Flip the card
+    Priority(priority_level); 
+    Screen('FillRect', window, cardColorControl, topCard);
+    Screen('FrameRect', window, frameColor, topCard, frameWidth);
+    Screen('DrawTexture', window, imageTop, [], topCard);
     % Fill all rects but one
     Screen('FillRect', window, cardColors, rects(:, (1:ncards ~= cardCurrent)));
-    Screen('FillRect', window, cardColorControl, rects(:, cardCurrent));
+    Screen('DrawTexture', window, imageFlip, [], imgs(:, cardCurrent));
+%     Screen('FillRect', window, cardColorControl, rects(:, cardCurrent));
     % Show fixation cross
-    imgCrossTex = Screen('MakeTexture', window, imgCross);
-    tmp = CenterRectOnPointd(crossSize, rects(1, cardCurrent)+cardSize(3)/2, rects(2, cardCurrent)+cardSize(4)/2);
+    tmp = CenterRectOnPointd(dotSize, rects(1, cardCurrent)+cardSize(3)/2, rects(2, cardCurrent)+cardSize(4)/2);
     tmp = reshape(tmp, 4, 1);
-    Screen('DrawTexture', window, imgCrossTex, [], tmp);
+    Screen('DrawTexture', window, imageDotSmall, [], tmp);
     % Show frames
     Screen('FrameRect', window, frameColor, rects, frameWidth);
     Screen('Flip', window, flipTime);
-    Screen('Close', imgCrossTex);
     Priority(0);
-
+    
     % Display the card for a time defined by cardDisplay
     WaitSecs(cardDisplay);
     
+    % Stop odor here
+    calllib('inpoutx64', 'Out32', port, 0)
+
+    
+    % Time while subjects are allowed to blink
+    Screen('Flip', window, flipTime);
+    WaitSecs(interTrialInterval);
+    
 end
+Screen('Close', imageDot);
+Screen('Close', imageDotSmall);
+
 
 %% Ask how many cards changed their color up to now
-ShowCursor;
+ShowCursor(CursorType, window);
 nControlAnswers     = 4;
 controlAnswers      = round(abs(nCardsShown-nControlAnswers):nCardsShown+nControlAnswers);
-controlAnswers      = controlAnswers(controlAnswers~=nCardsShown & controlAnswers~=0);
+% Delete invalid alternative answers, i.e. the correct answer, the answer
+% 0, and answers that exceed the maximum number of shown cards + 2
+controlAnswers      = controlAnswers(controlAnswers~=nCardsShown & controlAnswers~=0 & controlAnswers<=maxCardsShown+2);
 controlAnswers      = Shuffle([nCardsShown randsample(controlAnswers, 3, 0)]);
 
 controlCardTextSize = 40;
@@ -87,16 +138,19 @@ controlCardHeigth   = 100;
 controlCardWidth    = controlCardHeigth * (4/3);
 controlRects        = zeros(4, nControlAnswers);
 yOffset             = 50;
+cardOffset          = 20;
+topOffset           = round((cfg_window.window43(end) - ((nControlAnswers * controlCardHeigth) + ((nControlAnswers-1) * cardOffset)))/2) + yOffset/2;
 
-for cc = 1 : nControlAnswers
-    controlRects(:, cc) = CenterRectOnPointd([0 0 controlCardWidth controlCardHeigth], cfg_window.center(1), cc*(controlCardHeigth+20)+yOffset);
+controlRects(:, 1) = CenterRectOnPointd([0 0 controlCardWidth controlCardHeigth], cfg_window.center(1), controlCardHeigth/2 + topOffset);
+for cc = 2 : nControlAnswers
+    controlRects(:, cc) = CenterRectOnPointd([0 0 controlCardWidth controlCardHeigth], cfg_window.center(1), (cc-1)*(controlCardHeigth + cardOffset) + controlCardHeigth/2 + topOffset);
 end
 Screen('TextSize', window, 20);               % set text size
 
-Priority(MaxPriority(window));
+    Priority(priority_level); 
 Screen('FillRect', window, cardColors, controlRects);
 Screen('FrameRect', window, frameColor, controlRects, frameWidth);
-DrawFormattedText(window, 'Wie viele Karten wurden dunkler?', 'center', yOffset, textDefColor);
+DrawFormattedText(window, 'Wie viele Durchläufe haben Sie gezählt?', 'center', yOffset, textDefColor);
 Screen('TextSize', window, controlCardTextSize);
 for cc = 1 : nControlAnswers
     DrawFormattedText(window, num2str(controlAnswers(cc)), 'center', ...
@@ -110,7 +164,7 @@ while ~(sum(mouseOnCard)==1)
     % Runs until a mouse button is pressed
     MousePress      = 0; % initializes flag to indicate no response
     while    ( MousePress==0 ) 
-        [x, y, buttons]     = GetMouse();   % wait for a key-press
+        [x, y, buttons]     = GetMouse(window);   % wait for a key-press
         % stop loop if the first mouse button is pressed
         if buttons(1)
             MousePress      = buttons(1); % sets to 1 if a button was pressed
@@ -127,10 +181,10 @@ controlCardCorrect = find(controlAnswers == nCardsShown);
 
 Screen('TextSize', window, 20);               % set text size
 
-Priority(MaxPriority(window));
+    Priority(priority_level); 
 Screen('FillRect', window, cardColors, controlRects);
 Screen('FrameRect', window, frameColor, controlRects, frameWidth);
-DrawFormattedText(window, 'Wie viele Karten wurden dunkler?', 'center', yOffset, textDefColor);
+DrawFormattedText(window, 'Wie viele Durchläufe haben Sie gezählt?', 'center', yOffset, textDefColor);
 Screen('TextSize', window, controlCardTextSize);
 if mouseOnCard == controlCardCorrect
     % Correct
@@ -155,12 +209,15 @@ else
         (controlRects(4, controlCardCorrect)-(controlCardHeigth/2)-(controlCardTextSize*0.8)), textColorCorrect);
     DrawFormattedText(window, num2str(controlAnswers(mouseOnCard)), 'center', ...
         (controlRects(4, mouseOnCard)-(controlCardHeigth/2)-(controlCardTextSize*0.8)), textColorIncorrect);
-%     DrawFormattedText(window, 'Richtig', controlRects(1,1)+controlTextMargin, (controlRects(4, controlCardCorrect)-(controlCardHeigth/2)-(controlCardTextSize*0.8)), textColorCorrect);
     DrawFormattedText(window, 'Falsch', controlRects(1,1)+controlTextMargin, (controlRects(4, mouseOnCard)-(controlCardHeigth/2)-(controlCardTextSize*0.8)), textColorIncorrect);
 end
 Screen('Flip', window, flipTime);
 Priority(0);
+HideCursor(window);
 WaitSecs(controlFeedbackDisplay);
+% Short delay after the mouse click to avoid motor artifacts
+Screen('Flip', window, flipTime);
+WaitSecs(whiteScreenDisplay);
 
 Screen('TextStyle', window, 0);
 
@@ -187,5 +244,8 @@ coordsClicked       = coordsShown;
 performance         = table(SessionTime, TrialTime, run, correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
 
 mt_saveTable(dirRoot, performance)
+
+% Housekeeping: unload port library
+unloadlibrary('inpoutx64')
 
 end

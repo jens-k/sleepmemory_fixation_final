@@ -1,13 +1,14 @@
-function [mouseCard, mouseData] = mt_cardFlip(screenOff, ncards_x, cardSize, topCardHeigth, responseTime)
-% ** function mt_cardFlip(screenOff, ncards_x, cardSize, topCardHeigth)
+function [mouseCard, mouseData] = mt_cardFlip(window, screenOff, ncards_x, cardSize, topCardHeigth, responseTime)
+% ** function mt_cardFlip(window, screenOff, ncards_x, cardSize, topCardHeigth)
 % This function waits for a mouse press and returns the card number which
 % was clicked. Importantly, only pressing the first mouse button is valid.
 %
 % USAGE:
-%     mt_cardFlip(screenOff, ncards_x, cardSize, topCardHeigth)
+%     mt_cardFlip(window, screenOff, ncards_x, cardSize, topCardHeigth)
 %
 % >>> INPUT VARIABLES >>>
 % NAME              TYPE        DESCRIPTION
+% window            double  	window pointer
 % screenOff         1X2 double  [Xoffset Yoffset] values result from
 %                               difference between actual and 4:3 resolution
 % ncards_x          double      number of cards in a row
@@ -31,7 +32,7 @@ buttonMouse = [];
 MousePress	= 0; % initializes flag to indicate no response
 tic;
 while   (MousePress == 0 && clickTime < responseTime)
-    [x, y, buttonMouse]   = GetMouse();   % wait for a key-press
+    [x, y, buttonMouse]   = GetMouse(window);   % wait for a key-press
     % stop loop if the first mouse button is pressed
     if buttonMouse(1) && (x > screenOff(1) && x < (screenOff(1)+ncards_x*cardSize(3))) && (y > screenOff(2)+topCardHeigth)
         clickTime       = toc;
@@ -51,6 +52,7 @@ if (clickTime < responseTime)
     %% Find out which card was selected and return the card number
     mouseCard           = ((mouseCardY-1) * ncards_x) + mouseCardX;
 else
+    % Timout
     mouseCard           = 0;
 end
 

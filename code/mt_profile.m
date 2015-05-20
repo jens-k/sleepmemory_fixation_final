@@ -19,11 +19,17 @@ function [dirRoot, dirPTB] = mt_profile(user)
 
 switch upper(user)
     case 0
-        dirRoot             = 'D:\Master Thesis\00 - Program\';
-        dirPTB              = 'D:\AnalysisSoftware\PTB\Psychtoolbox\';
-    case {'MEG', 'SL3', 'SL4'}
-        dirRoot 			= 'C:\Users\Olfactometer\Desktop\Studies\Code\sleepmemory\';
-        dirPTB              = 'C:\Users\Olfactometer\Documents\MATLAB\Psychtoolbox\Psychtoolbox\';
+        dirRoot             = 'C:\Users\t3ch\Documents\GitHub\sleepmemory\';
+        dirPTB              = 'D:\Software\AnalysisSoftware\PTB\Psychtoolbox\';
+    case {'MEG'}
+        dirRoot 			= 'C:\Users\Doktorand\Desktop\Studies\GitHub\sleepmemory\';
+        dirPTB              = 'C:\Users\Doktorand\Desktop\Studies\Psychtoolbox\';
+    case {'SL3', 'SL4'}
+        dirRoot 			= 'D:\SleepConnectivity\Memory Task';
+        dirPTB              = 'C:\Users\Doktorand\Toolbox\Psychtoolbox';
+    case {'MRI'}
+       dirRoot              = 'E:\USERS\veit\memory_psychtoolbox\sleepmemory';
+       dirPTB               = 'C:\Program Files\MATLAB\Psyschtoolbox\Psychtoolbox'; 
     otherwise
         error('Invalid User Name. Define workspace in mt_profile.m')
 end

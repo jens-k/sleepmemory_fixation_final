@@ -9,7 +9,7 @@ function dirRoot = mt_setup(user)
 % >>> INPUT VARIABLES >>>
 % NAME              TYPE        DESCRIPTION
 % user              char       	pre-defined user name (see mt_loadUser.m)
-%
+
 % <<< OUTPUT VARIABLES <<<
 % NAME              TYPE        DESCRIPTION
 % dirRoot           char        path to root working directory
@@ -22,13 +22,21 @@ function dirRoot = mt_setup(user)
 [dirRoot, dirPTB]   = mt_profile(user);
 
 % Expermimental Details
-MRI             = false; % set true for use in MRI scanner
-experimentName  = 'Sleep Connectivity'; % name of your study
-nLearningSess   = 2; % number of runs for learning
-nMinRecall      = 2; % minimum runs for immediate recall (with feedback)
-nMaxRecall      = 5; % maximum runs for immediate recall (to exclude if too poor performance)
-nFinalRecall    = 2; % number of runs for final recall (incl. one last session w/o feedback)
-RecallThreshold = 60;% miniumum correct answers in recall (in percent)
+experimentName      = 'Sleep Connectivity'; % name of your study
+nLearningSess       = 3; % number of learning runs for learning
+nInterferenceSess   = 2; % number of learning runs for interference
+nMinRecall          = 1; % minimum runs for immediate recall (with feedback)
+nMaxRecall          = 4; % maximum runs for immediate recall (to exclude if too poor performance)
+nFinalRecall        = 1; % number of runs for final recall (incl. one last session w/o feedback)
+RecallThreshold     = 60;% miniumum correct answers in recall (in percent)
+
+% System
+% screenNumber    = 2; % select specific screen
+priority_level        = 0; % 'max' or number, put 0 if you don't have privileged rights
+
+triggerOdorOn       = {0, 1, 16}; % trigger for MEG, SL3, SL4
+triggerPlaceboOn    = {0, 2, 32}; % trigger for MEG, SL3, SL4
+EEGtrigger          = 0;
 
 %% ======================== IMAGE CONFIGURATION ========================= %
 
@@ -36,31 +44,31 @@ RecallThreshold = 60;% miniumum correct answers in recall (in percent)
 imageConfiguration = {
   {{ % imagesA 	LEARNING
   'ant',            'whale',        'ray',          	'hippopotamus',     'fly'           'crocodile';
-  'wasp',           'toucan',       'raven',            'lobster',          'giraffe',      'cow';
+  'wasp',           'toucan',       'lobster',          'raven',            'giraffe',      'cow';
   'starfish',       'rooster',      'praying_mantis',   'lioness',          'grasshopper',  'cat';
-  'sparrow',        'pigeon',       'penguin',          'hummingbird',      'goose',        'armadillo';
+  'armadillo',      'pigeon',       'penguin',          'hummingbird',      'goose',        'barn_owl';
   'scorpion',       'oyster',       'ostrich',          'horse',            'dromedary',    'dragonfly'
   }
   { % imagesA 	INTERFERENCE
-  'goose',       	'dromedary', 	'cat',              'starfish',			'rooster', 		'pigeon';
-  'sparrow',      	'dragonfly',   	'armadillo',        'ostrich',      	'horse',    	'penguin';
-  'grasshopper',	'whale',  		'scorpion',         'ray',      		'ant',  		'oyster';
-  'hippopotamus', 	'wasp',   		'cow',              'praying_mantis',	'crocodile',	'raven';
-  'lioness',		'fly',   		'lobster',          'giraffe',        	'hummingbird',  'toucan'
+  'goose',       	'barn_owl', 	'cat',              'starfish',			'rooster', 		'pigeon';
+  'dromedary',      'dragonfly',   	'armadillo',        'ostrich',      	'horse',    	'penguin';
+  'hummingbird',	'scorpion',  	'whale',            'ray',      		'ant',  		'oyster';
+  'grasshopper', 	'wasp',   		'cow',              'fly',              'crocodile',	'praying_mantis';
+  'lioness',		'raven',        'giraffe',          'lobster',        	'hippopotamus', 'toucan'
   }}
   {{ % imagesB 	LEARNING
-  'barn_owl',   'tiger',        'seagull',	'owl',          'partridge',    'cheetah';
-  'zebra',      'pelican',      'dolphin',	'mussel',       'kiwi'          'butterfly';
-  'turtle',     'ladybird',     'rhino',	'mosquito',     'tapir',        'beetle';
-  'elephant',   'platypus',     'pomfret',	'manatee',      'crab',         'bee';
-  'termite',   	'hen',          'kangaroo',	'killer_whale', 'duck',         'bat'
+  'sparrow',    'tiger',        'seagull',	'turtle',       'partridge',    'cheetah';
+  'zebra',      'termite',      'dolphin',	'mussel',       'manatee'       'butterfly';
+  'owl',        'ladybird',     'rhino',	'mosquito',     'tapir',        'beetle';
+  'elephant',   'platypus',     'pomfret',	'kiwi',         'crab',         'bee';
+  'pelican',   	'hen',          'kangaroo',	'killer_whale', 'duck',         'bat'
   }
   { % imagesB 	INTERFERENCE
-  'rhino',		'killer_whale',	'duck',     'kangaroo',     'tiger',		'seagull';
-  'beetle',		'crab',			'pomfret',  'platypus',     'bat'           'zebra';
-  'kiwi',		'tapir',		'barn_owl', 'bee',          'partridge',    'termite';
-  'dolphin',	'mussel', 		'elephant', 'hen',          'pelican',      'mosquito';
-  'butterfly',	'manatee',      'ladybird', 'owl',          'cheetah',      'turtle'
+  'rhino',		'killer_whale',	'duck',     'kangaroo',     'pomfret',		'zebra';
+  'beetle',		'crab',			'bat',      'platypus',     'ladybird'      'seagull';
+  'manatee',	'butterfly',	'bee',      'sparrow',      'hen',          'termite';
+  'dolphin',	'mussel', 		'cheetah',  'tiger',        'pelican',      'turtle';
+  'kiwi',       'tapir',        'partridge','elephant',     'owl',          'mosquito'
   }}
 };
 
@@ -74,117 +82,239 @@ imageConfiguration = {
 [imagesATable, imagesBTable] = mt_imageTable(imageConfiguration);
 
 % Create sequence for learning and interference
-% Image Sequence for Image Set A
-
+% Image Sequences for Image Set A
+% Sequence 1: Learning
 imageSequenceMainLearningA = {
-    'starfish', 'pigeon', 'armadillo', 'crocodile', 'raven', 'horse', ...
-	'hummingbird', 'lioness', 'lobster', 'penguin', 'dragonfly', 'fly', ...
-	'ostrich', 'ant', 'cow', 'giraffe', 'cat', 'hippopotamus', ...
-	'scorpion', 'whale', 'sparrow', 'rooster', 'oyster', 'toucan', ...
-	'goose', 'grasshopper', 'wasp', 'praying_mantis', 'dromedary', 'ray'
+    'penguin', 'crocodile', 'raven', 'armadillo', 'fly', 'oyster', ...
+	'starfish', 'dragonfly', 'rooster', 'cow', 'ostrich', 'barn_owl', ...
+	'horse', 'lobster', 'pigeon', 'ant', 'giraffe', 'hummingbird', ...
+	'cat', 'wasp', 'dromedary', 'praying_mantis', 'goose', 'hippopotamus', ...
+	'scorpion', 'toucan', 'grasshopper', 'whale', 'lioness', 'ray'
     };
 imageSequenceInterferenceLearningA = imageSequenceMainLearningA;
-imageSequenceInterferenceRecallA = imageSequenceMainLearningA;
-imageSequenceMainRecallA = imageSequenceMainLearningA;
+% Sequence 2: Recall
+imageSequenceimmediateRecallA = {
+    'rooster', 'giraffe', 'hummingbird', 'lobster', 'cat', 'ray', ...
+    'dromedary', 'crocodile', 'armadillo', 'toucan', 'ostrich', 'wasp', ...
+	'penguin', 'starfish', 'dragonfly', 'ant', 'lioness', 'scorpion', ...
+	'praying_mantis', 'goose', 'cow', 'pigeon', 'hippopotamus', 'grasshopper', ...
+    'oyster', 'raven', 'whale', 'horse', 'fly', 'barn_owl'
+    };
+imageSequenceInterferenceRecallA = imageSequenceimmediateRecallA;
+imageSequenceMainRecallA = imageSequenceimmediateRecallA;
 
 % Image Sequence for Image Set B
+% Sequence 1: Learning
 imageSequenceMainLearningB = {
-    'butterfly', 'beetle', 'mussel', 'hen', 'ladybird', 'cheetah', ...
-	'killer_whale', 'owl', 'mosquito', 'manatee', 'duck', 'dolphin', ...
-	'elephant', 'bee', 'crab', 'tapir', 'pomfret', 'tiger', ...
-	'zebra', 'seagull', 'termite', 'rhino', 'turtle', 'partridge', ...
-	'kangaroo', 'kiwi', 'barn_owl', 'pelican', 'platypus', 'bat'
+    'owl', 'kangaroo', 'butterfly', 'turtle', 'pomfret', 'cheetah', ...
+	'killer_whale', 'seagull', 'duck', 'mosquito', 'bat', 'manatee' ...
+	'tiger', 'crab', 'dolphin', 'bee', 'zebra', 'tapir', ...
+	'hen', 'rhino', 'elephant', 'termite', 'kiwi', 'ladybird', ...
+    'mussel', 'platypus', 'partridge', 'pelican', 'beetle', 'sparrow'
     };
 imageSequenceInterferenceLearningB = imageSequenceMainLearningB;
-imageSequenceInterferenceRecallB = imageSequenceMainLearningB;
-imageSequenceMainRecallB = imageSequenceMainLearningB;
+% Sequence 2: Recall
+imageSequenceimmediateRecallB = {
+    'pomfret', 'beetle', 'termite', 'partridge', 'zebra', 'kiwi',  ...
+    'butterfly', 'mosquito', 'duck', 'mussel', 'platypus', 'tapir', ...
+    'pelican', 'crab', 'sparrow', 'turtle', 'kangaroo', 'owl', ...
+    'seagull', 'elephant', 'bat', 'rhino', 'cheetah', 'hen', ...
+    'dolphin', 'bee', 'killer_whale', 'tiger', 'manatee', 'ladybird' 
+    };
+imageSequenceInterferenceRecallB = imageSequenceimmediateRecallB;
+imageSequenceMainRecallB = imageSequenceimmediateRecallB;
 
 
 %% ================================ TEXT ================================ %
 % Text strings used during the program
-textControl = {  ...
+textControl = { ...
     'Zählaufgabe'
     ''
-    'Im Folgenden sehen Sie mehrere Karten.'
-    'Die Karten werden nacheinander dunkler.'
+    'Im Folgenden sehen Sie ein Feld voller kleiner hellgrauer'
+    'Karten. Darüber befindet sich eine große Karte.'
+    'Zunächst wird die obere Karte ein Bild voller Farbsplitter'
+    'anzeigen, dann wird das gleiche Bild irgendwo im unteren Feld'
+    'angezeigt. '
+    'Zusammen zählt dies als ein Durchgang.'
     ''
-    'Ihre Aufgabe: Zählen Sie, wie viele Karten dunkler werden.'
-    'Schauen Sie dabei auf das Kreuz in der Kartenmitte.'
+    'Bitte zählen Sie die Anzahl dieser Durchgänge.'
     ''
-    'Viel Spaß!'
-    };
-textFixation = {  ...
+};
+textControl2 = { ...
+    ''
+    'Jedes Mal, wenn eine der kleinen Karten ein Bild anzeigt,'
+    'erscheint auf ihr ein kleiner Punkt. Bitte schauen Sie'
+    'entspannt direkt auf diesen Punkt sobald Sie ihn sehen und'
+    'bewegen Sie Ihre Augen dann während des Durchgangs nicht mehr.'
+    ''
+    'Bitte blinzeln sie möglichst nicht während der Durchgänge.'
+    ''
+    'Zwischen den Durchgängen haben Sie 3 Sekunden Zeit zu blinzeln'
+    'und die Augen zu entspannen.'
+    ''
+};
+textControl3 = { ...
+    ''
+    'Nicht vergessen:'
+    ''
+    'Zählen Sie die Durchgänge und schauen Sie immer direkt auf'
+    'den Punkt auf der kleinen Karte, sobald dieser erscheint.'
+    ''
+    'Haben Sie noch Fragen zum Ablauf?'
+    ''
+};
+textFixation = { ...
     'Fixation'
     ''
-    'Es erscheint nun ein Kreuz in der Mitte'
-    'des Bildschirms. Bitte schauen Sie auf dieses'
-    'Kreuz, solange es angezeigt wird.'
+    'Es erscheint nun ein Punkt in der Mitte'
+    'des Bildschirms. Bitte schauen Sie auf diesen'
+    'Punkt, solange er angezeigt wird.'
     ''
     'Dies wird etwa 6 Minuten dauern.'
-    };
-textLearning = {  ...
+};
+textFixation2 = { ...
+    ''
+    ''
+    ''
+    'Legen Sie Ihre Hände bitte locker in den Schoß.'
+    ''
+    ''
+    'Haben Sie noch Fragen zum Ablauf?'
+};
+textLearningIntro = {
+    { ...
     'Willkommen!'
     ''
-    'Im Folgenden sehen Sie ein Feld voller verdeckter Karten.'
-    'Unter jeder Karte befindet sich ein Bild.'
+    'Im Folgenden sehen Sie eine große graue Karte, darunter ein'
+    'Feld voller kleiner hellgrauer Karten. Im unteren'
+    'Feld befindet sich hinter jeder Karte ein Bild.'
     ''
-    'Jedes Bild wird zunächst oben angezeigt.'
-    'Dann wird darunter die dazu passende Karte aufgedeckt.'
+    'In jedem Durchlauf wird zunächst oben ein Bild angezeigt, dann'
+    'wird darunter die dazu passende Karte aufgedeckt.'
     ''
-    'Ihre Aufgabe: '
-    'Fixieren Sie die jeweils aufgedeckte Karte und merken '
-    'Sie sich ihre Position.'
+    'Bitte merken Sie sich hinter welcher der kleinen Karten sich'
+    'welches Bild befindet. Sie werden anschließend dazu abgefragt.'
+    ''
+    'Die Aufgabe wird schwer. Sie müssen sich also konzentrieren.'
+    }
+    {
+    'Wird oben das Bild gezeigt, können Sie es sich genau anschauen'
+    'und einprägen. Sobald dann darunter die dazu passende Karte'
+    'angezeigt wird, schauen Sie bitte lediglich auf den kleinen Punkt,'
+    'der sich darauf befindet.'
+    ''
+    'Bewegen Sie dann die Augen nicht mehr und blinzeln Sie wenn '
+    'möglich nicht. Sie können Ihre Augen in den Pausen zwischen'
+    'den Durchläufen entspannen (etwa 3 Sekunden).'
+    ''
+    'Legen Sie bitte während der Aufgabe die Hände locker in den Schoß.'
+    }
+};
+textLearning2Next = { ...
+    ''
+    'Jetzt können Sie sich kurz entspannen.'
+    ''
+    'Es folgt der XXX. Lerndurchgang'
+    ''
+    'Denken Sie bitte weiterhin daran, immer direkt auf kleinen '
+    'Punkt zu schauen und Ihre Augen ab dann nicht mehr zu bewegen.'
+    ''
+    'Legen Sie Ihre Hände bitte locker in den Schoß.'
     };
-textPracticeLearn = { ...
-    'Zunächst ein Übungsdurchgang!'
-    ''
-    'Teil 1 - Lernen:'
-    ''
-    'Fixieren Sie die jeweils aufgedeckte Karte und merken'
-    'Sie sich ihre Position.'
-    };
-textPracticeRecall = { ...
-    'Übungsdurchgang'
-    ''
-    'Teil 2 - Abfrage:'
-    ''
-    'Oben erscheint wieder jeweils ein Bild.'
-    'Fixieren Sie darunter bitte das Kreuz auf der'
-    'verdeckten Karte, unter der Sie dieses Bild vermuten.'
-    ''
-    'Sobald die Kreuze verschwinden, '
-    'klicken Sie bitte auf diese Karte.'
-    };
-textLearning2 = {  ...
-    'Lernen'
+textLearning2 = { ...
     ''
     'Jetzt geht es wirklich los!'
     ''
-    'Es werden nun alle 30 Bilder zwei Mal aufgedeckt.'
-    'Danach folgt eine Abfrage der Positionen.'
+    'Wir haben insgesamt 30 Bilder für Sie. Diese werden Ihnen alle'
+    'insgesamt 3 Mal gezeigt.'
     ''
-    'Ihre Aufgabe: '
-    'Fixieren Sie die jeweils aufgedeckte Karte und merken '
-    'Sie sich ihre Position.'
+    'Nach dem Lernen werden Sie so lange abgefragt, bis Sie'
+    'mindestens 60 % richtig haben.'
+    ''
+    'Am Ende wird angezeigt, wie viel Prozent Sie richtig hatten.'
+    ''
     };
+textLearningInterference = { ...
+    ''
+    'Nun lernen wir eine neue Version des Memorys.'
+    ''
+    'Die Karten haben die gleichen Motive wie vor dem Schlafengehen.'
+    'Allerdings befinden Sie sich nun an anderen Positionen.'
+    ''
+    'Am Ende wird es nur eine einzige Abfrage geben. Sie bekommen'
+    'wieder keine Rückmeldung (blauer Punkt). Sie erfahren jedoch am'
+    'Ende, wie gut Sie waren.'
+    ''
+};
+textOutro = { ...
+    ''
+    ''
+    ''
+    'Ende'
+    ''
+    'Vielen Dank!'
+    ''
+};
+textPracticeLearn = { ...
+    ''
+    'Zunächst ein Übungsdurchgang.'
+    ''
+    ''
+    'Merken Sie sich die Position der Karte im unteren Feld..' 
+};
+textPracticeRecall = { ...
+    ''
+    'Nun kommt die Abfrage unseres Übungsdurchgangs.'
+    ''
+    'Oben erscheint nun erneut jeweils eines der Bilder..'
+    ''
+    'Klicken Sie bitte auf die kleine Karte, hinter der sich'
+    'das jeweilige Bild befindet.'
+};
+textQuestion = { ...
+    ''
+    ''
+    'Merken Sie sich die Positionen der Karten im unteren Feld.'
+    'Vergessen Sie nicht, immer direkt auf den Punkt zu schauen'
+    'und blinzeln Sie bitte nur in den Pausen.'
+    ''
+    'Bitte legen Sie ihre Hände locker in den Schoß und bewegen'
+    'Sie sie dann möglichst nicht mehr.'
+    ''
+    'Haben Sie noch Fragen zum Ablauf?'
+
+};
 textRecall = { ...
-    'Teil 2 - Abfrage:'
-    'Oben erscheint ein Bild. Fixieren Sie das Kreuz auf der'
-    'verdeckten Karte unter der Sie das Bild vermuten.'
     ''
-    'Sobald die Kreuze verschwinden, klicken Sie bitte auf die Karte.'
+    'Nun möchten wir von Ihnen wissen, wo die Bilder waren,'
+    'die Sie VOR dem Schlafengehen gelernt haben.'
     ''
-    'Es erscheint lediglich ein blauer Punkt auf der'
-    'geklickten Karte.'
+    'Oben erscheint nun erneut jeweils eines der Bilder.'
+    'Klicken Sie bitte auf die kleine Karte, unter der sich'
+    'das jeweilige Bild befindet.'
     ''
-    };
+    ''
+};
+textRecall2 = { ...
+    ''
+    'Sie werden nur ein Mal abgefragt.'
+    ''
+    'Ihnen wird diesmal nicht gesagt, ob Sie richtig '
+    'gelegen haben. Es erscheint lediglich ein blauer Punkt'
+    'auf der geklickten Karte (kein Kreuz oder Häkchen).'
+    ''
+    'Sie erfahren ganz am Ende, wie gut Sie waren.'
+    ''
+    'Haben Sie noch Fragen zum Ablauf?'
+    ''
+};
 textRecallAgain = { ...
     ''
     'Sie hatten XXX Prozent richtig.'
     ''
     'Die Abfrage wird wiederholt.'
     ''
-    };
+};
 textRecallDone = { ...
     ''
     'Glückwunsch!'
@@ -192,31 +322,47 @@ textRecallDone = { ...
     'Sie hatten XXX Prozent richtig.'
     'Jetzt nur noch ein Durchlauf!'
     ''
-    };
+};
+textRecallImmediate = { ...
+    'Nun werden die Karten abgefragt.'
+    ''
+    'Oben erscheint erneut jeweils eines der Bilder.'
+    'Klicken Sie bitte auf die kleine Karte, unter der sich das'
+    'jeweilige Bild befindet.'
+    ''
+    'Sie werden so lange abgefragt, bis Sie 60 % richtig haben.'
+    'Bei der letzten Abfrage, wird Ihnen nicht mehr angezeigt, ob'
+    'Sie richtig lagen (es erscheint immer ein blauer Punkt).'
+    ''
+    'Sie erfahren ganz am Ende, wie gut Sie waren.'
+};
+textRecallInterference = { ...
+    'Nun werden die Karten abgefragt.'
+    ''
+    'Oben erscheint nun erneut jeweils eines der Bilder.'
+    'Klicken Sie bitte auf die kleine Karte, unter der sich das'
+    'jeweilige Bild befindet.'
+    ''
+    'Sie werden nur ein Mal abgefragt. Ihnen wird nicht nicht'
+    'angezeigt, ob Sie jeweils richtig lagen (blauer Punkt).'
+    ''
+    'Sie erfahren am Ende, wie gut Sie waren.'
+};
 textRecallNoFeedback = { ...
-    'Die Abfrage wird noch einmal wiederholt. Diesmal wird Ihnen nicht'
-    'mehr angezeigt, ob Sie richtig gelegen haben.'
+    ''
+    'Die Abfrage wird noch einmal wiederholt. Diesmal wird'
+    'nicht mehr angezeigt, ob Sie richtig gelegen haben.'
     ''
     'Es erscheint lediglich ein blauer Punkt auf der'
     'geklickten Karte.'
-    };
-textRecallFinal = { ...
+};
+textRecallPerformance = { ...
+    ''
+    ''
     ''
     'Sie hatten XXX Prozent richtig.'
     ''
-    ''
-    };
-textQuestion = {  ...
-    ''
-    ''
-    'Haben Sie noch Fragen zum Ablauf?'
-    };
-textOutro = {  ...
-    'Ende'
-    ''
-    'Vielen Dank!'
-    ''
-    };
+};
 textSession = {
     'Konzentration'    % Control Task  
     'Lernen'           % Main Learning
@@ -224,10 +370,10 @@ textSession = {
     'Abfrage'          % Interference Recall
     'Abfrage'          % Immediate Recall & Main Recall 
     'Konzentration'    % Gray Mode
-    };
+};
 
 % Text Properties
-textDefSize     = 26;           % default Text Size
+textDefSize     = 25;           % default Text Size
 textDefFont     = 'Arial';      % default Text Font
 textDefColor    = [0 0 0];      % default Text Color
 textSx          = 'center';     % default Text x-position
@@ -237,14 +383,17 @@ textVSpacing    = 2;            % default Text vertical line spacing
 
 %% =========================== IMAGE FOLDERS ============================ %
 % Card images
-imageFolder       = {'imagesA', 'imagesB', 'imagesPractice'};
-imageFileExt      = '.jpg';		% image file types
+stimulusFolder  = 'stimuli';
+imageFolder     = {'imagesA', 'imagesB', 'imagesPractice'};
+controlFolder   = {'controlImagesA', 'controlImagesB'};    
+imageFileExt    = '.png';		% image file types
 
 % Feedback images
-feedbackFolder    = 'imagesFeedback';
-imagesFeedback    = {'correct.png', 'incorrect.png', 'nofeedback.png', 'cross.png'};
-feedbackMargin    = 10;       	% #pixels the images are smaller than the cards
+feedbackFolder  = 'imagesFeedback';
+imagesFeedback  = {'correct.png', 'incorrect.png', 'nofeedback.png'};
+feedbackMargin  = 10;       	% #pixels the images are smaller than the cards
 
+imagesFixation  = {'dot.png', 'dot.png'};
 
 %% ========================== CARD PROPERTIES =========================== %
 % Number of cards
@@ -253,24 +402,20 @@ ncards_y            = 5;
 
 % Top Card Properties
 topCardHeigth       = 200;          % Size of the top Card
-topCardColor        = [.9; .9; .9];    % Color of the top Card
+topCardColor        = [.7; .7; .7]; % Color of the top Card
 
 % Memory Cards
-cardColors          = [.5; .5; .5]; % Color of cards
+cardColors          = [.7; .7; .7]; % Color of cards
 cardMargin          = 5;            % Margin between cards
 frameWidth          = 2;            % Frame/border around cards
-frameColor          = 0;            % Frame color
+frameColor          = cardColors;   % Frame color
 
 % Control Task Card Properties
-cardColorControl        = 0.3;          % color of highlighted card
+cardColorControl        = 0.5;          % color of highlighted card
 textColorCorrect        = [0.2 1 0.2];  % text color for correct response
 textColorIncorrect      = [1 0.2 0.2];  % text color for incorrect response
 controlTextMargin       = 200;          % distance in x from text to card
-controlFeedbackDisplay  = 3;            % feedback display duration
-
-crossSize               = [0 0 30 30];
-circleSize              = [0 0 50 50];                  
-
+controlFeedbackDisplay  = 2;            % feedback display duration
 
 %% ============================== OPTIONAL ============================== %
 % Change Cursor Type
@@ -278,58 +423,90 @@ CursorType          = 'Arrow';
 
 % Set Display properties
 % Define which window size is used as reference to display the cards
-windowSize          = [1024 768];
-screenBgColor       = [1 1 1]; % white background
-textBgColor         = [1 1 1]; % white background
+windowSize          = get(0, 'MonitorPositions'); % [1024 768];
+windowSize          = [(4/3 * windowSize(end)) windowSize(end)];
+screenBgColor       = [1 1 1]*0.9; % greyish background
+textBgColor         = [1 1 1]*0.9; % greyish background
 
 % Define which display window is used (put a number)
 % Note: by default external screens are automatically used if connected 
 % window              = ;
 
 % Set Timing (seconds)
-topCardDisplay      = 1;    	% Duartion top Card is shown 
-cardDisplay         = 5;     	% Duration memory cards are shown
-cardCrossDisplay    = 5;        % Duration cross is displayed on cards
-cardRecallDisplay   = 1;     	% Duration memory cards are shown
-feedbackDisplay     = 1;        % Duration feedback is shown
-if MRI
-    responseTime	= 10;      % Duration allowed to respond (click) in MRI
-else
-    responseTime	= 15;      % Duration allowed to respond (click) in MEG
-end
+topCardDisplay      = 3;       % Duration image is shown on top Card
+topCardGreyDisplay  = 1;       % Duration top Card is shown in grey
+cardDisplay         = 5;       % Duration memory cards are shown
+cardRecallDisplay   = 1;       % Duration memory cards are shown
+feedbackDisplay     = 1;       % Duration feedback is shown
+whiteScreenDisplay  = 1;       % Delay after text screen
+responseTime        = 15;      % Duration allowed to respond (click)
+interTrialInterval  = 3;     
+
 % Fixation Task (mt_fixationTask)
-fixationCrossDisplay = 7.5;     % Duration fixation cross is displayed
+fixationDisplay     = (6 * 60);     % Duration of fixation task
 
 
 %% ======================= DO NOT CHANGE FROM HERE ====================== %
 % Unless you know what you are doing...
 % !!!!! Changes need further adjustments in other files and scripts !!!!! %
 
+% Folder for configurations
+setupdir            = fullfile(dirRoot, 'setup');
+if ~exist(setupdir, 'dir')
+    mkdir(setupdir) % create folder in first run
+end
+
+dirData = dirRoot;
+dirSplit = strsplit(dirRoot,'\');
+if strcmp(dirSplit(end), '')
+    dirData = dirRoot(1:end-1);
+    dirData = strrep(dirData, dirSplit(end-1), '');
+else
+    dirData = strrep(dirData, dirSplit(end), '');
+end
+dirData = dirData{:};
+% Folder for data
+if ~exist(fullfile(dirData, 'DATA'), 'dir')
+    mkdir(fullfile(dirData, 'DATA')) % create folder in first run
+    mkdir(fullfile(dirData, 'BACKUP'))
+end
+
+odorTable = load(fullfile(setupdir, 'mt_odor_rand'));
+odorTable = odorTable.odor_rand;
+maxSubjectNr = size(odorTable, 1);
+
 % Changing the accepted cases also requires to change mt_dialogues.m
-cfg_cases.subjects  = 0:1000;                           % 0 is debug
+cfg_cases.subjects  = 0:maxSubjectNr;                   % 0 is debug
 cfg_cases.nights    = {'1', '2'};                       % Night 1 or 2
 cfg_cases.memvers   = {'A', 'B'};                       % Memory version
-cfg_cases.sesstype  = {'C', 'L', 'I', 'R', 'G'};        % Session Type
+cfg_cases.sesstype  = {'C', 'L', 'I', 'R', 'F'};        % Session Type
 cfg_cases.lab       = {'MEG', 'SL3', 'SL4', 'local'};   % Lab/Location
 cfg_cases.odor      = {'0', '1'}; 
 cfg_cases.sessNames = {'Control', 'Learning', 'Interference', ...
-    'Recall', 'Recall', 'GrayMode'};
+    'Recall', 'Recall', 'Fixation'};
 
 % image folder
-imgfolderA        	= fullfile(dirRoot, imageFolder{1});
-imgfolderB      	= fullfile(dirRoot, imageFolder{2});
+imgfolderA        	= fullfile(dirRoot, stimulusFolder, imageFolder{1});
+imgfolderB      	= fullfile(dirRoot, stimulusFolder, imageFolder{2});
+
+% control image folder
+controlFolderA      = fullfile(dirRoot, stimulusFolder, controlFolder{1});
+controlFolderB      = fullfile(dirRoot, stimulusFolder, controlFolder{2});
 
 % Read in feedback images
-imgfolderFeedback           = fullfile(dirRoot, feedbackFolder);
+imgfolderFeedback           = fullfile(dirRoot, stimulusFolder, feedbackFolder);
 [imgCorrect, ~, alpha]      = imread(fullfile(imgfolderFeedback, imagesFeedback{1}));
 imgCorrect(:,:,4)           = alpha;
 [imgIncorrect, ~, alpha]    = imread(fullfile(imgfolderFeedback, imagesFeedback{2}));
 imgIncorrect(:,:,4)         = alpha;
 [imgNoFeedback, ~, alpha]   = imread(fullfile(imgfolderFeedback, imagesFeedback{3}));
 imgNoFeedback(:,:,4)        = alpha;
-[imgCross, ~, alpha]        = imread(fullfile(imgfolderFeedback, imagesFeedback{4}));
-imgCross(:,:,4)             = alpha;
 
+% Read in fixation images
+[imgDot, ~, alpha]          = imread(fullfile(imgfolderFeedback, imagesFixation{1}));
+imgDot(:,:,4)               = alpha;
+[imgDotSmall, ~, alpha]     = imread(fullfile(imgfolderFeedback, imagesFixation{2}));
+imgDotSmall(:,:,4)          = alpha;
 
 % Size of Memory Cards
 topCardWidth        = topCardHeigth * (4/3);
@@ -338,6 +515,15 @@ cardWidth           = round(windowSize(1)/ncards_x);
 cardSize            = [0 0 cardWidth cardHeigth]; % size to fill screen
 cardSize(3:4)       = cardSize(end-1:end)-cardMargin;
 ncards              = ncards_x * ncards_y;
+
+% Size of elements shown on the card
+crossSize               = [0 0 30 30];
+circleSize              = [0 0 50 50];
+dotFactor               = 0.08; % percent of card height
+topCardDotSize          = [0 0 dotFactor*topCardHeigth dotFactor*topCardHeigth];
+dotSize                 = [0 0 dotFactor*cardHeigth dotFactor*cardHeigth];
+fixDotSize              = topCardDotSize;
+
 
 % Size of images hidden under the cards
 imagesSize          = [0 0 cardHeigth*(4/3) cardHeigth]; % assure 4:3
@@ -354,9 +540,9 @@ imageFilesB         = {
     };
 
 % Practice set settings
-imageFilesP             = {'teapot.jpg', 'guitar.jpg', 'jacket.jpg'};
-imageSequencePractice   = [10, 26, 8];
-imgfolderP              = fullfile(dirRoot, imageFolder{3});
+imageFilesP             = {'teapot.png', 'guitar.png', 'jacket.png'};
+imageSequencePractice   = [4, 9, 2];
+imgfolderP              = fullfile(dirRoot, stimulusFolder, imageFolder{3});
 
 
 % Convert image sequences for further processing
@@ -442,17 +628,6 @@ cardSequence 	= {...
 %     cardSequence{r} = cellfun(@(x) mt_cards2Dto1D(x, ncards_x, ncards_y), imageSequence2D{r});
 % end
 
-% Folder for configurations
-setupdir            = fullfile(dirRoot, 'setup');
-if ~exist(setupdir, 'dir')
-    mkdir(setupdir) % create folder in first run
-end
-
-% Folder for data
-if ~exist(fullfile(dirRoot, 'DATA'), 'dir')
-    mkdir(fullfile(dirRoot, 'DATA')) % create folder in first run
-    mkdir(fullfile(dirRoot, 'BACKUP'))
-end
 
 % Save configuration in workdir
 cd(dirRoot)

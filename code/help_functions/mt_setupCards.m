@@ -37,6 +37,7 @@ Screen('FillRect', window, screenBgColor);
 %% Create variables for the cards
 % Create top card
 topCard         = CenterRectOnPointd([0 0 topCardWidth topCardHeigth], screenSize43(1)/2+screenOff(1), topCardHeigth/2);
+topCardDot      = CenterRectOnPointd(topCardDotSize, screenSize43(1)/2+screenOff(1), topCardHeigth/2);
 
 % Calculate coordinates for the ncards_y X ncards_x rectangles
 cardCoordsX     = linspace(1,screenSize43(1),ncards_x+1)+screenOff(1);
@@ -80,20 +81,20 @@ for r = 1: ncards
     images{r}	= imread(pic_file);
 end
 
-%% Read in the pictures for the topCard
-imagesTop	= cell(ncards, 1);
+%% Read in the pictures for the control cards
+controlImages	= cell(ncards, 1);
 for r = 1: ncards
     isinterf = (cfg_dlgs.sesstype==3)+1;    % check if interference
     if cfg_dlgs.memvers == 1
-        pic_file 	= fullfile(imgfolderA, 'top', imageFilesA{isinterf}{r});
+        pic_file 	= fullfile(controlFolderA, imageFilesA{1}{r});
     elseif cfg_dlgs.memvers == 2
-        pic_file 	= fullfile(imgfolderB, 'top', imageFilesB{isinterf}{r});
+        pic_file 	= fullfile(controlFolderB, imageFilesB{1}{r});
     end
-    imagesTop{r}	= imread(pic_file);
+    controlImages{r}	= imread(pic_file);
 end
 
 %% Save configuration in setupdir
 save(fullfile(setupdir ,'mt_params.mat'), '-append', ...
-    'screenOff', 'topCard', 'rects', 'imgs', 'images', 'imagesTop')
+    'screenOff', 'topCard', 'topCardDot', 'rects', 'imgs', 'images', 'controlImages')
 
 end
