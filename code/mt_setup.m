@@ -440,7 +440,7 @@ cardRecallDisplay   = 1;       % Duration memory cards are shown
 feedbackDisplay     = 1;       % Duration feedback is shown
 whiteScreenDisplay  = 1;       % Delay after text screen
 responseTime        = 15;      % Duration allowed to respond (click)
-interTrialInterval  = 3;     
+interTrialInterval  = 3;
 
 % Fixation Task (mt_fixationTask)
 fixationDisplay     = (6 * 60);     % Duration of fixation task

@@ -116,9 +116,9 @@ for iCard = 1: length(cardShown)
     if ismember(currSesstype, 2:4)
         
 		% Send trigger during learning and immediate recall sessions
-		if (cfg_dlgs.odor == 1)
+		if ismember(currSesstype, [2,4]) &&(cfg_dlgs.odor == 1)
 			calllib('inpoutx64', 'Out32', port, triggerOdorOn{cfg_dlgs.lab})
-		elseif (cfg_dlgs.odor == 0)
+		elseif ismember(currSesstype, [2,4]) && (cfg_dlgs.odor == 0)
 			calllib('inpoutx64', 'Out32', port, triggerPlaceboOn{cfg_dlgs.lab})
         end
         
@@ -243,7 +243,7 @@ end
 
 % Backup
 fName = ['mtp_sub_' cfg_dlgs.subject '_night_' cfg_dlgs.night '_sess_' num2str(cfg_dlgs.sesstype)];
-copyfile(fullfile(dirRoot, 'DATA', [fName '.*']), fullfile(dirRoot, 'BACKUP'), 'f');
+copyfile(fullfile(dirData, 'DATA', [fName '.*']), fullfile(dirData, 'BACKUP'), 'f');
 
 % Housekeeping: unload port library
 unloadlibrary('inpoutx64')
