@@ -546,29 +546,34 @@ imgfolderP              = fullfile(dirRoot, stimulusFolder, imageFolder{3});
 
 
 % Convert image sequences for further processing
-% TODO: Zwei weitere Sequenzen in die mt_params. Dann hier statt einer 
-% Zeile drei Zeilen abarbeiten, dann im Task je nach Durchgang die Zeile
-% wechseln
-imageSequenceMainLearningCoordsA            = zeros(1, size(imageSequenceMainLearningA, 2));
-imageSequenceInterferenceLearningCoordsA    = zeros(1, size(imageSequenceInterferenceLearningA, 2));
-imageSequenceInterferenceRecallCoordsA      = zeros(1, size(imageSequenceInterferenceRecallA, 2));
-imageSequenceMainRecallCoordsA              = zeros(1, size(imageSequenceMainRecallA, 2));
+imageSequenceMainLearningCoordsA            = zeros(size(imageSequenceMainLearningA));
+imageSequenceInterferenceLearningCoordsA    = zeros(size(imageSequenceInterferenceLearningA));
+imageSequenceInterferenceRecallCoordsA      = zeros(size(imageSequenceInterferenceRecallA));
+imageSequenceMainRecallCoordsA              = zeros(size(imageSequenceMainRecallA));
 
-imageSequenceMainLearningCoordsB            = zeros(1, size(imageSequenceMainLearningB, 2));
-imageSequenceInterferenceLearningCoordsB    = zeros(1, size(imageSequenceInterferenceLearningB, 2));
-imageSequenceInterferenceRecallCoordsB      = zeros(1, size(imageSequenceInterferenceRecallB, 2));
-imageSequenceMainRecallCoordsB              = zeros(1, size(imageSequenceMainRecallB, 2));
+imageSequenceMainLearningCoordsB            = zeros(size(imageSequenceMainLearningB));
+imageSequenceInterferenceLearningCoordsB    = zeros(size(imageSequenceInterferenceLearningB));
+imageSequenceInterferenceRecallCoordsB      = zeros(size(imageSequenceInterferenceRecallB));
+imageSequenceMainRecallCoordsB              = zeros(size(imageSequenceMainRecallB));
 
 for i = 1:size(imageSequenceMainLearningA, 2)
-    imageSequenceMainLearningCoordsA(i)         = find(cellfun(@(x) strcmp(x, imageSequenceMainLearningA{i}), imageConfiguration{1}{1}'));
-    imageSequenceInterferenceLearningCoordsA(i) = find(cellfun(@(x) strcmp(x, imageSequenceInterferenceLearningA{i}), imageConfiguration{1}{2}'));
-    imageSequenceInterferenceRecallCoordsA(i)   = find(cellfun(@(x) strcmp(x, imageSequenceInterferenceRecallA{i}), imageConfiguration{1}{2}'));
-    imageSequenceMainRecallCoordsA(i)           = find(cellfun(@(x) strcmp(x, imageSequenceMainRecallA{i}), imageConfiguration{1}{1}'));
+    % for each learning sequence (might be let's say 3)
+    for j = 1:size(imageSequenceMainLearningA, 1)
+        imageSequenceMainLearningCoordsA(j,i)         = find(cellfun(@(x) strcmp(x, imageSequenceMainLearningA{j,i}), imageConfiguration{1}{1}'));
+        imageSequenceInterferenceLearningCoordsA(j,i) = find(cellfun(@(x) strcmp(x, imageSequenceInterferenceLearningA{j,i}), imageConfiguration{1}{2}'));
+        
+        imageSequenceMainLearningCoordsB(j,i)         = find(cellfun(@(x) strcmp(x, imageSequenceMainLearningB{j,i}), imageConfiguration{2}{1}'));
+        imageSequenceInterferenceLearningCoordsB(j,i) = find(cellfun(@(x) strcmp(x, imageSequenceInterferenceLearningB{j,i}), imageConfiguration{2}{2}'));
+    end
     
-    imageSequenceMainLearningCoordsB(i)         = find(cellfun(@(x) strcmp(x, imageSequenceMainLearningB{i}), imageConfiguration{2}{1}'));
-    imageSequenceInterferenceLearningCoordsB(i) = find(cellfun(@(x) strcmp(x, imageSequenceInterferenceLearningB{i}), imageConfiguration{2}{2}'));
-    imageSequenceInterferenceRecallCoordsB(i)   = find(cellfun(@(x) strcmp(x, imageSequenceInterferenceRecallB{i}), imageConfiguration{2}{2}'));
-    imageSequenceMainRecallCoordsB(i)           = find(cellfun(@(x) strcmp(x, imageSequenceMainRecallB{i}), imageConfiguration{2}{1}'));
+    % for each recall sequency (might be let's say 1)
+    for j = 1:size(imageSequenceMainRecallA, 1)
+        imageSequenceInterferenceRecallCoordsA(j,i)   = find(cellfun(@(x) strcmp(x, imageSequenceInterferenceRecallA{j,i}), imageConfiguration{1}{2}'));
+        imageSequenceMainRecallCoordsA(j,i)           = find(cellfun(@(x) strcmp(x, imageSequenceMainRecallA{j,i}), imageConfiguration{1}{1}'));
+        
+        imageSequenceInterferenceRecallCoordsB(j,i)   = find(cellfun(@(x) strcmp(x, imageSequenceInterferenceRecallB{j,i}), imageConfiguration{2}{2}'));
+        imageSequenceMainRecallCoordsB(j,i)           = find(cellfun(@(x) strcmp(x, imageSequenceMainRecallB{j,i}), imageConfiguration{2}{1}'));
+    end
 end
 
 % Check if every image were used exactly once

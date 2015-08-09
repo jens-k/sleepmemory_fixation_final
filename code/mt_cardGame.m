@@ -70,7 +70,7 @@ mt_showText(dirRoot, textSession{currSesstype}, window, 40, 0);
 HideCursor(window);
 Screen('Flip', window, flipTime);
 WaitSecs(whiteScreenDisplay);
-if ~((currSesstype == 2) || (currSesstype == 3))
+if ~((currSesstype == 2) || (currSesstype == 3)) % (2) learning or (3) interference learning
     ShowCursor(CursorType, window);     % hide cursor during learning
 end
 

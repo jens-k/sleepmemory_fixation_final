@@ -30,6 +30,10 @@ switch upper(user)
     case {'MRI'}
        dirRoot              = 'E:\USERS\veit\memory_psychtoolbox\sleepmemory';
        dirPTB               = 'C:\Program Files\MATLAB\Psyschtoolbox\Psychtoolbox'; 
+    case {'JENS'}
+       dirRoot              = 'C:\Users\david\Documents\GitHub\sleepmemory';
+       dirPTB               = 'C:\Program Files\MATLAB\Psyschtoolbox'; 
+        
     otherwise
         error('Invalid User Name. Define workspace in mt_profile.m')
 end
