@@ -46,6 +46,7 @@ PsychDebugWindowConfiguration(0,.5)
 if strcmp(user, 'MEG')
     Screen('Preference', 'SkipSyncTests', 1);
 end
+
 %% PREPARE WORKSPACE & REQUEST USER INPUT
 close all;                  % Close all figures
 clearvars -except user;     % Clear all variables in the workspace

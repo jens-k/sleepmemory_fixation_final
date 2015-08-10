@@ -30,8 +30,8 @@ function perc_correct = mt_cardGame(dirRoot, cfg_window, iRun, varargin)
 
 %% Load parameters specified in mt_setup.m
 load(fullfile(dirRoot, 'setup', 'mt_params.mat'))   % load workspace information and properties
-% Load port output for triggers
 
+% Load port output for triggers
 if sendTrigger
     loadlibrary('trigger/inpoutx64', 'trigger/inpout32.h')
     port = hex2dec('0378'); % LPT1: 0378 - 037F, 0778 - 077F
