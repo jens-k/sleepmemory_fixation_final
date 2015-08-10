@@ -17,7 +17,8 @@ function mt_setupCards(dirRoot, cfg_window)
 %   .center         1X2 double  [Xcenter Ycenter]
 %
 %
-% AUTHOR: Marco Rüth, contact@marcorueth.com
+% AUTHOR:   Marco Rüth, contact@marcorueth.com
+%           Jens Klinzing, jens.klinzing@uni-tuebingen.de
 
 %% Load parameters specified in mt_setup.m
 load(fullfile(dirRoot, 'setup', 'mt_params.mat'))   % load workspace information and properties

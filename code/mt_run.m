@@ -40,6 +40,8 @@ function mt_run(user)
 % 
 % AUTHOR: Marco Rüth, contact@marcorueth.com
 
+PsychDebugWindowConfiguration(0,.5)
+
 % The MEG laptop does not pass the sync test (yet)
 if strcmp(user, 'MEG')
     Screen('Preference', 'SkipSyncTests', 1);

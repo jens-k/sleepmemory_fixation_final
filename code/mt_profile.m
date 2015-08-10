@@ -15,7 +15,10 @@ function [dirRoot, dirPTB] = mt_profile(user)
 % dirPTB            char        path to Psychtoolbox installation folder
 %
 % 
-% AUTHOR: Marco Rüth, contact@marcorueth.com
+% AUTHOR:   Marco Rüth, contact@marcorueth.com
+%           Jens Klinzing, jens.klinzing@uni-tuebingen.de
+
+% Triggers for the different users are defined in mt_dialogues !
 
 switch upper(user)
     case 0
@@ -32,7 +35,7 @@ switch upper(user)
        dirPTB               = 'C:\Program Files\MATLAB\Psyschtoolbox\Psychtoolbox'; 
     case {'JENS'}
        dirRoot              = 'C:\Users\david\Documents\GitHub\sleepmemory';
-       dirPTB               = 'C:\Program Files\MATLAB\Psyschtoolbox'; 
+       dirPTB               = 'C:\Users\david\Documents\MATLAB\Psychtoolbox'; 
         
     otherwise
         error('Invalid User Name. Define workspace in mt_profile.m')

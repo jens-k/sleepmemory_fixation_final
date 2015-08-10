@@ -17,7 +17,8 @@ function cancel = mt_dialogues(dirRoot)
 % dirRoot           char        path to root working directory
 %
 %
-% AUTHOR: Marco Rüth, contact@marcorueth.com
+% AUTHOR:   Marco Rüth, contact@marcorueth.com
+%           Jens Klinzing, jens.klinzing@uni-tuebingen.de
 
 %% Load parameters specified in mt_setup.m
 
@@ -145,23 +146,33 @@ end
 switch upper(user)
     case 'MEG' 
         cfg_dlgs.lab    = 1;
+        sendTrigger = false;
         % TODO: set triggers for MEG
         % Parallel port trigger in PTB
-        % In the MEG will be the old olfactometer
+        % In this lab we use the old olfactometer
     case 'SL3'
         cfg_dlgs.lab    = 2;
         triggerOdor     = triggerOdorOn{2}      + EEGtrigger;
         triggerPlacebo  = triggerPlaceboOn{2}   + EEGtrigger;
-        % In the sleep lab will be the new olfactometer
+        sendTrigger = true; % turns on triggers
+        % In this lab we use the new olfactometer
     case 'SL4'
         cfg_dlgs.lab    = 3;
         triggerOdor     = triggerOdorOn{3}      + EEGtrigger;
         triggerPlacebo  = triggerPlaceboOn{3}   + EEGtrigger;
-        % In the sleep lab will be the new olfactometer
-        % Only in this lab one can learn and stimulate with odors
+        sendTrigger = true;
+        % In this lab we use the new olfactometer
+        
     case 0 
         % development mode
         cfg_dlgs.lab = 1;
+        sendTrigger = false;
+        
+    case 'JENS' 
+        % development mode, Laptop Jens
+        cfg_dlgs.lab    = 1;
+        sendTrigger = false;
+        
     otherwise
         error('Invalid Lab')
 end
@@ -178,6 +189,6 @@ end
 % controlList             = controlList.controlList(nControlList, :);
 
 %% Save configuration in dirRoot
-save(fullfile(setupdir, 'mt_params.mat'), '-append', 'cfg_dlgs', 'fixRun')
+save(fullfile(setupdir, 'mt_params.mat'), '-append', 'cfg_dlgs', 'fixRun', 'sendTrigger')
 
 end
