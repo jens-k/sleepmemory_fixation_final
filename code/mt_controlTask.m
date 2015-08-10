@@ -21,8 +21,10 @@ function mt_controlTask(dirRoot, cfg_window, iControlRun)
 %% Load parameters specified in mt_setup.m
 load(fullfile(dirRoot,'setup','mt_params.mat'))   % load workspace information and properties
 % Load port output for triggers
-loadlibrary('trigger/inpoutx64', 'trigger/inpout32.h')
-port = hex2dec('0378'); % LPT1: 0378 - 037F, 0778 - 077F
+if sendTrigger
+    loadlibrary('trigger/inpoutx64', 'trigger/inpout32.h')
+    port = hex2dec('0378'); % LPT1: 0378 - 037F, 0778 - 077F
+end
 
 %% Set window parameters
 % Specify the display window 
@@ -35,7 +37,9 @@ mouseData    	= zeros(length(cardShown), 3);
 nCardsShown     = length(cardShown);
 maxCardsShown   = max(cellfun(@(x) length(x), cardSequence{cfg_dlgs.memvers}{cfg_dlgs.sesstype}));
 
-calllib('inpoutx64', 'Out32', port, 0)
+if sendTrigger
+    calllib('inpoutx64', 'Out32', port, 0)
+end
 
 %% Start the game
 % Get Session Time
@@ -70,9 +74,9 @@ for iCard = 1: nCardsShown
 
     
     % Send odor trigger
-    if (cfg_dlgs.odor == 1)
+    if sendTrigger && (cfg_dlgs.odor == 1)
         calllib('inpoutx64', 'Out32', port, triggerOdorOn{cfg_dlgs.lab})
-    elseif (cfg_dlgs.odor == 0)
+    elseif sendTrigger && cfg_dlgs.odor == 0
         calllib('inpoutx64', 'Out32', port, triggerPlaceboOn{cfg_dlgs.lab})
     end
     
@@ -112,8 +116,9 @@ for iCard = 1: nCardsShown
     WaitSecs(cardDisplay);
     
     % Stop odor here
-    calllib('inpoutx64', 'Out32', port, 0)
-
+    if sendTrigger
+        calllib('inpoutx64', 'Out32', port, 0)
+    end
     
     % Time while subjects are allowed to blink
     Screen('Flip', window, flipTime);
@@ -246,6 +251,7 @@ performance         = table(SessionTime, TrialTime, run, correct, imageShown, im
 mt_saveTable(dirRoot, performance)
 
 % Housekeeping: unload port library
-unloadlibrary('inpoutx64')
-
+if sendTrigger
+    unloadlibrary('inpoutx64')
+end
 end

@@ -25,14 +25,18 @@ function perc_correct = mt_cardGame(dirRoot, cfg_window, iRun, varargin)
 % perc_correct      double      Correctly clicked cards in percent
 %
 %
-% AUTHOR: Marco Rüth, contact@marcorueth.com
+% AUTHOR:   Marco Rüth, contact@marcorueth.com
+%           Jens Klinzing, jens.klinzing@uni-tuebingen.de
 
 %% Load parameters specified in mt_setup.m
 load(fullfile(dirRoot, 'setup', 'mt_params.mat'))   % load workspace information and properties
+
 % Load port output for triggers
-loadlibrary('trigger/inpoutx64', 'trigger/inpout32.h')
-port = hex2dec('0378'); % LPT1: 0378 - 037F, 0778 - 077F
-calllib('inpoutx64', 'Out32', port, 0)
+if sendTrigger
+    loadlibrary('trigger/inpoutx64', 'trigger/inpout32.h')
+    port = hex2dec('0378'); % LPT1: 0378 - 037F, 0778 - 077F
+    calllib('inpoutx64', 'Out32', port, 0)
+end
 
 %% Set window parameters
 % Specify the display window 
@@ -50,7 +54,7 @@ else
 end
 
 %% Initialize variables for measured parameters
-cardShown     	= cardSequence{cfg_dlgs.memvers}{currSesstype}';
+cardShown     	= cardSequence{cfg_dlgs.memvers}{currSesstype}(iRun, :)';
 ntrials 		= length(cardShown);
 cardClicked  	= zeros(ntrials, 1);
 mouseData    	= zeros(ntrials, 3);
@@ -70,7 +74,7 @@ mt_showText(dirRoot, textSession{currSesstype}, window, 40, 0);
 HideCursor(window);
 Screen('Flip', window, flipTime);
 WaitSecs(whiteScreenDisplay);
-if ~((currSesstype == 2) || (currSesstype == 3))
+if ~((currSesstype == 2) || (currSesstype == 3)) % (2) learning or (3) interference learning
     ShowCursor(CursorType, window);     % hide cursor during learning
 end
 
@@ -116,9 +120,9 @@ for iCard = 1: length(cardShown)
     if ismember(currSesstype, 2:4)
         
 		% Send trigger during learning and immediate recall sessions
-		if ismember(currSesstype, [2,4]) &&(cfg_dlgs.odor == 1)
+		if sendTrigger && ismember(currSesstype, [2,4]) &&(cfg_dlgs.odor == 1)
 			calllib('inpoutx64', 'Out32', port, triggerOdorOn{cfg_dlgs.lab})
-		elseif ismember(currSesstype, [2,4]) && (cfg_dlgs.odor == 0)
+		elseif sendTrigger && ismember(currSesstype, [2,4]) && (cfg_dlgs.odor == 0)
 			calllib('inpoutx64', 'Out32', port, triggerPlaceboOn{cfg_dlgs.lab})
         end
         
@@ -152,7 +156,9 @@ for iCard = 1: length(cardShown)
                 cardFlip                        = imageCurrent;
             end
         % Stop odor here in immediate recall sessions
-        calllib('inpoutx64', 'Out32', port, 0)   % reset the port to 0 
+        if sendTrigger
+            calllib('inpoutx64', 'Out32', port, 0)   % reset the port to 0 
+        end
     end
 	reactionTime = mouseData(iCard, 3);
     HideCursor(window);
@@ -192,8 +198,8 @@ for iCard = 1: length(cardShown)
         end
     end
   
-    % If in learning sessions
-    if ismember(currSesstype, 2:4)
+    % Send triggers if in learning sessions
+    if sendTrigger && ismember(currSesstype, 2:4)
         % Stop Odor here
         calllib('inpoutx64', 'Out32', port, 0)   % reset the port to 0 
     end
@@ -246,6 +252,7 @@ fName = ['mtp_sub_' cfg_dlgs.subject '_night_' cfg_dlgs.night '_sess_' num2str(c
 copyfile(fullfile(dirData, 'DATA', [fName '.*']), fullfile(dirData, 'BACKUP'), 'f');
 
 % Housekeeping: unload port library
-unloadlibrary('inpoutx64')
-
+if sendTrigger
+    unloadlibrary('inpoutx64')
+end
 end

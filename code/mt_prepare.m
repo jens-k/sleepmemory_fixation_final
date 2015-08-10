@@ -3,7 +3,8 @@ function dirRoot = mt_prepare(user)
 % Initialization procedure for configuration. 
 %
 % 
-% AUTHOR: Marco Rüth, contact@marcorueth.com
+% AUTHOR:   Marco Rüth, contact@marcorueth.com
+%           Jens Klinzing, jens.klinzing@uni-tuebingen.de
 
 if ~nargin
     user = [];
