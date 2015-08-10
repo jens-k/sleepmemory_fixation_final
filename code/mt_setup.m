@@ -26,7 +26,7 @@ experimentName      = 'Sleep Connectivity'; % name of your study
 nLearningSess       = 3; % number of learning runs for learning
 nInterferenceSess   = 2; % number of learning runs for interference
 nMinRecall          = 1; % minimum runs for immediate recall (with feedback)
-nMaxRecall          = 1; % maximum runs for immediate recall (to exclude if too poor performance)
+nMaxRecall          = 4; % maximum runs for immediate recall (to exclude if too poor performance)
 nFinalRecall        = 1; % number of runs for final recall (incl. one last session w/o feedback)
 RecallThreshold     = 60;% miniumum correct answers in recall (in percent)
 
@@ -435,12 +435,12 @@ textBgColor         = [1 1 1]*0.9; % greyish background
 % Set Timing (seconds)
 topCardDisplay      = 3;       % Duration image is shown on top Card
 topCardGreyDisplay  = 1;       % Duration top Card is shown in grey
-cardDisplay         = 4;       % Duration memory cards are shown
+cardDisplay         = 5;       % Duration memory cards are shown
 cardRecallDisplay   = 1;       % Duration memory cards are shown
 feedbackDisplay     = 1;       % Duration feedback is shown
 whiteScreenDisplay  = 1;       % Delay after text screen
 responseTime        = 15;      % Duration allowed to respond (click)
-interTrialInterval  = 2;
+interTrialInterval  = 3;
 
 % Fixation Task (mt_fixationTask)
 fixationDisplay     = (6 * 60);     % Duration of fixation task
@@ -546,9 +546,6 @@ imgfolderP              = fullfile(dirRoot, stimulusFolder, imageFolder{3});
 
 
 % Convert image sequences for further processing
-% TODO: Zwei weitere Sequenzen in die mt_params. Dann hier statt einer 
-% Zeile drei Zeilen abarbeiten, dann im Task je nach Durchgang die Zeile
-% wechseln
 imageSequenceMainLearningCoordsA            = zeros(1, size(imageSequenceMainLearningA, 2));
 imageSequenceInterferenceLearningCoordsA    = zeros(1, size(imageSequenceInterferenceLearningA, 2));
 imageSequenceInterferenceRecallCoordsA      = zeros(1, size(imageSequenceInterferenceRecallA, 2));
@@ -559,7 +556,7 @@ imageSequenceInterferenceLearningCoordsB    = zeros(1, size(imageSequenceInterfe
 imageSequenceInterferenceRecallCoordsB      = zeros(1, size(imageSequenceInterferenceRecallB, 2));
 imageSequenceMainRecallCoordsB              = zeros(1, size(imageSequenceMainRecallB, 2));
 
-for i = 1:size(imageSequenceMainLearningA, 2)
+for i = 1: size(imageSequenceMainLearningA, 2)
     imageSequenceMainLearningCoordsA(i)         = find(cellfun(@(x) strcmp(x, imageSequenceMainLearningA{i}), imageConfiguration{1}{1}'));
     imageSequenceInterferenceLearningCoordsA(i) = find(cellfun(@(x) strcmp(x, imageSequenceInterferenceLearningA{i}), imageConfiguration{1}{2}'));
     imageSequenceInterferenceRecallCoordsA(i)   = find(cellfun(@(x) strcmp(x, imageSequenceInterferenceRecallA{i}), imageConfiguration{1}{2}'));
