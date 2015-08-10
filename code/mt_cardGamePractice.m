@@ -1,4 +1,4 @@
-function mt_cardGamePractice(dirRoot, cfg_window)
+function perc_correct  = mt_cardGamePractice(dirRoot, cfg_window)
 % ** function mt_cardGame(dirRoot, cfg_window, iRecall)
 % This function starts the practice session of the memory task.
 % By default two cards are learned and then tested.
@@ -15,8 +15,12 @@ function mt_cardGamePractice(dirRoot, cfg_window)
 %   .window43       1X5 double  [window windowRect], 4:3 resolution
 %   .center         1X2 double  [Xcenter Ycenter]
 %
+% <<< OUTPUT VARIABLES <<<
+% NAME              TYPE        DESCRIPTION
+% perc_correct      double      Correctly clicked cards in percent
 %
-% AUTHOR: Marco Rüth, contact@marcorueth.com
+% AUTHOR:   Marco Rüth, contact@marcorueth.com
+%           Jens Klinzing, jens.klinzing@uni-tuebingen.de
 
 %% Load parameters specified in mt_setup.m
 load(fullfile(dirRoot, 'setup', 'mt_params.mat'))   % load workspace information and properties
@@ -71,8 +75,6 @@ for r = 1: length(cardCoordsY)
     rects(:,(r-1)*length(cardCoordsX)+1:r*length(cardCoordsX))  = reshape(cardsAll(r,:,:), 4, length(cardCoordsX));
     imgs(:,(r-1)*length(cardCoordsX)+1:r*length(cardCoordsX))   = reshape(imagesAll(r,:,:), 4, length(cardCoordsX));
 end
-% Show feedback after card was clicked
-feedbackOn      = 1;
 
 mt_showText(dirRoot, textPracticeLearn, window);
 % Short delay after the mouse click to avoid motor artifacts
@@ -154,22 +156,25 @@ for iCard = 1: length(cardShown)
     Screen('Flip', window, flipTime);
     WaitSecs(interTrialInterval);
 end
-    % Save session performance
-    session                 = cell(ntrials, 1);
-    run                     = zeros(ntrials, 1);
-    session(1:ntrials, 1)   = {'Practice'};
-    run(1:ntrials, 1)       = 1;
-    % Compute performance
-    correct             = (cardShown - cardClicked) + 1;
-    correct(correct~=1) = 0; % set others incorrect
-    performance_learn         = table(SessionTime, TrialTime, session, run, correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
+
+% Save session performance
+session                 = cell(ntrials, 1);
+run                     = zeros(ntrials, 1);
+session(1:ntrials, 1)   = {'Practice'};
+run(1:ntrials, 1)       = 1;
+
+% Compute performance
+correct             = (cardShown - cardClicked) + 1;
+correct(correct~=1) = 0; % set others incorrect
+performance_learn         = table(SessionTime, TrialTime, session, run, correct, imageShown, imageClicked,  mouseData, coordsShown, coordsClicked);
 
 
-
+% RECALL
 mt_showText(dirRoot, textPracticeRecall, window);
 
 SessionTime         = {datestr(now, 'HH:MM:SS')};
 SessionTime(1:ntrials, 1) = SessionTime;
+
 % In the recall sessions mouse interaction is activated
 for iCard = 1: length(cardShown)
     % Get Trial Time
@@ -241,17 +246,20 @@ for iCard = 1: length(cardShown)
     Screen('FrameRect', window, frameColor, topCard, frameWidth);
     Screen('FillRect', window, cardColors, rects);
     Screen('FrameRect', window, frameColor, rects, frameWidth);
-    if cardFlip ~= 0
-        if cardFlip == imageCurrent
-            imageFeedback = Screen('MakeTexture', window, imgCorrect);
-            % Correct: Show the green tick image
-            Screen('DrawTexture', window, imageFeedback, ...
-                [], [imgs(1:2, cardFlip)+feedbackMargin; imgs(3:4, cardFlip)-feedbackMargin]);
-        else
-            imageFeedback = Screen('MakeTexture', window, imgIncorrect);
-            % Incorrect: Show the red cross image
-            Screen('DrawTexture', window, imageFeedback, ...
-                [], [imgs(1:2, cardFlip)+feedbackMargin; imgs(3:4, cardFlip)-feedbackMargin]);
+    if cardFlip ~= 0 
+        % the next lines could be replaced by only one case. It was kept 
+        % like this due to legacy and in case the practice run should at 
+        % one point give feedback again
+        if cardFlip == imageCurrent % if the answer was correct
+            imageFeedback = Screen('MakeTexture', window, imgNoFeedback); % used to be imgCorrect
+            tmp = CenterRectOnPointd(circleSize, rects(1, cardFlip)+cardSize(3)/2, rects(2, cardFlip)+cardSize(4)/2);
+            tmp = reshape(tmp, 4, 1);
+            Screen('DrawTexture', window, imageFeedback, [], tmp);
+        else % if the answer was incorrect
+            imageFeedback = Screen('MakeTexture', window, imgNoFeedback); % used to be imgIncorrect
+            tmp = CenterRectOnPointd(circleSize, rects(1, cardFlip)+cardSize(3)/2, rects(2, cardFlip)+cardSize(4)/2);
+            tmp = reshape(tmp, 4, 1);
+            Screen('DrawTexture', window, imageFeedback, [], tmp);
             % Flip the correct image afterwards
             cardFlip = imageCurrent;
         end
@@ -260,17 +268,17 @@ for iCard = 1: length(cardShown)
     %    Priority(0);
     WaitSecs(feedbackDisplay);
 
-    % Flip the card
-%    Priority(MaxPriority(window)); 
-    Screen('DrawTexture', window, imageTop, [], topCard);
-    Screen('FrameRect', window, frameColor, topCard, frameWidth);
-    Screen('FillRect', window, cardColors, rects(:, (1:ncards ~= cardFlip)));
-    imageFlip        = Screen('MakeTexture', window, images{cardFlip});
-    Screen('DrawTexture', window, imageFlip, [], imgs(:, cardFlip));
-    Screen('FrameRect', window, frameColor, rects, frameWidth);
-    Screen('Flip', window, flipTime);
-    Screen('Close', imageTop);
-    Screen('Close', imageFlip);
+    % In the past the card was flipped here
+    % Priority(MaxPriority(window)); 
+%     Screen('DrawTexture', window, imageTop, [], topCard);
+%     Screen('FrameRect', window, frameColor, topCard, frameWidth);
+%     Screen('FillRect', window, cardColors, rects(:, (1:ncards ~= cardFlip)));
+%     imageFlip        = Screen('MakeTexture', window, images{cardFlip});
+%     Screen('DrawTexture', window, imageFlip, [], imgs(:, cardFlip));
+%     Screen('FrameRect', window, frameColor, rects, frameWidth);
+%     Screen('Flip', window, flipTime);
+%     Screen('Close', imageTop);
+%     Screen('Close', imageFlip);
     %    Priority(0);
     end
 
@@ -314,3 +322,6 @@ performance = [performance_learn; performance_recall];
 accuracy            = 100 * mean(correct);
 % save session data
 mt_saveTable(dirRoot, performance, 0, accuracy)
+
+% generate output
+perc_correct        = mean(correct);

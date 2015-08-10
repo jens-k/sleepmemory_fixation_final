@@ -228,7 +228,6 @@ textLearningIntro = {
     'Die Aufgabe wird schwer. Sie müssen sich also konzentrieren.'
     }
     {
-    ''
     'Wird oben das Bild gezeigt, können Sie es sich genau anschauen'
     'und einprägen. Sobald dann darunter die dazu passende Karte'
     'angezeigt wird, schauen Sie bitte direkt auf den kleinen Punkt,'
@@ -259,8 +258,8 @@ textLearning2 = { ...
     'Wir haben insgesamt 30 Bilder für Sie. Diese werden Ihnen alle'
     'insgesamt 3 Mal gezeigt. Die Reihenfolge wird jedes mal anders sein.'
     ''
-    'Nach dem Lernen werden alle Karten ein Mal abgefragt. Sie sollten'
-    'dabei mindestens 40% richtig haben.'
+    'Nach dem Lernen werden Sie abgefragt. Sie sollten dabei'
+    'mindestens 40 % richtig haben.'
     ''
     'Am Ende wird angezeigt, wie viel Prozent Sie richtig hatten.'
     ''
@@ -328,8 +327,11 @@ textRecall = { ...
 };
 textRecall2 = { ...
     ''
-    'Sie werden nun abgefragt.'
+    'Sie werden nur ein Mal abgefragt.'
     ''
+    'Ihnen wird diesmal nicht gesagt, ob Sie richtig '
+    'gelegen haben. Es erscheint lediglich ein blauer Punkt'
+    'auf der geklickten Karte (kein Kreuz oder Häkchen).'
     ''
     'Sie erfahren ganz am Ende, wie gut Sie waren.'
     ''
@@ -352,25 +354,27 @@ textRecallDone = { ...
     ''
 };
 textRecallImmediate = { ...
-    ''
     'Nun werden die Karten abgefragt.'
     ''
     'Oben erscheint erneut jeweils eines der Bilder.'
     'Klicken Sie bitte auf die kleine Karte, unter der sich das'
     'jeweilige Bild befindet.'
     ''
-    'Sie werden ein mal abefragt und sollten dabei mindestens.'
-    '40% richtig haben.'
+    'Sie werden so lange abgefragt, bis Sie 60 % richtig haben.'
+    'Bei der letzten Abfrage, wird Ihnen nicht mehr angezeigt, ob'
+    'Sie richtig lagen (es erscheint immer ein blauer Punkt).'
     ''
     'Sie erfahren ganz am Ende, wie gut Sie waren.'
 };
 textRecallInterference = { ...
-    ''
     'Nun werden die Karten abgefragt.'
     ''
     'Oben erscheint nun erneut jeweils eines der Bilder.'
     'Klicken Sie bitte auf die kleine Karte, unter der sich das'
     'jeweilige Bild befindet.'
+    ''
+    'Sie werden nur ein Mal abgefragt. Ihnen wird nicht nicht'
+    'angezeigt, ob Sie jeweils richtig lagen (blauer Punkt).'
     ''
     'Sie erfahren am Ende, wie gut Sie waren.'
 };

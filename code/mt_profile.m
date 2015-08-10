@@ -28,7 +28,7 @@ switch upper(user)
         dirRoot 			= 'C:\Users\Doktorand\Desktop\Studies\GitHub\sleepmemory\';
         dirPTB              = 'C:\Users\Doktorand\Desktop\Studies\Psychtoolbox\';
     case {'SL3', 'SL4'}
-        dirRoot 			= 'D:\SleepConnectivity\Memory Task';
+        dirRoot 			= 'z:\Sleep Connectivity Marco Rueth\Memory Task 2'; % 'D:\SleepConnectivity\Memory Task';
         dirPTB              = 'C:\Users\Doktorand\Toolbox\Psychtoolbox';
     case {'MRI'}
        dirRoot              = 'E:\USERS\veit\memory_psychtoolbox\sleepmemory';

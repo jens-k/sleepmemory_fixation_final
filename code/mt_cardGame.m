@@ -198,7 +198,7 @@ for iCard = 1: length(cardShown)
         end
     end
   
-    % If in learning sessions
+    % Send triggers if in learning sessions
     if sendTrigger && ismember(currSesstype, 2:4)
         % Stop Odor here
         calllib('inpoutx64', 'Out32', port, 0)   % reset the port to 0 

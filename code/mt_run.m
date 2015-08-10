@@ -87,10 +87,14 @@ case cfg_cases.sesstype{2}
     % Show introduction screen
     mt_showText(dirRoot, textLearningIntro{1}, window);
     mt_showText(dirRoot, textLearningIntro{2}, window);
+
     % Start practice session
-    mt_cardGamePractice(dirRoot, cfg_window);
+    perc_correct = mt_cardGamePractice(dirRoot, cfg_window); 
+    mt_showText(dirRoot, strrep(textRecallPerformance, 'XXX', sprintf('%3.f', (100*perc_correct))), window);
+
     mt_showText(dirRoot, textLearning2, window);
     mt_showText(dirRoot, textQuestion, window);
+
     % Start learning sessions
     for lRun = 1: nLearningSess
         mt_cardGame(dirRoot, cfg_window, lRun);
@@ -99,27 +103,36 @@ case cfg_cases.sesstype{2}
         end
     end
     mt_showText(dirRoot, textRecallImmediate, window);
-    % Start immediate recall
-    while (iRecall <= nMaxRecall) && ((100*perc_correct < RecallThreshold) || (iRecall <= nMinRecall)) 
-        % Start Experimental Task
-        perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 1, 5);
-        if (iRecall < nMaxRecall) && (((100*perc_correct < RecallThreshold) || (iRecall < nMinRecall)))
-            mt_showText(dirRoot, strrep(textRecallAgain, 'XXX', sprintf('%3.f', (100*perc_correct))), window);
-        end
-        iRecall = iRecall + 1;
-    end
-    if (iRecall <= nMaxRecall) && (100*perc_correct > RecallThreshold)
-        % Start recall without feedback
-        mt_showText(dirRoot, strrep(textRecallDone, 'XXX', sprintf('%3.f', (100*perc_correct))), window);
-        mt_showText(dirRoot, textRecallNoFeedback, window);
-        perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 0, 5);
-        mt_showText(dirRoot, strrep(textRecallPerformance, 'XXX', sprintf('%3.f', (100*perc_correct))), window);        
-    elseif (iRecall > nMaxRecall)
-        warning(['Maximum number of recall (' num2str(nMaxRecall) ') runs reached. Experiment cancelled.'])
-        % Show final screen
-        mt_showText(dirRoot, textOutro, window, [], 1);
-    end
 
+    % Start immediate recall
+    if nMaxRecall > 1
+        % If there is more than one recall and the number depends on a
+        % criterion (RecallThreshold) up to which the subject has to learn...
+        while (iRecall <= nMaxRecall) && ((100*perc_correct < RecallThreshold) || (iRecall <= nMinRecall))
+            % Start Experimental Task
+            perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 1, 5);
+            if (iRecall < nMaxRecall) && (((100*perc_correct < RecallThreshold) || (iRecall < nMinRecall)))
+                mt_showText(dirRoot, strrep(textRecallAgain, 'XXX', sprintf('%3.f', (100*perc_correct))), window);
+            end
+            iRecall = iRecall + 1;
+        end
+        if (iRecall <= nMaxRecall) && (100*perc_correct > RecallThreshold)
+            % Start recall without feedback
+            mt_showText(dirRoot, strrep(textRecallDone, 'XXX', sprintf('%3.f', (100*perc_correct))), window);
+            mt_showText(dirRoot, textRecallNoFeedback, window);
+            perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 0, 5);
+            mt_showText(dirRoot, strrep(textRecallPerformance, 'XXX', sprintf('%3.f', (100*perc_correct))), window);
+        elseif (iRecall > nMaxRecall)
+            warning(['Maximum number of recall (' num2str(nMaxRecall) ') runs reached. Experiment cancelled.'])
+            % Show final screen
+            mt_showText(dirRoot, textOutro, window, [], 1);
+        end
+    else
+        % Otherwise there will only be one recall without feedback
+        perc_correct = mt_cardGame(dirRoot, cfg_window, iRecall, 0, 5);
+        mt_showText(dirRoot, strrep(textRecallPerformance, 'XXX', sprintf('%3.f', (100*perc_correct))), window);
+    end
+    
 % INTERFERENCE LEARNING and IMMEDIATE RECALL
 case cfg_cases.sesstype{3}
     % Show introduction screen
