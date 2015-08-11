@@ -51,30 +51,52 @@ fixRun = '';
 dlgBackground = figure('name', 'dlgBackground', 'units', 'normalized', 'outerposition', [0 0 1 1] , 'Color', [1 1 1], ...
     'NumberTitle','off', 'menubar', 'none', 'toolbar', 'none', 'Color', 'white');
 options.WindowStyle='modal';
-for p = 1 : length(prompts)
-    % allow only values as specified in cfg_cases (mt_setup.m)
-    while (p == 1 && ~ismember(str2double(answers{p}), cfg_cases.subjects)) || ...
-        (p == 2 && ~ismember(answers{2}(:), cfg_cases.nights))  || ...
-        (p == 3 && ~ismember(answers{3}(:), cfg_cases.sesstype) || ...
-        (p == 4 && ~ismember(answers{4}(:), cfg_cases.memvers)))
-        if p == 4 && (strcmpi(char(answers{3}(:)), cfg_cases.sesstype{1}) || ...
-                strcmpi(char(answers{3}(:)), cfg_cases.sesstype{5}))
+
+answered = false;
+while ~answered
+    for p = 1 : length(prompts)
+        % allow only values as specified in cfg_cases (mt_setup.m)
+        while (p == 1 && ~ismember(str2double(answers{p}), cfg_cases.subjects)) || ...
+                (p == 2 && ~ismember(answers{2}(:), cfg_cases.nights))  || ...
+                (p == 3 && ~ismember(answers{3}(:), cfg_cases.sesstype) || ...
+                (p == 4 && ~ismember(answers{4}(:), cfg_cases.memvers)))
+            if p == 4 && (strcmpi(char(answers{3}(:)), cfg_cases.sesstype{1}) || ...
+                    strcmpi(char(answers{3}(:)), cfg_cases.sesstype{5}))
+                break;
+            end
+            answers{p} 	= upper(newid(prompts(p), '', [1 70], defaults(p), options));
+            if isempty(answers{p})
+                close('dlgBackground')
+                error('Input cancelled')
+            end
+        end
+        if str2double(answers{1}{:}) == 0
+            load(fullfile(setupdir, 'mt_debug.mat'))
             break;
         end
-            answers{p} 	= upper(newid(prompts(p), '', [1 70], defaults(p), options));
-        if isempty(answers{p})
-            close('dlgBackground')
-            error('Input cancelled')
+        % End loop if fixation task is selected, since no memory version
+        if p == 4 && strcmpi(char(answers{3}(:)), cfg_cases.sesstype{5})
+            fixRun 	= upper(newid({'Enter run number of fixation task'}, '', [1 70], {'1 or 2'}, options));
+            break;
         end
     end
-    if str2double(answers{1}{:}) == 0
-        load(fullfile(setupdir, 'mt_debug.mat'))
-        break;
-    end
-    % End loop if fixation task is selected, since no memory version
-    if p == 4 && strcmpi(char(answers{3}(:)), cfg_cases.sesstype{5})
-        fixRun 	= upper(newid({'Enter run number of fixation task'}, '', [1 70], {'1 or 2'}, options));
-        break;
+    
+    % Let the user confirm the input
+    if strcmp(answers{4}, ''), answers{4} = '-'; end
+    choice = questdlg({'*Start with these parameters?* ', ...
+        ['subject: ' num2str(answers{1})], ...
+        ['night: : ' num2str(answers{2})], ...
+        ['type: ' num2str(answers{3})], ...
+        ['version: ' num2str(answers{4})]}, ...
+        'Confirm your choice', ...
+        'Start', 'Abort', 'Start');
+    % Handle response
+    switch choice
+        case 'Start'
+            answered = true;
+        case 'Abort'
+            disp([choice ' coming right up.'])
+            answered = false;
     end
 end
 close('dlgBackground')
@@ -84,7 +106,7 @@ close('dlgBackground')
 if ~exist('cfg_dlgs', 'var')
     cfg_dlgs.subject 	= char(answers{1});     % Subject ID
     cfg_dlgs.night      = char(answers{2});     % Night number
-    cfg_dlgs.sesstype 	= char(answers{3});     % Session type
+    cfg_dlgs.sesstype 	= cfg_cases.sessNames{3};     % Session type
     cfg_dlgs.memvers    = char(answers{4});     % Memory version
 end
 

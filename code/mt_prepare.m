@@ -20,13 +20,13 @@ catch ME
 end
 
 % Prompt to collect information about experiment
-try
+% try
     mt_dialogues(dirRoot);
-catch ME
-    fprintf(['Calling mt_dialogues was unsuccessful.\n', ...
-        'Type "help mt_dialogues" and follow the instructions for configuration.\n'])
-    error(ME.message)
-end
+% catch ME
+%     fprintf(['Calling mt_dialogues was unsuccessful.\n', ...
+%         'Type "help mt_dialogues" and follow the instructions for configuration.\n'])
+%     error(ME.message)
+% end
 
 % Include Psychtoolbox to the path and open a fullscreen window
 % TODO: Window management: do we want two screens to show different information (experimenter vs. subject)?
