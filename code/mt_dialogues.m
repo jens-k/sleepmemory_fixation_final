@@ -82,12 +82,12 @@ while ~answered
     end
     
     % Let the user confirm the input
-    if strcmp(answers{4}, ''), answers{4} = '-'; end
-    choice = questdlg({'*Start with these parameters?* ', ...
-        ['subject: ' num2str(answers{1})], ...
-        ['night: : ' num2str(answers{2})], ...
-        ['type: ' num2str(answers{3})], ...
-        ['version: ' num2str(answers{4})]}, ...
+    if strcmp(answers{4}{1}, ''), answers{4}{1} = '-'; end
+    choice = questdlg({'Start with these parameters? ', ...
+        ['subject: ' num2str(answers{1}{1})], ...
+        ['night: : ' num2str(answers{2}{1})], ...
+        ['type: ' answers{3}{1}], ...
+        ['version: ' answers{4}{1}]}, ...
         'Confirm your choice', ...
         'Start', 'Abort', 'Start');
     % Handle response
@@ -95,8 +95,10 @@ while ~answered
         case 'Start'
             answered = true;
         case 'Abort'
-            disp([choice ' coming right up.'])
             answered = false;
+            for r = 1:size(answers,2)
+                answers{1, r}{:} = '';
+            end
     end
 end
 close('dlgBackground')
@@ -106,7 +108,7 @@ close('dlgBackground')
 if ~exist('cfg_dlgs', 'var')
     cfg_dlgs.subject 	= char(answers{1});     % Subject ID
     cfg_dlgs.night      = char(answers{2});     % Night number
-    cfg_dlgs.sesstype 	= cfg_cases.sessNames{3};     % Session type
+    cfg_dlgs.sesstype 	= char(answers{3});     % Session type
     cfg_dlgs.memvers    = char(answers{4});     % Memory version
 end
 
@@ -147,19 +149,19 @@ switch cfg_dlgs.sesstype
     case cfg_cases.sesstype{4} 
         cfg_dlgs.sessName = cfg_cases.sessNames{4};
         cfg_dlgs.sesstype = 4;
-    case cfg_cases.sesstype{5}    
-         % gray background and no images are shown
-        cfg_dlgs.sessName = cfg_cases.sessNames{6};
-        cfg_dlgs.sesstype = 5;
-    case cfg_cases.sesstype{6}
-        % gray background and no images are shown
-        cfg_dlgs.sessName = cfg_cases.sessNames{7};
-        screenBgColor   = 0.5;
-        topCardColor    = 0.5;
-        frameWidth      = 0;
-        save(fullfile(dirRoot,'setup','mt_params.mat'), '-append', ...
-            'screenBgColor', 'topCardColor', 'frameWidth')
-        cfg_dlgs.sesstype = 6;
+%     case cfg_cases.sesstype{5}    
+%          % gray background and no images are shown
+%         cfg_dlgs.sessName = cfg_cases.sessNames{6};
+%         cfg_dlgs.sesstype = 5;
+%     case cfg_cases.sesstype{6}
+%         % gray background and no images are shown
+%         cfg_dlgs.sessName = cfg_cases.sessNames{7};
+%         screenBgColor   = 0.5;
+%         topCardColor    = 0.5;
+%         frameWidth      = 0;
+%         save(fullfile(dirRoot,'setup','mt_params.mat'), '-append', ...
+%             'screenBgColor', 'topCardColor', 'frameWidth')
+%         cfg_dlgs.sesstype = 6;
     otherwise
         error('Invalid Session Type')
 end

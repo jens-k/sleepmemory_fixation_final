@@ -459,14 +459,14 @@ textBgColor         = [1 1 1]*0.9; % greyish background
 % window              = ;
 
 % Set Timing (seconds)
-topCardDisplay      = .3;       % Duration image is shown on top Card
-topCardGreyDisplay  = .1;       % Duration top Card is shown in grey
-cardDisplay         = .4;       % Duration memory cards are shown
-cardRecallDisplay   = .1;       % Duration memory cards are shown
-feedbackDisplay     = .1;       % Duration feedback is shown
-whiteScreenDisplay  = .1;       % Delay after text screen
+topCardDisplay      = 3;       % Duration image is shown on top Card
+topCardGreyDisplay  = 1;       % Duration top Card is shown in grey
+cardDisplay         = 4;       % Duration memory cards are shown
+cardRecallDisplay   = 1;       % Duration memory cards are shown
+feedbackDisplay     = 1;       % Duration feedback is shown
+whiteScreenDisplay  = 1;       % Delay after text screen
 responseTime        = 15;      % Duration allowed to respond (click)
-interTrialInterval  = .2;
+interTrialInterval  = 2;
 
 % Fixation Task (mt_fixationTask)
 fixationDisplay     = (6 * 60);     % Duration of fixation task
