@@ -16,7 +16,8 @@ function mt_controlTask(dirRoot, cfg_window, iControlRun)
 % iControlRun       double      number of control task run
 %
 %
-% AUTHOR: Marco Rüth, contact@marcorueth.com
+% AUTHOR:   Marco Rüth, contact@marcorueth.com
+%           Jens Klinzing, jens.klinzing@uni-tuebingen.de
 
 %% Load parameters specified in mt_setup.m
 load(fullfile(dirRoot,'setup','mt_params.mat'))   % load workspace information and properties

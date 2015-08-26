@@ -38,7 +38,8 @@ function mt_run(user)
 % user              char       	pre-defined user name (see mt_profile.m)
 %
 % 
-% AUTHOR: Marco Rüth, contact@marcorueth.com
+% AUTHOR:   Marco Rüth, contact@marcorueth.com
+%           Jens Klinzing, jens.klinzing@uni-tuebingen.de
 
 PsychDebugWindowConfiguration(0,.5)
 

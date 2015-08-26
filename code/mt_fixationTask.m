@@ -10,7 +10,8 @@ function mt_fixationTask(dirRoot, fixRun)
 % user              char       	pre-defined user name (see mt_loadUser.m)
 %
 %
-% AUTHOR: Marco Rüth, contact@marcorueth.com
+% AUTHOR:   Marco Rüth, contact@marcorueth.com
+%           Jens Klinzing, jens.klinzing@uni-tuebingen.de
 
 %% Load parameters specified in mt_setup.m
 addpath(genpath(dirRoot));

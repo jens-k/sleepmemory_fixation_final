@@ -15,7 +15,8 @@ function dirRoot = mt_setup(user)
 % dirRoot           char        path to root working directory
 %
 % 
-% AUTHOR: Marco Rüth, contact@marcorueth.com
+% AUTHOR:   Marco Rüth, contact@marcorueth.com
+%           Jens Klinzing, jens.klinzing@uni-tuebingen.de
 
 %% ============================== BASICS ================================ %
 % IMPORTANT: add your user profile in mt_loadUser
