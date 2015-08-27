@@ -11,13 +11,13 @@ if ~nargin
 end
 
 % Generate workspace variables defined in mt_setup.m
-try
+% try
     dirRoot = mt_setup(user);
-catch ME
-    fprintf(['Running mt_setup.m was unsuccessful.\n', ...
-    'Check workspace variables and parameter settings.\n'])
-    error(ME.message)
-end
+% catch ME
+%     fprintf(['Running mt_setup.m was unsuccessful.\n', ...
+%     'Check workspace variables and parameter settings.\n'])
+%     error(ME.message)
+% end
 
 % Prompt to collect information about experiment
 % try

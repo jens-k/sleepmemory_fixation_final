@@ -25,7 +25,7 @@ function dirRoot = mt_setup(user)
 % Expermimental Details
 experimentName      = 'Sleep Connectivity'; % name of your study
 nLearningSess       = 3; % number of learning runs for learning
-nInterferenceSess   = 2; % number of learning runs for interference
+nInterferenceSess   = 3; % number of learning runs for interference
 nMinRecall          = 1; % minimum runs for immediate recall (with feedback)
 nMaxRecall          = 1; % maximum runs for immediate recall (to exclude if too poor performance)
 nFinalRecall        = 1; % number of runs for final recall (incl. one last session w/o feedback)
@@ -82,27 +82,27 @@ imageConfiguration = {
 % tables 'imagesATable' and 'imagesBTable' for 2D coordinates below
 [imagesATable, imagesBTable] = mt_imageTable(imageConfiguration);
 
-% Create sequence for learning and interference
+% Create temporal sequence for learning and interference
 % Image Sequences for Image Set A
 % Sequence A: Learning
 imageSequenceMainLearningA = {
     'penguin', 'crocodile', 'raven', 'armadillo', 'fly', 'oyster', ...
-	'starfish', 'dragonfly', 'rooster', 'cow', 'ostrich', 'barn_owl', ...
-	'horse', 'lobster', 'pigeon', 'ant', 'giraffe', 'hummingbird', ...
-	'cat', 'wasp', 'dromedary', 'praying_mantis', 'goose', 'hippopotamus', ...
-	'scorpion', 'toucan', 'grasshopper', 'whale', 'lioness', 'ray';
+	'starfish', 'dragonfly', 'rooster', 'cow', 'goose', 'giraffe', ...
+	'barn_owl', 'lobster', 'pigeon', 'ant', 'horse', 'ray', ...
+	'cat', 'hummingbird', 'hippopotamus', 'praying_mantis', 'ostrich', 'dromedary', ...
+	'scorpion', 'toucan', 'grasshopper', 'whale', 'lioness', 'wasp';
     
-    'hippopotamus', 'barn_owl', 'starfish',	'wasp',	'lioness', 'lobster', ...
-    'rooster', 'ant', 'hummingbird'	'grasshopper', 'raven', 'horse', ...
-    'praying_mantis', 'penguin', 'dromedary', 'scorpion', 'goose', 'cow', ...
-    'oyster', 'pigeon', 'cat', 'toucan', 'armadillo', 'whale', ...
-    'dragonfly', 'ray', 'giraffe', 'ostrich', 'fly', 'crocodile';
+    'whale', 'fly', 'barn_owl', 'wasp', 'lioness', 'scorpion', ...
+    'horse', 'ant', 'rooster', 'grasshopper', 'toucan', 'starfish', ...
+    'lobster', 'penguin', 'dromedary', 'praying_mantis', 'goose', 'cow', ...
+    'oyster', 'raven', 'cat', 'ostrich', 'armadillo', 'crocodile', ...
+    'dragonfly', 'ray', 'giraffe', 'pigeon', 'hippopotamus', 'hummingbird';
 
-    'fly', 'rooster', 'lioness', 'ant', 'raven', 'hummingbird', ...
-    'cat', 'scorpion', 'hippopotamus', 'ostrich', 'starfish', 'armadillo', ...
-    'barn_owl', 'giraffe', 'wasp', 'goose',	'dragonfly', 'crocodile', ...
-    'whale', 'horse', 'grasshopper', 'penguin', 'oyster', 'ray', ...
-    'cow', 'pigeon', 'praying_mantis', 'toucan', 'dromedary', 'lobster'
+    'starfish', 'lioness', 'toucan', 'ant', 'raven', 'hummingbird', ...
+    'cat', 'scorpion', 'hippopotamus', 'ostrich', 'praying_mantis', 'oyster', ...
+    'barn_owl', 'giraffe', 'wasp', 'goose',	'armadillo', 'crocodile', ...
+    'whale', 'horse', 'grasshopper', 'penguin', 'dragonfly', 'ray', ...
+    'cow', 'pigeon', 'lobster', 'dromedary', 'rooster', 'fly'
    };
 
 % Sequence A: Interference
@@ -122,23 +122,23 @@ imageSequenceMainRecallA = imageSequenceimmediateRecallA;
 % Image Sequence for Image Set B
 % Sequence B: Learning
 imageSequenceMainLearningB = {
-    'owl', 'kangaroo', 'butterfly', 'turtle', 'pomfret', 'cheetah', ...
-	'killer_whale', 'seagull', 'duck', 'mosquito', 'bat', 'manatee' ...
-	'tiger', 'crab', 'dolphin', 'bee', 'zebra', 'tapir', ...
+    'owl', 'kangaroo', 'sparrow', 'turtle', 'pomfret', 'cheetah', ...
+	'killer_whale', 'tiger', 'duck', 'mosquito', 'bat', 'butterfly' ...
+	'seagull', 'crab', 'dolphin', 'bee', 'zebra', 'tapir', ...
 	'hen', 'rhino', 'elephant', 'termite', 'kiwi', 'ladybird', ...
-    'mussel', 'platypus', 'partridge', 'pelican', 'beetle', 'sparrow';
+    'mussel', 'platypus', 'manatee', 'pelican', 'beetle', 'partridge';
     
-    'turtle', 'bee', 'ladybird', 'manatee', 'hen', 'elephant', ...
-    'owl', 'tapir', 'crab', 'butterfly'	'seagull', 'mussel', ...
+    'bee', 'turtle', 'ladybird', 'manatee', 'hen', 'cheetah', ...
+    'owl', 'platypus', 'crab', 'butterfly'	'seagull', 'mussel', ...
     'partridge', 'bat', 'beetle', 'tiger', 'rhino', 'termite', ...
-    'sparrow', 'pomfret', 'platypus', 'zebra', 'pelican', 'killer_whale', ...
-    'kangaroo', 'duck', 'cheetah', 'kiwi', 'dolphin', 'mosquito';
+    'sparrow', 'killer_whale', 'tapir', 'zebra', 'pelican', 'pomfret', ...
+    'duck', 'kangaroo', 'elephant', 'kiwi', 'dolphin', 'mosquito';
 					
-    'duck', 'cheetah', 'bat', 'crab', 'seagull', 'termite', ...
-    'rhino', 'bee', 'turtle', 'owl', 'beetle', 'zebra', ...
-    'butterfly', 'kangaroo', 'kiwi', 'killer_whale', 'sparrow', 'partridge', ...
-    'manatee', 'pelican', 'mosquito', 'tiger', 'dolphin', 'hen', ...
-    'platypus', 'ladybird', 'tapir', 'mussel', 'pomfret', 'elephant'
+    'duck', 'platypus', 'bat', 'crab', 'seagull', 'bee', ...
+    'rhino', 'termite', 'turtle', 'owl', 'beetle', 'zebra', ...
+    'butterfly', 'kangaroo', 'kiwi', 'manatee', 'sparrow', 'partridge', ...
+    'killer_whale', 'pelican', 'mosquito', 'tiger', 'dolphin', 'hen', ...
+    'cheetah', 'ladybird', 'tapir', 'mussel', 'pomfret', 'elephant'
     };
 
 % Sequence B: Interference
@@ -158,6 +158,27 @@ imageSequenceMainRecallB = imageSequenceimmediateRecallB;
 
 %% ================================ TEXT ================================ %
 % Text strings used during the program
+
+textFixation = { ...
+    ''
+    ''
+    ''
+    'Es erscheint nun ein Punkt in der Mitte'
+    'des Bildschirms. Bitte schauen Sie auf diesen'
+    'Punkt, solange er angezeigt wird.'
+    ''
+    'Dies wird etwa 6 Minuten dauern.'
+};
+textFixation2 = { ...
+    ''
+    ''
+    ''
+    'Legen Sie Ihre Hände bitte locker in den Schoß.'
+    ''
+    ''
+    'Haben Sie noch Fragen zum Ablauf?'
+};
+
 textControl = { ...
     'Zählaufgabe'
     ''
@@ -194,26 +215,10 @@ textControl3 = { ...
     'Haben Sie noch Fragen zum Ablauf?'
     ''
 };
-textFixation = { ...
-    'Fixation'
-    ''
-    'Es erscheint nun ein Punkt in der Mitte'
-    'des Bildschirms. Bitte schauen Sie auf diesen'
-    'Punkt, solange er angezeigt wird.'
-    ''
-    'Dies wird etwa 6 Minuten dauern.'
-};
-textFixation2 = { ...
-    ''
-    ''
-    ''
-    'Legen Sie Ihre Hände bitte locker in den Schoß.'
-    ''
-    ''
-    'Haben Sie noch Fragen zum Ablauf?'
-};
+
 textLearningIntro = {
     { ...
+    ''
     'Willkommen!'
     ''
     'Im Folgenden sehen Sie eine große graue Karte, darunter ein'
@@ -230,10 +235,11 @@ textLearningIntro = {
     }
     {
     ''
+    ''
     'Wird oben das Bild gezeigt, können Sie es sich genau anschauen'
-    'und einprägen. Sobald dann darunter die dazu passende Karte'
-    'angezeigt wird, schauen Sie bitte direkt auf den kleinen Punkt,'
-    'der sich darauf befindet.'
+    'und einprägen. Wird anschließend darunter die passende kleine'
+    'Karte angezeigt, sehen Sie auf dieser einen kleinen Punkt.'
+    'Bitte schauen Sie ab dann nur noch direkt auf diesen Punkt.'
     ''
     'Bewegen Sie dann die Augen nicht mehr und blinzeln Sie wenn '
     'möglich nicht. Sie können Ihre Augen in den Pausen zwischen'
@@ -242,18 +248,26 @@ textLearningIntro = {
     'Legen Sie bitte während der Aufgabe die Hände locker in den Schoß.'
     }
 };
-textLearning2Next = { ...
+textPracticeLearn = { ...
     ''
-    'Jetzt können Sie sich kurz entspannen.'
     ''
-    'Es folgt der XXX. Lerndurchgang'
+    'Zunächst ein Übungsdurchgang.'
     ''
-    'Denken Sie bitte weiterhin daran, immer direkt auf kleinen '
-    'Punkt zu schauen und Ihre Augen ab dann nicht mehr zu bewegen.'
     ''
-    'Legen Sie Ihre Hände bitte locker in den Schoß.'
-    };
+    'Merken Sie sich die Position der Karte im unteren Feld..' 
+};
+textPracticeRecall = { ...
+    ''
+    ''
+    'Nun kommt die Abfrage unseres Übungsdurchgangs.'
+    ''
+    'Oben erscheint nun erneut jeweils eines der Bilder..'
+    ''
+    'Klicken Sie bitte auf die kleine Karte, hinter der sich'
+    'das jeweilige Bild befindet.'
+};
 textLearning2 = { ...
+    ''
     ''
     'Jetzt geht es wirklich los!'
     ''
@@ -266,7 +280,21 @@ textLearning2 = { ...
     'Am Ende wird angezeigt, wie viel Prozent Sie richtig hatten.'
     ''
     };
+textLearning2Next = { ...
+    ''
+    ''
+    'Jetzt können Sie sich kurz entspannen.'
+    ''
+    'Es folgt der XXX. Lerndurchgang'
+    ''
+    'Denken Sie bitte weiterhin daran, immer direkt auf kleinen '
+    'Punkt zu schauen und Ihre Augen ab dann nicht mehr zu bewegen.'
+    ''
+    'Legen Sie Ihre Hände bitte locker in den Schoß.'
+    };
+
 textLearningInterference = { ...
+    ''
     ''
     'Nun lernen wir eine neue Version des Memorys.'
     ''
@@ -287,22 +315,6 @@ textOutro = { ...
     'Vielen Dank!'
     ''
 };
-textPracticeLearn = { ...
-    ''
-    'Zunächst ein Übungsdurchgang.'
-    ''
-    ''
-    'Merken Sie sich die Position der Karte im unteren Feld..' 
-};
-textPracticeRecall = { ...
-    ''
-    'Nun kommt die Abfrage unseres Übungsdurchgangs.'
-    ''
-    'Oben erscheint nun erneut jeweils eines der Bilder..'
-    ''
-    'Klicken Sie bitte auf die kleine Karte, hinter der sich'
-    'das jeweilige Bild befindet.'
-};
 textQuestion = { ...
     ''
     ''
@@ -318,6 +330,7 @@ textQuestion = { ...
 };
 textRecall = { ...
     ''
+    ''
     'Nun möchten wir von Ihnen wissen, wo die Bilder waren,'
     'die Sie VOR dem Schlafengehen gelernt haben.'
     ''
@@ -325,12 +338,14 @@ textRecall = { ...
     'Klicken Sie bitte auf die kleine Karte, unter der sich'
     'das jeweilige Bild befindet.'
     ''
+    'Sie können sich bei der Abfrage ganz normal bewegen und'
+    'hinschauen, wo Sie möchten.'
     ''
 };
 textRecall2 = { ...
     ''
-    'Sie werden nun abgefragt.'
     ''
+    'Sie werden nun abgefragt.'
     ''
     'Sie erfahren ganz am Ende, wie gut Sie waren.'
     ''
@@ -339,12 +354,14 @@ textRecall2 = { ...
 };
 textRecallAgain = { ...
     ''
+    ''
     'Sie hatten XXX Prozent richtig.'
     ''
     'Die Abfrage wird wiederholt.'
     ''
 };
 textRecallDone = { ...
+    ''
     ''
     'Glückwunsch!'
     ''
@@ -354,20 +371,24 @@ textRecallDone = { ...
 };
 textRecallImmediate = { ...
     ''
-    'Nun werden die Karten abgefragt.'
+    ''
+    'Nun werden die Karten abgefragt. Sie können sich jetzt wieder'
+    'ganz normal bewegen und hinschauen, wo Sie möchten.'
     ''
     'Oben erscheint erneut jeweils eines der Bilder.'
     'Klicken Sie bitte auf die kleine Karte, unter der sich das'
     'jeweilige Bild befindet.'
     ''
-    'Sie werden ein mal abefragt und sollten dabei mindestens.'
+    'Sie werden nur ein mal abefragt und sollten dabei mindestens.'
     '40% richtig haben.'
     ''
     'Sie erfahren ganz am Ende, wie gut Sie waren.'
 };
 textRecallInterference = { ...
     ''
-    'Nun werden die Karten abgefragt.'
+    ''
+    'Nun werden die Karten abgefragt. Sie können sich jetzt wieder'
+    'ganz normal bewegen und hinschauen, wo Sie möchten.'
     ''
     'Oben erscheint nun erneut jeweils eines der Bilder.'
     'Klicken Sie bitte auf die kleine Karte, unter der sich das'
@@ -459,15 +480,15 @@ textBgColor         = [1 1 1]*0.9; % greyish background
 % Note: by default external screens are automatically used if connected 
 % window              = ;
 
-% Set Timing (seconds)
-topCardDisplay      = 3;       % Duration image is shown on top Card
-topCardGreyDisplay  = 1;       % Duration top Card is shown in grey
-cardDisplay         = 4;       % Duration memory cards are shown
-cardRecallDisplay   = 1;       % Duration memory cards are shown
-feedbackDisplay     = 1;       % Duration feedback is shown
-whiteScreenDisplay  = 1;       % Delay after text screen
+% Set Timing (seconds) FIXME: DELETE ALL DOTS AND /2 !!!
+topCardDisplay      = .3;       % Duration image is shown on top Card
+topCardGreyDisplay  = .1;       % Duration top Card is shown in grey
+cardDisplay         = 4/4;       % Duration memory cards are shown
+cardRecallDisplay   = .1;       % Duration memory cards are shown
+feedbackDisplay     = .1;       % Duration feedback is shown
+whiteScreenDisplay  = .1;       % Delay after text screen
 responseTime        = 15;      % Duration allowed to respond (click)
-interTrialInterval  = 2;
+interTrialInterval  = .2;
 
 % Fixation Task (mt_fixationTask)
 fixationDisplay     = (6 * 60);     % Duration of fixation task
@@ -587,13 +608,20 @@ for i = 1:size(imageSequenceMainLearningA, 2)
     % for each learning sequence (might be let's say 3)
     for j = 1:size(imageSequenceMainLearningA, 1)
         imageSequenceMainLearningCoordsA(j,i)         = find(cellfun(@(x) strcmp(x, imageSequenceMainLearningA{j,i}), imageConfiguration{1}{1}'));
+    end
+    for j = 1:size(imageSequenceInterferenceLearningA, 1)
         imageSequenceInterferenceLearningCoordsA(j,i) = find(cellfun(@(x) strcmp(x, imageSequenceInterferenceLearningA{j,i}), imageConfiguration{1}{2}'));
-        
+    end
+    for j = 1:size(imageSequenceMainLearningB, 1)
         imageSequenceMainLearningCoordsB(j,i)         = find(cellfun(@(x) strcmp(x, imageSequenceMainLearningB{j,i}), imageConfiguration{2}{1}'));
+    end
+    for j = 1:size(imageSequenceInterferenceLearningB, 1)
         imageSequenceInterferenceLearningCoordsB(j,i) = find(cellfun(@(x) strcmp(x, imageSequenceInterferenceLearningB{j,i}), imageConfiguration{2}{2}'));
     end
     
-    % for each recall sequency (might be let's say 1)
+    % for each recall sequence (might be let's say 1) - this code expects
+    % the number of recall sessions for interference and main memory to be
+    % the same. This can be changed by also having 4 for-loops as above
     for j = 1:size(imageSequenceMainRecallA, 1)
         imageSequenceInterferenceRecallCoordsA(j,i)   = find(cellfun(@(x) strcmp(x, imageSequenceInterferenceRecallA{j,i}), imageConfiguration{1}{2}'));
         imageSequenceMainRecallCoordsA(j,i)           = find(cellfun(@(x) strcmp(x, imageSequenceMainRecallA{j,i}), imageConfiguration{1}{1}'));

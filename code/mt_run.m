@@ -41,7 +41,8 @@ function mt_run(user)
 % AUTHOR:   Marco Rüth, contact@marcorueth.com
 %           Jens Klinzing, jens.klinzing@uni-tuebingen.de
 
-PsychDebugWindowConfiguration(0,.5)
+% Uncomment to get a half-transparent screen
+% PsychDebugWindowConfiguration(0,.5)
 
 % The MEG laptop does not pass the sync test (yet)
 if strcmp(user, 'MEG')
