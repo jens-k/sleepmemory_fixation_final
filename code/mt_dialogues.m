@@ -121,7 +121,7 @@ end
 %         strcat('Night_', cfg_dlgs.night))
 
 % Memory version
-if ~isempty(cfg_dlgs.memvers)
+if ~isempty(cfg_dlgs.memvers) && ~strcmp(cfg_dlgs.memvers,'-')
     switch cfg_dlgs.memvers
         case cfg_cases.memvers{1} 
             cfg_dlgs.memvers = 1; % Version A of memory
@@ -149,10 +149,10 @@ switch cfg_dlgs.sesstype
     case cfg_cases.sesstype{4} 
         cfg_dlgs.sessName = cfg_cases.sessNames{4};
         cfg_dlgs.sesstype = 4;
-%     case cfg_cases.sesstype{5}    
-%          % gray background and no images are shown
-%         cfg_dlgs.sessName = cfg_cases.sessNames{6};
-%         cfg_dlgs.sesstype = 5;
+    case cfg_cases.sesstype{5}    
+         % gray background and no images are shown
+        cfg_dlgs.sessName = cfg_cases.sessNames{6};
+        cfg_dlgs.sesstype = 5;
 %     case cfg_cases.sesstype{6}
 %         % gray background and no images are shown
 %         cfg_dlgs.sessName = cfg_cases.sessNames{7};
