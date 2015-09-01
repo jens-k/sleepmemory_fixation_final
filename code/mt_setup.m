@@ -33,11 +33,12 @@ RecallThreshold     = 40;% miniumum correct answers in recall (in percent)
 
 % System
 % screenNumber    = 2; % select specific screen
-priority_level        = 0; % 'max' or number, put 0 if you don't have privileged rights
+priority_level      = 0; % 'max' or number, put 0 if you don't have privileged rights
 
-triggerOdorOn       = {0, 1, 16}; % trigger for MEG, SL3, SL4
-triggerPlaceboOn    = {0, 2, 32}; % trigger for MEG, SL3, SL4
+triggerOdorOn       = {0, 65, 20}; % trigger for MEG, SL3, SL4
+triggerPlaceboOn    = {0, 130, 40}; % trigger for MEG, SL3, SL4
 EEGtrigger          = 0;
+
 
 %% ======================== IMAGE CONFIGURATION ========================= %
 
