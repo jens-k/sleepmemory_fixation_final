@@ -120,9 +120,9 @@ for iCard = 1: length(cardShown)
     if ismember(currSesstype, 2:4)
         
 		% Send trigger during learning and immediate recall sessions
-		if sendTrigger && ismember(currSesstype, [2,4]) &&(cfg_dlgs.odor == 1)
+		if sendTrigger && ismember(currSesstype, [2,3]) &&(cfg_dlgs.odor == 1)
 			calllib('inpoutx64', 'Out32', port, triggerOdorOn{cfg_dlgs.lab})
-		elseif sendTrigger && ismember(currSesstype, [2,4]) && (cfg_dlgs.odor == 0)
+		elseif sendTrigger && ismember(currSesstype, [2,3]) && (cfg_dlgs.odor == 0)
 			calllib('inpoutx64', 'Out32', port, triggerPlaceboOn{cfg_dlgs.lab})
         end
         
@@ -199,7 +199,7 @@ for iCard = 1: length(cardShown)
     end
   
     % Send triggers if in learning sessions
-    if sendTrigger && ismember(currSesstype, 2:4)
+    if sendTrigger && ismember(currSesstype, 2:3)
         % Stop Odor here
         calllib('inpoutx64', 'Out32', port, 0)   % reset the port to 0 
     end
