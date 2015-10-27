@@ -38,7 +38,8 @@ priority_level      = 0; % 'max' or number, put 0 if you don't have privileged r
 triggerOdorOn       = {0, 65, 20}; % trigger for MEG, SL3, SL4
 triggerPlaceboOn    = {0, 130, 40}; % trigger for MEG, SL3, SL4
 EEGtrigger          = 0;
-
+EEGtriggerOn        = {0, 64, 4};
+EEGtriggerOff       = {0, 128, 8};
 
 %% ======================== IMAGE CONFIGURATION ========================= %
 

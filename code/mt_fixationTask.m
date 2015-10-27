@@ -17,6 +17,12 @@ function mt_fixationTask(dirRoot, fixRun)
 addpath(genpath(dirRoot));
 load(fullfile(dirRoot, 'setup', 'mt_params.mat'))   % load workspace information and properties
 
+if sendTrigger
+    loadlibrary('trigger/inpoutx64', 'trigger/inpout32.h')
+    port = hex2dec('0378'); % LPT1: 0378 - 037F, 0778 - 077F
+    calllib('inpoutx64', 'Out32', port, 0)
+end
+
 %% Set window parameters
 % Specify the display window 
 window             = cfg_window.window(1);
@@ -52,9 +58,13 @@ fixRect     = reshape(fixRect, 4, 1);
 Screen('DrawTexture', window, imageDot, [], fixRect);
 Screen('Flip', window, flipTime);
 Screen('Close', imageDot);
-
+if sendTrigger
+    calllib('inpoutx64', 'Out32', port, EEGtriggerOn{cfg_dlgs.lab})
+end
 pause(fixationDisplay);
-
+if sendTrigger
+    calllib('inpoutx64', 'Out32', port, EEGtriggerOff{cfg_dlgs.lab})
+end
 
 % Save end time of fixation task
 SessionTime         = {datestr(now, 'HH:MM:SS')};
