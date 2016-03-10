@@ -263,7 +263,7 @@ textPracticeRecall = { ...
     ''
     'Nun kommt die Abfrage unseres Übungsdurchgangs.'
     ''
-    'Oben erscheint nun erneut jeweils eines der Bilder..'
+    'Oben erscheint nun erneut jeweils eines der Bilder.'
     ''
     'Klicken Sie bitte auf die kleine Karte, hinter der sich'
     'das jeweilige Bild befindet.'
@@ -303,8 +303,7 @@ textLearningInterference = { ...
     'Die Karten haben die gleichen Motive wie vor dem Schlafengehen.'
     'Allerdings befinden Sie sich nun an anderen Positionen.'
     ''
-    'Am Ende wird es wieder eine Abfrage geben. Sie bekommen'
-    'wieder keine Rückmeldung (blauer Punkt). Sie erfahren jedoch am'
+    'Am Ende wird es wieder eine Abfrage geben. Sie erfahren am'
     'Ende, wie gut Sie waren.'
     ''
 };
